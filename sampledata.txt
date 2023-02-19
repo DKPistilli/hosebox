@@ -1,0 +1,58 @@
+{
+    "_id": "63f13ac00cb1a0cf0d7acf4c",
+    "name": "little Bozo 2",
+    "email": "littleBozo2@gmail.com",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZjEzYWMwMGNiMWEwY2YwZDdhY2Y0YyIsImlhdCI6MTY3Njc1MzYwMCwiZXhwIjoxNjc5MzQ1NjAwfQ.QRG4QsYXd5m9NwDXxktNnphf7Sy3OpAkmOGIpFuOcbs"
+}
+
+
+{
+    "_id": "63f13aea0cb1a0cf0d7acf4f",
+    "name": "evil deleter",
+    "email": "evil deleter@gmail.com",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZjEzYWVhMGNiMWEwY2YwZDdhY2Y0ZiIsImlhdCI6MTY3Njc1MzY0MiwiZXhwIjoxNjc5MzQ1NjQyfQ.tJvIBGM8Z3yNaukDUXxkWIPcOXUtsS4179syzWxKcsA"
+}
+
+
+[
+    {
+        "_id": "63f13b1c0cb1a0cf0d7acf52",
+        "user": "63f13ac00cb1a0cf0d7acf4c",
+        "text": "don't delete me, evil deleter!!!",
+        "createdAt": "2023-02-18T20:54:52.757Z",
+        "updatedAt": "2023-02-18T20:54:52.757Z",
+        "__v": 0
+    },
+    {
+        "_id": "63f13b290cb1a0cf0d7acf55",
+        "user": "63f13ac00cb1a0cf0d7acf4c",
+        "text": "2 don't delete me, evil deleter!!!",
+        "createdAt": "2023-02-18T20:55:05.179Z",
+        "updatedAt": "2023-02-18T20:55:05.179Z",
+        "__v": 0
+    },
+    {
+        "_id": "63f13b2f0cb1a0cf0d7acf58",
+        "user": "63f13ac00cb1a0cf0d7acf4c",
+        "text": "3 don't delete me, evil deleter!!",
+        "createdAt": "2023-02-18T20:55:11.432Z",
+        "updatedAt": "2023-02-18T20:55:11.432Z",
+        "__v": 0
+    },
+    {
+        "_id": "63f13b330cb1a0cf0d7acf5b",
+        "user": "63f13ac00cb1a0cf0d7acf4c",
+        "text": "4 don't delete me, evil deleter!!",
+        "createdAt": "2023-02-18T20:55:15.094Z",
+        "updatedAt": "2023-02-18T20:55:15.094Z",
+        "__v": 0
+    },
+    {
+        "_id": "63f13b370cb1a0cf0d7acf5e",
+        "user": "63f13ac00cb1a0cf0d7acf4c",
+        "text": "5 don't delete me, evil deleter!!",
+        "createdAt": "2023-02-18T20:55:19.637Z",
+        "updatedAt": "2023-02-18T20:55:19.637Z",
+        "__v": 0
+    }
+]
