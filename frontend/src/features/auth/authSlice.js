@@ -32,6 +32,30 @@ export const register = createAsyncThunk(
   }
 );
 
+// Login user
+export const login = createAsyncThunk(
+  "auth/login",
+  async (user, thunkAPI) => {
+    try {
+      return await authService.login(user);
+    } catch (err) {
+        // set err message from response (if exists)
+        const message =
+        (err.response && 
+            err.response.data &&
+            err.response.data.message) ||
+        err.message ||
+        err.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Logout User (delete token)
+export const logout = createAsyncThunk('auth/logout', async () => {
+  await authService.logout();
+});
+
 // reducer to reset auth state to initial values
 const authReset = (state) => {
   state.isLoading = false;
@@ -49,9 +73,11 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+
+      // Registration Cases and associated logic (pending, fullfilled, rejected)
       .addCase(register.pending, (state) => {
         state.isLoading = true;
-    })
+      })
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
@@ -63,6 +89,28 @@ export const authSlice = createSlice({
         state.isError   = true;
         state.message   = action.payload;
         state.user      = null;
+      })
+
+      // Login cases and associated logic (pending, fullfilled, rejected)
+      .addCase(login.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user      = action.payload;
+
+      })
+      .addCase(login.rejected, (state, action ) => {
+        state.isLoading = false;
+        state.isError   = true;
+        state.message   = action.payload;
+        state.user      = null;
+      })
+
+      // Logout case (does not communicate w/ backend, so rejected/pending not required)
+      .addCase(logout.fulfilled, (state) => {
+        state.user = null;
       })
   },
 });
