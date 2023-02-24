@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cardSchema = mongoose.Schema(
     {
         "card": {
-            type: String,
+            type: String, // id to card Database
             required: [true, "Card ID required"],
         },
         
