@@ -8,21 +8,11 @@ const getCardPool = asyncHandler(async (req, res) => {
     const cardlist = await Cardlist.find();
 });
 
-
-
-
-
-
-
-
-
-
-
 /// IS THIS WHERE THESE SHOULD GO? OR SHOULD USERCONTROLLER HAVE?
 /// I'M HAVING TROUBLE DECIDING WHICH ROUTES SHOUDL GET WHAT?
 
 // @ desc  Get total cardlist of user
-// @route  GET /api/cardlist/:userId/
+// @route  GET /api/cardlists?user=userId
 // @access Private
 
 // @ desc  Add card(s) to inventory of user
