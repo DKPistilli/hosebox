@@ -43,7 +43,7 @@ function Header() {
     return (
         <header className='header'>
             <div className="logo">
-                <Link to='/'>Hosebox</Link>
+                <Link to='/Dashboard'>Hosebox</Link>
             </div>
             <ul>{user ? logoutHeader : loginAndRegisterHeader}</ul>
         </header>

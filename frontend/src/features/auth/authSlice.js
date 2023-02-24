@@ -13,6 +13,11 @@ const initialState = {
   message: "",
 };
 
+///
+/// ASYNC SLICE FUNCTIONS
+///    (register, login, logout)
+
+
 // Register user
 export const register = createAsyncThunk(
   "auth/register",
@@ -41,7 +46,7 @@ export const login = createAsyncThunk(
     } catch (err) {
         // set err message from response (if exists)
         const message =
-        (err.response && 
+       (err.response && 
             err.response.data &&
             err.response.data.message) ||
         err.message ||
@@ -56,6 +61,7 @@ export const logout = createAsyncThunk('auth/logout', async () => {
   await authService.logout();
 });
 
+
 // reducer to reset auth state to initial values
 const authReset = (state) => {
   state.isLoading = false;
@@ -64,7 +70,9 @@ const authReset = (state) => {
   state.message = "";
 };
 
-// define initial slice object 'auth' with reset reducer
+///
+/// EXPORT AUTH SLICE (and handle logic for above funtions)
+///
 export const authSlice = createSlice({
   name: "auth",
   initialState: initialState,

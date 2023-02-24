@@ -30,7 +30,7 @@ function Login() {
     }
 
     if (isSuccess) {
-      navigate('/');
+      navigate('/dashboard');
     }
 
     dispatch(reset());

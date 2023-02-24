@@ -5,7 +5,7 @@ const User = require('../models/userModel');
 
 // Generate JWT based off of userId
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '60d' });
 }
 
 // @ desc  Register new user
@@ -61,10 +61,10 @@ const loginUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email });
 
     // veryify password
-    const matchingPassword = await bcrypt.compare(password, user.password);
+    const matchingPasswords = await bcrypt.compare(password, user.password);
 
     // if user exists and password matches, send back user info res, else error
-    if (user && matchingPassword) {
+    if (user && matchingPasswords) {
         res.json({
             _id: user.id,
             name: user.name,
@@ -81,14 +81,8 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route  GET /api/users/me
 // @access Private
 const getMe = asyncHandler(async (req, res) => {
-    const { _id, name, email } = await User.findById(req.user.id);
-    res.status(200).json({
-        '_id': _id,
-        'name': name,
-        'email': email,
-    });
+    res.status(200).json(req.user);
 });
-
 
 module.exports = {
     registerUser,
