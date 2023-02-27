@@ -1,15 +1,9 @@
 const mongoose = require('mongoose');
-const { cardSchema } = require('./cardModel');
-
-// define a card object with id pointing to a MtG card in cardDB
-// default quantity of 1
+const cardSchema = require('./cardModel');
 
 const inventorySchema = mongoose.Schema({
-    // inventory array of card refs & qtys
-    cards: {
-        type: [cardSchema],
-        default: [],
-    },
+    
+    cards: [cardSchema],
 
     // ref to inventory's owner
     user: {

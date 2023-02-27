@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Spinner from '../components/Spinner';
+import CardlistDisplay from '../components/CardlistDisplay';
 
 function Dashboard() {
 
@@ -25,6 +26,7 @@ function Dashboard() {
     <div>
       <h1>{user.name}'s Dashboard</h1>
       <p> All your cards go here! </p>
+      <CardlistDisplay />
     </div>
   )
 }
