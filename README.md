@@ -17,7 +17,7 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 
 ### Back End
 - [ ] inventoryCards
-    - [x] design inventoryCardSchema model (what card info is needed on our server) and corresponding api calls
+    - [X] design inventoryCardSchema model (what card info is needed on our server) and corresponding api calls
     - [ ] implement inventoryCard model, router, and controller
 - [ ] Decks
     - [ ] design deckSchema and corresponding api calls. Big Question: how to structure mainboard/sideboard/scratchpad (needs privateList option! don't forget).
@@ -37,5 +37,5 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
     - [ ] create "/league" page and add League button to <Header/>
     - [ ] create some sort of league schedule-view and/or standings-view.
     - [ ] write and display some sort of flavor about the history of the league?
-- [x] Add hosebot and generate mock "Welcome" landing index
-- [x] make the to-do list lol
+- [X] Add hosebot and generate mock "Welcome" landing index
+- [X] make the to-do list lol
