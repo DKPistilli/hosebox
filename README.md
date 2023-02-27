@@ -1,10 +1,12 @@
-# hosebox
+<h3 align='center'> Welcome to... </h3>
+<br>
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/8059632/221677261-528c2ae4-a199-4fff-92a5-bdeab8bfb812.jpeg" />
+    <h1 align='center'> hosebox.net </h1>
+    <h3 align='center'> The official deckbuilding and inventory-management application for the competitors of the Meadow Lane: Magic the Gathering (MLMTG) league. </h3>
+</p>
 
-![hoseboxSmall](https://user-images.githubusercontent.com/8059632/221676770-7817d0e9-d531-449b-9c8c-4d913f56c731.png)
-
-An inventory-management web application designed for the "Meadow Lane: Magic the Gathering" (MLMTG) league.
-
-Unlike other deck management sites, hosebox has a host of wonderful features that it provides, alongide its fellow robot (and best pal in the world...), hosebot.
+<p align='center'> Unlike other Magic: The Gathering deckbuilding and inventory-management sites, hosebox has a host of wonderful features -- designed specifically for ML:MTG competitors -- that it provides free of charge, alongide help from the Scryfall API and the Hosebot discord bot (who happens to be hosebox's #1 pal in the world...)</p>
 
 ## Features
 That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizards to...
