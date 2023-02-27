@@ -4,7 +4,6 @@ An inventory-management web application designed for the "Meadow Lane: Magic the
 
 Unlike other deck management sites, hosebox has a host of wonderful features that it provides, alongide its fellow robot (and best pal in the world...), hosebot.
 
-
 ## Features
 That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizards to...
 - Create and manage decklists, sideboards, and scratchpads, all free of charge.
@@ -15,4 +14,28 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 - View the current season's MLMTG schedules, records, and standings.
 
 ## To-Do
-- [ ] make the to-do list lol
+
+### Back End
+- [ ] inventoryCards
+    - [x] design inventoryCardSchema model (what card info is needed on our server) and corresponding api calls
+    - [ ] implement inventoryCard model, router, and controller
+- [ ] Decks
+    - [ ] design deckSchema and corresponding api calls. Big Question: how to structure mainboard/sideboard/scratchpad (needs privateList option! don't forget).
+    - [ ] implement decks model, router, and controller
+- [ ] \(potential) add userInventory to User with array of first 50 cards (true scryfall card objects, not pointers) so init inventory doesn't require a scryfall api call
+- [ ] \(potential) add some sort of LeagueModel which stores season, standings (all manually updated??), and like..."about"? So that I can add some of the flavor currently relegated to challonge.com
+
+### Front End
+- [ ] Dashboard
+    - [ ] implement <Inventory /> component which queries our server for cardIds and scryfall API to populate those Ids with information
+    - [ ] implmenet <Sidebar /> component which has a button to view <Inventory />, <Wishlist />, <Deckslist />
+    - [ ] implement <Deckslist /> component which grabs all decks w/ userId and lists them on left sidebar. Clicking navs to hosebox.net/decks/:deckId
+- [ ] Deckview
+    - [ ] design and implement <Deckview /> page/component, which is GUI for user to view/edit their decklists
+    - [ ] mainboard/sideboard/scratchpad
+- [ ] \(potential) add "League" to front-end
+    - [ ] create "/league" page and add League button to <Header/>
+    - [ ] create some sort of league schedule-view and/or standings-view.
+    - [ ] write and display some sort of flavor about the history of the league?
+- [x] Add hosebot and generate mock "Welcome" landing index
+- [x] make the to-do list lol
