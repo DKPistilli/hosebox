@@ -1,5 +1,7 @@
 # hosebox
 
+![hosebox](https://user-images.githubusercontent.com/8059632/221674667-fa8ec212-0911-4f4b-8afb-e4a6524429f6.png)
+
 An inventory-management web application designed for the "Meadow Lane: Magic the Gathering" (MLMTG) league.
 
 Unlike other deck management sites, hosebox has a host of wonderful features that it provides, alongide its fellow robot (and best pal in the world...), hosebot.
