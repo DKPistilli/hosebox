@@ -1,6 +1,6 @@
 # hosebox
 
-![hosebox](https://user-images.githubusercontent.com/8059632/221674667-fa8ec212-0911-4f4b-8afb-e4a6524429f6.png)
+![hoseboxSmall](https://user-images.githubusercontent.com/8059632/221676770-7817d0e9-d531-449b-9c8c-4d913f56c731.png)
 
 An inventory-management web application designed for the "Meadow Lane: Magic the Gathering" (MLMTG) league.
 
