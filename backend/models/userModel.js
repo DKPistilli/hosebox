@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const cardlistSchema = require('./cardlistModel');
-const deckSchema = require('./deckModel');
 
 const userSchema = mongoose.Schema({
 
@@ -21,13 +19,8 @@ const userSchema = mongoose.Schema({
     },
 
     inventory: {
-        type: cardlistSchema,
-        default: () => ({}),
-    },
-
-    decks: {
-        type: [deckSchema],
-        default: [],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Inventory',
     },
 
 }, {

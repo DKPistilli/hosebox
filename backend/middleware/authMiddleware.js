@@ -1,3 +1,10 @@
+///
+/// AUTH MIDDLEWARE
+///
+/// Side effects:
+/// -- verifies user by Bearer token
+/// -- sets req.user to user if verified
+
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');

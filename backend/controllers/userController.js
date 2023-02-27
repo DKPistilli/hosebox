@@ -1,14 +1,17 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
-const User = require('../models/userModel');
+
+//import collections
+const User      = require('../models/userModel');
+const Inventory = require('../models/inventoryModel');
 
 // Generate JWT based off of userId
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '60d' });
 }
 
-// @ desc  Register new user
+// @ desc  Register new user and create new associated empty inventory
 // @route  POST /api/users
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
@@ -39,11 +42,20 @@ const registerUser = asyncHandler(async (req, res) => {
     });
 
     if (user) {
+
+        //create new empty inventory associated w user
+        const inventory = await Inventory.create({
+            user: user.id,
+        });
+
+        const updatedUser = await User.findByIdAndUpdate(user.id, {inventory: inventory.id}, {new:true});
+
         res.status(201).json({
             _id: user.id,
             name: user.name,
             email: user.email,
             token: generateToken(user._id),
+            inventory: inventory.id,
         });
     } else {
         res.status(400);
