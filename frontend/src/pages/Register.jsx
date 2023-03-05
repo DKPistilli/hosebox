@@ -35,7 +35,7 @@ function Register() {
     }
 
     if (isSuccess || user) {
-      navigate('/dashboard');
+      navigate('/inventory');
     }
 
     dispatch(reset());

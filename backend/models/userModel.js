@@ -18,11 +18,6 @@ const userSchema = mongoose.Schema({
         required: [true, "Password required for User"],
     },
 
-    /*inventory: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Inventory',
-    },*/
-
 }, {
     timestamps: true,
 });

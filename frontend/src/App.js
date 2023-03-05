@@ -5,11 +5,13 @@ import { BrowserRouter as Router, Routes, Route } from
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// import our header components
+// import Routing pages
 import Welcome from './pages/Welcome';
-import Dashboard from './pages/Dashboard';
+import Inventory from './pages/Inventory';
 import Login from './pages/Login';
 import Register from './pages/Register';
+
+// import components
 import Header from './components/Header';
 
 function App() {
@@ -22,8 +24,9 @@ function App() {
             <Route path='/' element={<Welcome />} />
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
-            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/inventory' element={<Inventory />} />
           </Routes>
+
         </div>
       </Router>
       <ToastContainer />

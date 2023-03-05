@@ -15,6 +15,7 @@ const deckSchema = mongoose.Schema({
     },
 
     mainboard: {
+        type: 
 
     },
 

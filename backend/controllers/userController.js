@@ -4,7 +4,6 @@ const asyncHandler = require('express-async-handler');
 
 //import collections
 const User      = require('../models/userModel');
-const Inventory = require('../models/inventoryModel');
 
 // Generate JWT based off of userId
 const generateToken = (id) => {
@@ -55,7 +54,6 @@ const registerUser = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             token: generateToken(user._id),
-            inventory: inventory.id,
         });
     } else {
         res.status(400);

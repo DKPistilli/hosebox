@@ -43,7 +43,7 @@ function Header() {
     return (
         <header className='header'>
             <div className="logo">
-                <Link to='/Dashboard'>
+                <Link to='/inventory'>
                     Hosebox.net
                 </Link>
             </div>

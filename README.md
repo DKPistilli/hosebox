@@ -30,7 +30,7 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 - [ ] \(potential) add some sort of LeagueModel which stores season, standings (all manually updated??), and like..."about"? So that I can add some of the flavor currently relegated to challonge.com
 
 ### Front End
-- [ ] Dashboard
+- [ ] Inventory
     - [ ] implement <Inventory /> component which queries our server for cardIds and scryfall API to populate those Ids with information
     - [ ] implmenet <Sidebar /> component which has a button to view <Inventory />, <Wishlist />, <Deckslist />
     - [ ] implement <Deckslist /> component which grabs all decks w/ userId and lists them on left sidebar. Clicking navs to hosebox.net/decks/:deckId
