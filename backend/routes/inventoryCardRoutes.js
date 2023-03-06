@@ -11,16 +11,16 @@ const { protect } = require('../middleware/authMiddleware');
 
 // import inventory controller functions
 const {
-    getCards, addCard          // GET    /api/inventories/:user
-    //addToInventory,         // POST   /api/inventories/:user
-   // updateInventory,        // PUT    /api/inventories/:user/:cardId
-   // deleteInventory,        // DELETE /api/inventories/:user    
+    getCards,          // GET    /api/inventories/:userId
+    addCard,           // POST   /api/inventories/:userId
+    updateCard,        // PUT    /api/inventories/:userId
+    deleteCards,       // DELETE /api/inventories/:userId  
 } = require('../controllers/inventoryCardController');
 
 // get inventory by page/search params, delete inventory in full (should be v rare!)
-router.route('/:userId').get(getCards).post(protect, addCard);//.delete(protect, deleteInventory);
-
-// update qty of card in inventory, creating/deleting card if necessary
-//router.route('/:userId/:cardId').put(protect, updateInventory);
+router.route('/:userId').get(getCards)
+                        .post(protect, addCard)
+                        .put(protect, updateCard)
+                        .delete(protect, deleteCards);
 
 module.exports = router;
