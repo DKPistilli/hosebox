@@ -18,7 +18,6 @@ app.use(errorHandler);
 
 // Routes
 app.use('/api/users', require('./routes/userRoutes'));
-//app.use('/api/inventories', require('./routes/inventoryRoutes'));
 app.use('/api/inventoryCards', require('./routes/inventoryCardRoutes'));
 
 app.listen(port, () => {

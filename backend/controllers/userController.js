@@ -10,7 +10,7 @@ const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '60d' });
 }
 
-// @ desc  Register new user and create new associated empty inventory
+// @ desc  Register new user
 // @route  POST /api/users
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
@@ -41,14 +41,6 @@ const registerUser = asyncHandler(async (req, res) => {
     });
 
     if (user) {
-
-        //create new empty inventory associated w user
-        const inventory = await Inventory.create({
-            user: user.id,
-        });
-
-        const updatedUser = await User.findByIdAndUpdate(user.id, {inventory: inventory.id}, {new:true});
-
         res.status(201).json({
             _id: user.id,
             name: user.name,

@@ -1,14 +1,17 @@
 ///
 /// INVENTORYCARD CONTROLLER
-/// functions:
+/// Functions:
 ///      getCards, addCard, updateCard (which handles deletion as well), deleteCards
+/// Note:
+///      User inventoryCards are just proxies (just cardId + quantity), so we also use scryfallCards db
+///      scryfallCards db calls to convert these cardIds into fully populated cards for res to client
 
 const asyncHandler = require('express-async-handler');
 const mongoose = require('mongoose');
 
-//import mongoose models
-//const User = require('../models/userModel');
+//import InventoryCard db + scryfall card helper function
 const InventoryCard = require('../models/inventoryCardModel');
+const scryfallCardsAPI = require('./scryfallCardController');
 
 // Set limit of cards to be returned per page
 const CARD_RES_LIMIT = 20;
@@ -24,21 +27,15 @@ const getCards = asyncHandler(async (req, res) => {
         console.log(`page: ${req.query.pg} name: ${req.query.name}`);
     }
 
-    console.log(`userId: ${req.params.userId}`);
-
     const inventoryCards = await InventoryCard
         .find({ userId: req.params.userId }) // find inventory at given userId
         .limit(CARD_RES_LIMIT);            // limit cards back from db
 
-    console.log(inventoryCards);
+    const scryfallCards = await scryfallCardsAPI.getCards(inventoryCards);
 
-    if (!inventoryCards) {
-        res.status(400);
-        throw new Error('No inventory found at this userID.');
-    }
-
-    res.status(200).json(inventoryCards);
+    res.status(200).json(scryfallCards);
 });
+
 
 // @ desc  Add card with id/qty to inventory 
 // @route  POST /api/inventoryCards/:userId/
@@ -50,8 +47,6 @@ const addCard = asyncHandler(async (req, res) => {
 
     const cardId   = req.query.cardId;
     const quantity = req.query.qty || DEFAULT_QTY;
-
-    console.log(`cardId: ${cardId}`);
 
     if (!cardId) {
         res.status(400);
@@ -84,8 +79,11 @@ const addCard = asyncHandler(async (req, res) => {
         throw new Error('Server error adding card.');
     }
 
-    res.status(201).json(card);
+    const scryfallCard = await scryfallCardsAPI.getCards([card]);
+
+    res.status(201).json(scryfallCard);
 });
+
 
 // @ desc  update card by cardId with quantity, deleting if needed
 // @route  PUT /api/inventoryCards/:userId
@@ -131,7 +129,6 @@ const updateCard = asyncHandler(async (req, res) => {
     // if updating to quantity of ZERO, delete card
     if (quantity === 0) {
         const deleteCard = await InventoryCard.deleteOne(filter);
-        console.log(deleteCard);
         res.status(204).send();
     }
 
@@ -142,9 +139,10 @@ const updateCard = asyncHandler(async (req, res) => {
         throw new Error('Server error adding card with cardId:' + cardId);
     }
 
-    console.log(card);
+    // get full scryfall card info for this updated card -- needs to be array
+    const scryfallCards = await scryfallCardsAPI.getCards([card]);
 
-    res.status(201).json(card);
+    res.status(201).json(scryfallCards);
 });
 
 // @ desc  Delete entire inventory -- SHOULD BE EXTREMELY RARE!
@@ -155,17 +153,17 @@ const deleteCards = asyncHandler(async (req, res) => {
     const filter = {
         userId: req.user.id,
     };
+    
+    // delete all cards
+    const deletedCount = await InventoryCard.deleteMany(filter);
 
-    const inventoryCards = await InventoryCard.deleteMany(filter);
-
-    console.log(inventoryCards);
-
-    if (inventoryCards) {
+    if (deletedCount === 0) {
         res.status(500);
         throw new Error('Server error deleting all cards from inventory.');
+    } else {
+        res.status(204).send();
     }
 
-    res.status(24).json(inventoryCards);
 });
 
 module.exports = {
