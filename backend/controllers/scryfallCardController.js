@@ -7,7 +7,7 @@
 ///
 /// Note: This is the by-hand command for importing the big dumb DL file from scryfall
 ///
-/// mongoimport --uri 'mongodb+srv://dkpistilli:hosebox69420@hosebox0.cqgdq5c.mongodb.net/test?retryWrites=true&w=majority'
+/// mongoimport --uri 'mongodb+srv://username:password@hosebox0.cqgdq5c.mongodb.net/test?retryWrites=true&w=majority'
 ///             --collection='scryfallcards'
 ///             --file='./backend/cards/scryfallCards.json'
 ///             --jsonArray
