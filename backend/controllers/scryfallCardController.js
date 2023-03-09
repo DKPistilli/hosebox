@@ -3,7 +3,7 @@
 /// Functions:
 ///      getCards
 /// Note:
-///      Takes in [cardIds] and returns associated [scryfall card objects]
+///      Takes in [cards] and returns associated [scryfall card objects + quantities]
 ///
 /// Note: This is the by-hand command for importing the big dumb DL file from scryfall
 ///
@@ -13,7 +13,6 @@
 ///             --jsonArray
 
 const asyncHandler = require('express-async-handler');
-const mongoose = require('mongoose');
 
 //import mongoose models
 const ScryfallCard = require('../models/scryfallCardModel');
@@ -23,7 +22,7 @@ const ScryfallCard = require('../models/scryfallCardModel');
 const getCards = asyncHandler(async (cardsArray) => {
 
     if (!cardsArray) {
-        throw new Error('Card Ids required to query ScryfallCards Database.');
+        throw new Error('Card array required to query ScryfallCards Database.');
     }
     
     // add all cardIds from input array to idArray, for upcoming db query
@@ -33,9 +32,20 @@ const getCards = asyncHandler(async (cardsArray) => {
         idArray.push(card.cardId);
     });
 
-    const scryfallCards = await ScryfallCard.find({ id: { $in: idArray } });
+    var scryfallCardsArray = await ScryfallCard.find({ id: { $in: idArray } });
 
-    return scryfallCards;
+    // for each card obj in scryfall card array, add associated quantity from input array
+    scryfallCardsArray.map((scryfallCard) => {
+
+        const i = cardsArray.findIndex((card) => {
+            return (card.cardId === scryfallCard.id);
+        });
+
+        scryfallCard.quantity = cardsArray[i].quantity;
+        console.log(scryfallCard.name + '  ' + scryfallCard.quantity);
+    });
+
+    return scryfallCardsArray;
 });
 
 module.exports = {
