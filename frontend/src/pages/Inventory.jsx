@@ -33,7 +33,7 @@ function Inventory() {
 
     inventoryCards();
 
-  }, [inventory, user]);
+  }, [user]);
 
   //if not logged in, navigate out of Inventory back to login
   useEffect(() => {
