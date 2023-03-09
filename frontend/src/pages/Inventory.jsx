@@ -57,8 +57,10 @@ function Inventory() {
       <h1>{user.name}'s Inventory</h1>
       <ul>
         {inventory.map(card =>
-          (<li key={card._id}>
-                {card.name}
+          (<li style={{display: 'block'}} key={card._id}>
+            <span style={{float:'left'}}>Name: {card.name} </span>
+            <span style={{float:'right'}}>Qty: {card.quantity} </span>
+            <br></br>
           </li>)
         )}
       </ul>

@@ -32,7 +32,8 @@ const getCards = asyncHandler(async (cardsArray) => {
         idArray.push(card.cardId);
     });
 
-    var scryfallCardsArray = await ScryfallCard.find({ id: { $in: idArray } });
+    const scryfallCardsArray = await ScryfallCard.find({ id: { $in: idArray } });
+    const scryfallCardsArrayWithQuantity = [];
 
     // for each card obj in scryfall card array, add associated quantity from input array
     scryfallCardsArray.map((scryfallCard) => {
@@ -41,11 +42,33 @@ const getCards = asyncHandler(async (cardsArray) => {
             return (card.cardId === scryfallCard.id);
         });
 
-        scryfallCard.quantity = cardsArray[i].quantity;
-        console.log(scryfallCard.name + '  ' + scryfallCard.quantity);
+        if (i === -1) {
+            throw new Error ('Server error attaching quantity to Scryfall cards.');
+        }
+
+        scryfallCardsArrayWithQuantity.push({
+            // add quantity
+            quantity        : cardsArray[i].quantity,
+
+            // add other fields relevant to website (not all of scryfall info required)
+            name            : scryfallCard.name,
+            cardId          : scryfallCard.id,
+            oracle_id       : scryfallCard.oracle_id,
+            mana_cost       : scryfallCard.mana_cost,
+            colors          : scryfallCard.colors,
+            color_identity  : scryfallCard.color_identity,
+            cmc             : scryfallCard.cmc,
+            type_line       : scryfallCard.type_line,
+            rarity          : scryfallCard.rarity,
+            set_id          : scryfallCard.set_id,
+            set             : scryfallCard.set,
+            image_uris      : scryfallCard.image_uris,
+            uri             : scryfallCard.uri,
+            prices: scryfallCard.prices,
+        });
     });
 
-    return scryfallCardsArray;
+    return scryfallCardsArrayWithQuantity;
 });
 
 module.exports = {

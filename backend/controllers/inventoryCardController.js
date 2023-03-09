@@ -33,6 +33,9 @@ const getCards = asyncHandler(async (req, res) => {
 
     const scryfallCards = await scryfallCardsAPI.getCards(inventoryCards);
 
+    console.log(`sending back quantity of ${scryfallCards[0].quantity}`); // console #01
+    console.log(`sending back scryfallcard[0] of ${scryfallCards[0]}`) // console #02
+
     res.status(200).json(scryfallCards);
 });
 
@@ -104,7 +107,7 @@ const updateCard = asyncHandler(async (req, res) => {
     // confirm valid card quantity given
     if ( (quantity < 0) || (!Number.isInteger(quantity)) ) {
         res.status(400);
-        throw new Error('Qty must be non-negative integer.')
+        throw new Error('Quantity must be non-negative integer.')
     }
 
     // find card by userId and cardId
@@ -128,7 +131,7 @@ const updateCard = asyncHandler(async (req, res) => {
 
     // if updating to quantity of ZERO, delete card
     if (quantity === 0) {
-        const deleteCard = await InventoryCard.deleteOne(filter);
+        await InventoryCard.deleteOne(filter);
         res.status(204).send();
     }
 
