@@ -17,23 +17,27 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 - Submit decklists via Discord (!submit), taking each wizard's OFFICIAL DECKLIST and emailing it to the official MLMTG email account for record-keeping. No more late decklists!
 - View the current season's MLMTG schedules, records, and standings.
 
-## To-Do
+## To-Do (Car (Bicycle (Skateboard)))
 
 ### Back End
-- [ ] inventoryCards
+- [X] inventoryCards
     - [X] design inventoryCardSchema model (what card info is needed on our server) and corresponding api calls
-    - [ ] implement inventoryCard model, router, and controller
+    - [X] implement inventoryCard model, router, and controller
 - [ ] Decks
     - [ ] design deckSchema and corresponding api calls. Big Question: how to structure mainboard/sideboard/scratchpad (needs privateList option! don't forget).
     - [ ] implement decks model, router, and controller
+- [X] scryfallCards
+    - [X] design local scryfall DB and corresponding api (non-http, local server requests only). 
+    - [X] implement scryfallCard model, router, and controller, so that all card information is blackboxed from the front end -- they send cardId, they get a full card, and never need to know about implementation or what extra fields we're removing from the actual scryfall.com card schema.
 - [ ] \(potential) add userInventory to User with array of first 50 cards (true scryfall card objects, not pointers) so init inventory doesn't require a scryfall api call
 - [ ] \(potential) add some sort of LeagueModel which stores season, standings (all manually updated??), and like..."about"? So that I can add some of the flavor currently relegated to challonge.com
 
 ### Front End
 - [ ] Inventory
-    - [ ] implement <Inventory /> component which queries our server for cardIds and scryfall API to populate those Ids with information
-    - [ ] implmenet <Sidebar /> component which has a button to view <Inventory />, <Wishlist />, <Deckslist />
-    - [ ] implement <Deckslist /> component which grabs all decks w/ userId and lists them on left sidebar. Clicking navs to hosebox.net/decks/:deckId
+    - [X] implement <Inventory /> component which queries our server for cardIds
+    - [X] implement <Sidebar /> component which has a button to view <Inventory />, <Wishlist />, <Decks />
+    - [ ] Create file structure for Sidebar so that decks can display down the sidebar (and scroll)
+    - [ ] implement <Decks /> component which grabs all decks w/ userId and lists them on left sidebar. Clicking navs to hosebox.net/decks/:deckId
 - [ ] Deckview
     - [ ] design and implement <Deckview /> page/component, which is GUI for user to view/edit their decklists
     - [ ] mainboard/sideboard/scratchpad
