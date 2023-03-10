@@ -1,8 +1,10 @@
 ///
 /// SCRYFALL CARD SCHEMA
 /// Note: The official Scryfall Card Schema, matching Scryfall's API
-///       which HOPEFULLY is static and will never change. This is essentially
+///       which is static and should not change frequently if ever. This is essentially
 ///       a local scryfall server of cards, updated infrequently w/ new sets.
+///       If scryfall card schema changes, it should be a simple matter of updating fields below
+///       to new card model, then regrabbing/hosting cards.
 
 const mongoose = require('mongoose');
 

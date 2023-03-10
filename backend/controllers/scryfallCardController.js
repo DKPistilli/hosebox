@@ -33,10 +33,8 @@ const getCards = asyncHandler(async (cardsArray) => {
     });
 
     const scryfallCardsArray = await ScryfallCard.find({ id: { $in: idArray } });
-    const scryfallCardsArrayWithQuantity = [];
 
-    // for each card obj in scryfall card array, add associated quantity from input array
-    scryfallCardsArray.map((scryfallCard) => {
+    const scryfallWithQuantityArray = scryfallCardsArray.map((scryfallCard) => {
 
         const i = cardsArray.findIndex((card) => {
             return (card.cardId === scryfallCard.id);
@@ -46,7 +44,7 @@ const getCards = asyncHandler(async (cardsArray) => {
             throw new Error ('Server error attaching quantity to Scryfall cards.');
         }
 
-        scryfallCardsArrayWithQuantity.push({
+        return ({
             // add quantity
             quantity        : cardsArray[i].quantity,
 
@@ -68,7 +66,7 @@ const getCards = asyncHandler(async (cardsArray) => {
         });
     });
 
-    return scryfallCardsArrayWithQuantity;
+    return scryfallWithQuantityArray;
 });
 
 module.exports = {
