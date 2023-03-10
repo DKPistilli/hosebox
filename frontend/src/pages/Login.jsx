@@ -17,8 +17,8 @@ function Login() {
   useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
-    'email': '',
-    'password': '',
+    'email'       : '',
+    'password'    : '',
   });
 
   const { email, password } = formData;
@@ -34,7 +34,6 @@ function Login() {
     }
 
     dispatch(reset());
-
 
   }, [user, isSuccess, isError, message, navigate, dispatch]);
 
@@ -76,7 +75,7 @@ function Login() {
         <form onSubmit={onSubmit}>
           <div className="form-group">
             <input
-              type="text"
+              type={'text'}
               className="form-control"
               id='email'
               name='email'
@@ -87,7 +86,7 @@ function Login() {
           </div>
           <div className="form-group">
             <input
-              type="text"
+              type="password"
               className="form-control"
               id='password'
               name='password'
