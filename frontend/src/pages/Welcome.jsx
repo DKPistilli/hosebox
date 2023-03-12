@@ -1,6 +1,13 @@
 import hoseboxLogoImg from '../assets/hosebox.png';
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import Spinner from '../components/Spinner'
 
 function Welcome() {
+
+    const navigate = useNavigate();
+    const { user } = useSelector((state) => state.auth); // nav to inventory if user authorized
 
     const hoseboxLogoStyle = {
         maxWidth: '25%',
@@ -17,6 +24,17 @@ function Welcome() {
         marginLeft: "auto",
         marginRight: "auto",
     };
+
+    // if user logged in, landing page navs to user's inventory
+    useEffect(() => {
+        if (user) {
+            navigate('/inventory')
+        }
+    }, [user, navigate])
+
+    if (user) {
+        return <Spinner />
+    }
 
     return (
         <div>

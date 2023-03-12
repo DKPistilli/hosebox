@@ -11,8 +11,8 @@ import Login      from './pages/Login';
 import Register   from './pages/Register';
 import Inventory  from './pages/Inventory';
 import Wishlist   from './pages/Wishlist';
-import Decks      from './pages/Decks';
 import Decklist   from './pages/Decklist';
+import NoPage     from './pages/NoPage';
 
 // import components
 import Header from './components/Header';
@@ -24,13 +24,15 @@ function App() {
         <div className='container'>
           <Header />
           <Routes>
-            <Route path='/'              element={<Welcome   />} />
-            <Route path='/login'         element={<Login     />} />
-            <Route path='/register'      element={<Register  />} />
-            <Route path='/inventory'     element={<Inventory />} />
-            <Route path='/wishlist'      element={<Wishlist  />} />
-            <Route path='/decks'         element={<Decks     />} />
-            <Route path='/decks/:deckId' element={<Decklist  />} />
+            <Route path='/'                       element={<Welcome   />} />
+            <Route path='/login'                  element={<Login     />} />
+            <Route path='/register'               element={<Register  />} />
+            <Route path='/inventories'            element={<Inventory />} />
+            <Route path='/wishlists'              element={<Wishlist  />} />
+            <Route path='/wishlists/:wishlistId'  element={<Wishlist  />} />
+            <Route path='/decks/:deckId'          element={<Decklist  />} />
+            <Route path='*'                       element={<NoPage    />} />
+            
           </Routes>
         </div>
       </Router>
