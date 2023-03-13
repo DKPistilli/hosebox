@@ -35,7 +35,7 @@ function Register() {
     }
 
     if (isSuccess || user) {
-      navigate('/inventory');
+      navigate(`/inventories/${user._id}`);
     }
 
     dispatch(reset());

@@ -28,7 +28,7 @@ function Welcome() {
     // if user logged in, landing page navs to user's inventory
     useEffect(() => {
         if (user) {
-            navigate('/inventory')
+            navigate(`/inventories/${user._id}`);
         }
     }, [user, navigate])
 

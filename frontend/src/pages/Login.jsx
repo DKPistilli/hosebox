@@ -30,7 +30,7 @@ function Login() {
     }
 
     if (isSuccess) {
-      navigate('/inventory');
+      navigate(`/inventories/${user._id}`);
     }
 
     dispatch(reset());

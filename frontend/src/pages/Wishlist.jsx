@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Spinner from '../components/Spinner';
-import Sidebar from '../components/Sidebar';
+import Spinner   from '../components/Spinner';
+import Sidebar   from '../components/Sidebar';
+import CardTable from '../components/CardTable';
 
 // import http request service
 import axios from 'axios';
@@ -15,6 +16,7 @@ function Wishlist() {
   // init navigation && find user
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  const { userId } = useParams();
 
   // initiate wishlist state
   const [wishlist, setWishlist] = useState([]);
@@ -24,7 +26,7 @@ function Wishlist() {
     //alert('using effect again, for some reason');
     const wishlistCards = async () => {
       
-      const response = await axios.get(API_URL + user._id);
+      const response = await axios.get(API_URL + userId);
   
       if (response.data) {
         setWishlist(response.data);
@@ -33,7 +35,7 @@ function Wishlist() {
 
     wishlistCards();
 
-  }, [user]);
+  }, [userId]);
 
   //if not logged in, navigate out of Wishlist back to login
   useEffect(() => {
@@ -51,20 +53,11 @@ function Wishlist() {
     return <Spinner />
   }
   
-
   return (
     <div>
       <h1>{user.name}'s Wishlist</h1>
-      <ul>
-        {wishlist.map(card =>
-          (<li style={{display: 'block'}} key={card._id}>
-            <span style={{float:'left'}}>Name: {card.name} </span>
-            <span style={{float:'right'}}>Qty: {card.quantity} </span>
-            <br></br>
-          </li>)
-        )}
-      </ul>
       <Sidebar activeTab="Wishlist" />
+      <CardTable cards={wishlist}/>
     </div>
   )
 }

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Spinner from '../components/Spinner';
-import Sidebar from '../components/Sidebar';
+import Spinner   from '../components/Spinner';
+import Sidebar   from '../components/Sidebar';
+import CardTable from '../components/CardTable';
 
 // import http request service
 import axios from 'axios';
@@ -21,9 +22,7 @@ function Inventory() {
 
   // request user's inventory from server (re-request on inventory change)
   useEffect(() => {
-    //alert('using effect again, for some reason');
     const inventoryCards = async () => {
-      
       const response = await axios.get(API_URL + user._id);
   
       if (response.data) {
@@ -55,16 +54,8 @@ function Inventory() {
   return (
     <div>
       <h1>{user.name}'s Inventory</h1>
-      <ul>
-        {inventory.map(card =>
-          (<li style={{display: 'block'}} key={card._id}>
-            <span style={{float:'left'}}>Name: {card.name} </span>
-            <span style={{float:'right'}}>Qty: {card.quantity} </span>
-            <br></br>
-          </li>)
-        )}
-      </ul>
       <Sidebar activeTab="Inventory" />
+      <CardTable cards={inventory}   />
     </div>
   )
 }
