@@ -3,11 +3,11 @@ const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 
 //import collections
-const User      = require('../models/userModel');
+const User = require('../models/userModel');
 
 // Generate JWT based off of userId
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '60d' });
+    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '90d' });
 }
 
 // @ desc  Register new user
@@ -37,13 +37,13 @@ const registerUser = asyncHandler(async (req, res) => {
     const user = await User.create({
         name,
         email,
-        password: hashedPassword
+        password: hashedPassword,
     });
 
     if (user) {
         res.status(201).json({
-            _id: user.id,
-            name: user.name,
+            _id  : user.id,
+            name : user.name,
             email: user.email,
             token: generateToken(user._id),
         });

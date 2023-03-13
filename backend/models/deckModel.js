@@ -36,7 +36,7 @@ const deckSchema = mongoose.Schema({
 
     "isPublic": {
         type: Boolean,
-        default: True,
+        default: true,
     },
 
     "mainboard": {
@@ -58,4 +58,4 @@ const deckSchema = mongoose.Schema({
     timestamps: true,
 });
 
-mongoose.exports = mongoose.model('Deck', deckSchema);
+module.exports = mongoose.model('Deck', deckSchema);
