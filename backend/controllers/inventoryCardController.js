@@ -36,16 +36,14 @@ const getCards = asyncHandler(async (req, res) => {
 });
 
 
-// @ desc  Add card with id/qty to inventory 
+// @ desc  Add card with id/quantity to inventory 
 // @route  POST /api/inventoryCards/:userId/
-// @query  cardId=(cardId)&qty=(qty to add, default to 1 if missing)
+// @query  cardId=(cardId)&quantity=(quantity to add, default to 1 if missing)
 // @access Private
 const addCard = asyncHandler(async (req, res) => {
 
-    const DEFAULT_QTY = 1;
-
     const cardId   = req.query.cardId;
-    const quantity = req.query.qty || DEFAULT_QTY;
+    const quantity = req.query.quantity || 1; // add 1 if no quantity given
 
     if (!cardId) {
         res.status(400);
@@ -86,7 +84,7 @@ const addCard = asyncHandler(async (req, res) => {
 
 // @ desc  update card by cardId with quantity, deleting if needed
 // @route  PUT /api/inventoryCards/:userId
-// @query  cardId=(cardId)&qty=(qty to set) -- unlike addCard, qty is required!
+// @query  cardId=(cardId)&quantity=(quantity to set) -- unlike addCard, quantity is required!
 // @access Private
 const updateCard = asyncHandler(async (req, res) => {
 

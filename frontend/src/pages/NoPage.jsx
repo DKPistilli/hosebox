@@ -20,7 +20,7 @@ function NoPage() {
 
     return (
         <div>
-            <h1 style={hoseboxTitleStyle}> url.notFound = true </h1>
+            <h1 style={hoseboxTitleStyle}> url.notFound===true </h1>
             <img
                 src={hoseboxLogoImg}
                 alt='hosebox logo'

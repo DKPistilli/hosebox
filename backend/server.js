@@ -20,7 +20,7 @@ app.use(errorHandler);
 app.use('/api/users',          require('./routes/userRoutes'));
 app.use('/api/inventoryCards', require('./routes/inventoryCardRoutes'));
 app.use('/api/wishlistCards',  require('./routes/wishlistCardRoutes'));
-
+app.use('/api/decks',          require('./routes/deckRoutes'));
 
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
