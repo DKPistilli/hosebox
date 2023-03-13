@@ -7,6 +7,7 @@
 ///      db calls to convert these cardIds into fully populated cards for res to client
 
 const asyncHandler = require('express-async-handler');
+const mongoose     = require('mongoose');
 
 //import Deck db + scryfall card helper function
 const Deck             = require('../models/deckModel');
@@ -16,7 +17,22 @@ const scryfallCardsAPI = require('./scryfallCardController');
 // @route  GET /api/decks/:deckId
 // @access Public (unless Deck is marked as private)
 const getDeck = asyncHandler(async (req, res) => {
+    const deckId = req.params.deckId;
+
+    // throw error if given invalid type of ID
+    if (!mongoose.Types.ObjectId.isValid(deckId)) {
+        res.status(400);
+        throw new Error('Request sent with invalid deckId');
+    }
     
+    const deck = await Deck.findOne({_id: req.params.deckId})
+    
+    if (deck) {
+        res.status(200).json(deck);
+    } else {
+        res.status(404);
+        throw new Error('No deck found with given deckId');
+    }
 });
 
 // @ desc  Create new deck
@@ -40,7 +56,7 @@ const addDeck = asyncHandler(async (req, res) => {
     });
 
     if (deck) {
-        res.status(201).send(deck);
+        res.status(201).json(deck);
     } else {
         res.status(500);
         throw new Error('Server error generating new deck');
