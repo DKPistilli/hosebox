@@ -15,9 +15,9 @@ const wishlistCardSchema = mongoose.Schema({
         ref: 'User'
     },
 
-    "cardId": {
+    "name": {
         type: String, // id to card in total_cards db
-        required: [true, "Card ID required."],
+        required: [true, "Wishlist Card Name required."],
     },
 
     "quantity": {

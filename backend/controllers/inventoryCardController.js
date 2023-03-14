@@ -3,8 +3,8 @@
 /// Functions:
 ///      getCards, addCard, updateCard (which handles deletion as well), deleteCards
 /// Note:
-///      User inventoryCards are just proxies (just cardId + quantity), so we also use scryfallCards db
-///      scryfallCards db calls to convert these cardIds into fully populated cards for res to client
+///      User inventoryCards are just proxies (just name + quantity), so we also use scryfallCards db
+///      scryfallCards db calls to convert these names into fully populated cards for res to client
 
 const asyncHandler = require('express-async-handler');
 
@@ -37,29 +37,34 @@ const getCards = asyncHandler(async (req, res) => {
 
 
 // @ desc  Add card with id/quantity to inventory 
-// @route  POST /api/inventoryCards/:userId/
-// @query  cardId=(cardId)&quantity=(quantity to add, default to 1 if missing)
+// @route  POST /api/inventoryCards
+// @query  name=(name)&quantity=(quantity to add, default to 1 if missing)
 // @access Private
 const addCard = asyncHandler(async (req, res) => {
 
-    const cardId   = req.query.cardId;
+    const name     = req.query.name;
     const quantity = req.query.quantity || 1; // add 1 if no quantity given
 
-    if (!cardId) {
+    
+    // validate card name
+    const isValidName = await scryfallCardsAPI.isValidCardName(name);
+
+    if (!name || !isValidName) {
+        console.log('throwing error here!');
         res.status(400);
-        throw new Error('CardId required for card addition operation.');
+        throw new Error('Valid card name required for card addition operation.');
     }
 
-    // find card by userId and cardId
+    // find card by userId and name
     const filter = {
         userId: req.user.id,
-        cardId: cardId,
+        name  : name,
     };
 
     // update card with new Quantity
     const update = {
         userId  : req.user.id,
-        cardId  : cardId,
+        name    : name,
         quantity: quantity,
     };
 
@@ -69,33 +74,34 @@ const addCard = asyncHandler(async (req, res) => {
         upsert: true, // if card not found, create
     };
 
-    const card = await InventoryCard.findOneAndUpdate(filter, update, settings);
+    const inventoryCard = await InventoryCard.findOneAndUpdate(filter, update, settings);
 
-    if (!card) {
+    if (!inventoryCard) {
         res.status(500);
         throw new Error('Server error adding card.');
     }
 
-    const scryfallCard = await scryfallCardsAPI.getCards([card]);
+    const scryfallCard = await scryfallCardsAPI.getCards([inventoryCard]);
 
     res.status(201).json(scryfallCard);
 });
 
 
-// @ desc  update card by cardId with quantity, deleting if needed
-// @route  PUT /api/inventoryCards/:userId
-// @query  cardId=(cardId)&quantity=(quantity to set) -- unlike addCard, quantity is required!
+// @ desc  update card by name with quantity, deleting if needed
+// @route  PUT /api/inventoryCards
+// @query  name=(name)&quantity=(quantity to set) -- unlike addCard, quantity is required!
 // @access Private
 const updateCard = asyncHandler(async (req, res) => {
 
-    const cardId   = req.query.cardId;
+    const name   = req.query.name;
     const quantity = Number(req.query.quantity);
 
+    // validate card name
+    const isValidName = await scryfallCardsAPI.isValidCardName(name);
 
-    // confirm cardId given
-    if (!cardId) {
+    if (!name || !isValidName) {
         res.status(400);
-        throw new Error('CardId required.');
+        throw new Error('Valid card name required for card addition operation.');
     }
 
     // confirm valid card quantity given
@@ -104,22 +110,22 @@ const updateCard = asyncHandler(async (req, res) => {
         throw new Error('Quantity required (must be non-negative integer).')
     }
 
-    // find card by userId and cardId
+    // find card by userId and name
     const filter = {
         userId: req.user.id,
-        cardId: cardId,
+        name  : name,
     };
 
     // update card with new Quantity
     const update = {
         userId  : req.user.id,
-        cardId  : cardId,
+        name    : name,
         quantity: quantity,
     };
 
     // db operation settings
     const settings = {
-        new: true, // return updated card if found
+        new   : true, // return updated card if found
         upsert: true,
     };
 
@@ -133,7 +139,7 @@ const updateCard = asyncHandler(async (req, res) => {
 
     if (!card) {
         res.status(500);
-        throw new Error('Server error adding card with cardId:' + cardId);
+        throw new Error('Server error adding card with name: ' + name);
     }
 
     // get full scryfall card info for this updated card -- needs to be array
@@ -143,7 +149,7 @@ const updateCard = asyncHandler(async (req, res) => {
 });
 
 // @ desc  Delete entire inventory -- SHOULD BE EXTREMELY RARE!
-// @route  DELETE /api/inventoryCards/:userId
+// @route  DELETE /api/inventoryCards
 // @access Private
 const deleteCards = asyncHandler(async (req, res) => {
 

@@ -1,4 +1,6 @@
 const asyncHandler = require('express-async-handler');
+
+// import models
 const Deck             = require('../models/deckModel');
 const User             = require('../models/userModel');
 

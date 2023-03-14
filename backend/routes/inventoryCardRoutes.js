@@ -17,10 +17,10 @@ const {
     deleteCards,       // DELETE /api/inventories/:userId  
 } = require('../controllers/inventoryCardController');
 
-// get inventory by page/search params, delete inventory in full (should be v rare!)
+router.route('/').post(protect, addCard)
+                 .put(protect, updateCard)
+                 .delete(protect, deleteCards)
+
 router.route('/:userId').get(getCards)
-                        .post(protect, addCard)
-                        .put(protect, updateCard)
-                        .delete(protect, deleteCards);
 
 module.exports = router;

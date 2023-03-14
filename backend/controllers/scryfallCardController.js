@@ -3,7 +3,7 @@
 /// Functions:
 ///      getCards
 /// Note:
-///      Takes in [cards] and returns associated [scryfall card objects + quantities]
+///      Takes in [cards] and returns array of modified-scryfall card objects (add quantities, remove unnecessary fields);
 ///
 /// Note: This is the by-hand command for importing the big dumb DL file from scryfall
 ///
@@ -17,27 +17,26 @@ const asyncHandler = require('express-async-handler');
 //import mongoose models
 const ScryfallCard = require('../models/scryfallCardModel');
 
-// @ desc  Takes in [inventoryCards] and returns associated [scryfall card objects]
+// @ desc  Takes in [inventoryCards] and returns [modified scryfall card object] array
 // @access Internal Only
 const getCards = asyncHandler(async (cardsArray) => {
 
     if (!cardsArray) {
         throw new Error('Card array required to query ScryfallCards Database.');
     }
-    
-    // add all cardIds from input array to idArray, for upcoming db query
-    const idArray = [];
 
-    cardsArray.map((card) => {
-        idArray.push(card.cardId);
-    });
+    // add all names from input array to name, for upcoming db query
+    const nameArray = cardsArray.map((card) => card.name);
 
-    const scryfallCardsArray = await ScryfallCard.find({ id: { $in: idArray } });
 
+    // get all scryfallCards with corresponding names
+    const scryfallCardsArray = await ScryfallCard.find({ name: { $in: nameArray } });
+
+    // create new array of those cards, with quantity added and unnecessary info removed
     const scryfallWithQuantityArray = scryfallCardsArray.map((scryfallCard) => {
 
         const i = cardsArray.findIndex((card) => {
-            return (card.cardId === scryfallCard.id);
+            return (card.name === scryfallCard.name);
         });
 
         if (i === -1) {
@@ -65,10 +64,30 @@ const getCards = asyncHandler(async (cardsArray) => {
             prices: scryfallCard.prices,
         });
     });
-
     return scryfallWithQuantityArray;
+});
+
+// @ desc  Takes in [inventoryCards] and returns [modified scryfall card object] array
+// @access Internal Only
+const isValidCardName = asyncHandler(async (cardName) => {
+
+    if (!cardName) {
+        throw new Error('CardName required to check if cardname is valid.');
+    }
+
+    // get all scryfallCards with corresponding names
+    const scryfallCard = await ScryfallCard.findOne({ name: cardName });
+
+    console.log(`scryfallCard: ${scryfallCard}`);
+
+    if (scryfallCard) {
+        return true;
+    } else {
+        return false;
+    }
 });
 
 module.exports = {
     getCards,
+    isValidCardName,
 };
