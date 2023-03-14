@@ -11,9 +11,10 @@ const { protect } = require('../middleware/authMiddleware');
 
 // import inventory controller functions
 const {
-    getDeck,           // GET    /api/decks/:deckId
     addDeck,           // POST   /api/decks/
+    getDeck,           // GET    /api/decks/:deckId
     updateDeck,        // PUT    /api/decks/:deckId
+    updateDeckPrivacy,  // PUT    /api/decks/:deckId/privacy
     deleteDeck,        // DELETE /api/decks/:deckId  
 } = require('../controllers/deckController');
 
@@ -21,5 +22,7 @@ router.route('/').post(protect, addDeck);
 router.route('/:deckId').get(getDeck)
                         .put(protect, updateDeck)
                         .delete(protect, deleteDeck);
+
+router.route('/:deckId/privacy').put(protect, updateDeckPrivacy);
 
 module.exports = router;
