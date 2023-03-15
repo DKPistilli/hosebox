@@ -14,11 +14,6 @@ const inventoryCardSchema = mongoose.Schema({
         ref: 'User'
     },
 
-    // "cardId": {
-    //     type: String, // id to card in total_cards db
-    //     required: [true, "Card ID required."],
-    // },
-
     "name": {
         type: String, // card name
         required: [true, "Card name required."],

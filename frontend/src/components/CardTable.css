@@ -1,5 +1,5 @@
 table {
-    width: 90%;
+    width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
     border: 1px solid black;
@@ -16,19 +16,19 @@ th {
    text-align: center;
    background-color: #f2f2f2;
    font-weight: bold;
+   font-size: 16px;
 }
 
 td {
    text-align: left;
+   border-bottom: 1px solid black;
+   font-size: 14px;
 }
 
-
-
-td:first-child {
-   font-weight: bold;
+.name, .type_line {
+   text-align: left;
 }
 
-.quantity {
+.quantity, .mana_cost, .rarity, .price {
    text-align: center;
-   width: 5%;
 }

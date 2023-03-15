@@ -1,61 +1,58 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Spinner   from '../components/Spinner';
 import Sidebar   from '../components/Sidebar';
 import CardTable from '../components/CardTable';
+import CollectionCardAdder from '../components/CollectionCardAdder';
 
 // import http request service
 import axios from 'axios';
 
 // backend api url for authenticating user
-const API_URL = '/api/inventoryCards/';
+const API_URL = '/api/inventoryCards';
 
 function Inventory() {
 
   // init navigation && find user
-  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  const { ownerId } = useParams();
 
-  // initiate inventory state
-  const [inventory, setInventory] = useState([]);
+   // leave invent uninitialized for spinner (could also be [], with spinner checking for inventory.length)
+  const [inventory, setInventory]     = useState();
+  const [isOutOfDate, setIsOutOfDate] = useState(false);
 
-  // request user's inventory from server (re-request on inventory change)
+  // request user's inventory from server (re-request if inventory isOutOfDate)
   useEffect(() => {
-    const inventoryCards = async () => {
-      const response = await axios.get(API_URL + user._id);
+    
+    const getInventory = async () => {
+      const response = await axios.get(API_URL + "/" + ownerId);
   
       if (response.data) {
         setInventory(response.data);
       }
     };
 
-    inventoryCards();
-
-  }, [user]);
-
-  //if not logged in, navigate out of Inventory back to login
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-    }
-  }, [user, navigate]);
-
-  // if no user, return spinner while waiting to be redirected to Login
-  if (!user) {
-    return <Spinner />
-  }
+    getInventory();
+    setIsOutOfDate(false);
+  }, [ownerId, isOutOfDate]);
 
   if (!inventory) {
     return <Spinner />
-  }
-  
+  } 
 
   return (
     <div>
-      <h1>{user.name}'s Inventory</h1>
+      <h1>Inventory</h1>
+      { (user) && (user._id === ownerId) ?
+        <CollectionCardAdder
+          apiUrl={API_URL}
+          setIsParentOutOfDate={setIsOutOfDate}
+        /> : 
+        <></>
+      } 
       <Sidebar activeTab="Inventory" />
-      <CardTable cards={inventory}   />
+      <CardTable cards={inventory}  />
     </div>
   )
 }

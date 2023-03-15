@@ -9,11 +9,12 @@
 const asyncHandler = require('express-async-handler');
 
 //import InventoryCard db + scryfall card helper function
-const InventoryCard = require('../models/inventoryCardModel');
+const InventoryCard    = require('../models/inventoryCardModel');
 const scryfallCardsAPI = require('./scryfallCardController');
+const mongoose         = require('mongoose');
 
 // Set limit of cards to be returned per page
-const CARD_RES_LIMIT = 20;
+const CARD_RES_LIMIT = 100;
 
 // @ desc  Get inventory, filtered by page/search params
 // @route  GET /api/inventoryCards/:userId
@@ -38,52 +39,39 @@ const getCards = asyncHandler(async (req, res) => {
 
 // @ desc  Add card with id/quantity to inventory 
 // @route  POST /api/inventoryCards
-// @query  name=(name)&quantity=(quantity to add, default to 1 if missing)
+// @query  name=(name) -- if card is new to inventory, create. If card is already found, card.quantity++
 // @access Private
 const addCard = asyncHandler(async (req, res) => {
 
-    const name     = req.query.name;
-    const quantity = req.query.quantity || 1; // add 1 if no quantity given
-
-    
-    // validate card name
+    const name        = req.query.name;
     const isValidName = await scryfallCardsAPI.isValidCardName(name);
+    const quantity    = 1;
 
     if (!name || !isValidName) {
-        console.log('throwing error here!');
         res.status(400);
         throw new Error('Valid card name required for card addition operation.');
     }
 
     // find card by userId and name
-    const filter = {
-        userId: req.user.id,
-        name  : name,
-    };
-
-    // update card with new Quantity
-    const update = {
-        userId  : req.user.id,
-        name    : name,
-        quantity: quantity,
-    };
-
-    // db operation settings
-    const settings = {
-        new: true, // return updated card
-        upsert: true, // if card not found, create
-    };
-
-    const inventoryCard = await InventoryCard.findOneAndUpdate(filter, update, settings);
-
+    const inventoryCard = await InventoryCard.findOne({userId: req.user.id, name: name});
+    // if card doesn't exist in inventory, add it!
+    // else, increment it by one.
     if (!inventoryCard) {
-        res.status(500);
-        throw new Error('Server error adding card.');
+
+        const newCard = {
+            userId: req.user.id,
+            name: name,
+            quantity: quantity,
+        };
+
+        await InventoryCard.create(newCard);
+
+    } else {
+        inventoryCard.quantity += quantity;
+        await inventoryCard.save();
     }
 
-    const scryfallCard = await scryfallCardsAPI.getCards([inventoryCard]);
-
-    res.status(201).json(scryfallCard);
+    res.status(201).send();
 });
 
 

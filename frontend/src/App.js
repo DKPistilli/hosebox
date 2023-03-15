@@ -24,13 +24,13 @@ function App() {
         <div className='container'>
           <Header />
           <Routes>
-            <Route path='/'                    element={<Welcome   />} />
-            <Route path='/login'               element={<Login     />} />
-            <Route path='/register'            element={<Register  />} />
-            <Route path='/inventories/:userId' element={<Inventory />} />
-            <Route path='/wishlists/:userId'   element={<Wishlist  />} />
-            <Route path='/decks/:deckId'       element={<Deck      />} />
-            <Route path='*'                    element={<NoPage    />} />
+            <Route path='/'                     element={<Welcome   />} />
+            <Route path='/login'                element={<Login     />} />
+            <Route path='/register'             element={<Register  />} />
+            <Route path='/inventories/:ownerId' element={<Inventory />} />
+            <Route path='/wishlists/:ownerId'   element={<Wishlist  />} />
+            <Route path='/decks/:deckId'        element={<Deck      />} />
+            <Route path='*'                     element={<NoPage    />} />
           </Routes>
         </div>
       </Router>

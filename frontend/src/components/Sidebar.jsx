@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './Sidebar.css';
 
 const Sidebar = (props) => {
 
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(props.activeTab);
-
-  const { user } = useSelector((state) => state.auth);
+  const { ownerId } = useParams();
     
   const handleTabClick = (tab) => {
     setActiveTab(tab.id);
@@ -16,8 +14,8 @@ const Sidebar = (props) => {
   }
   
   const tabData = [
-    { id: 'Inventory', label: 'Inventory', link: `/inventories/${user._id}`, },
-    { id: 'Wishlist',  label: 'Wishlist',  link: `/wishlists/${user._id}`,   },
+    { id: 'Inventory', label: 'Inventory', link: `/inventories/${ownerId}`, },
+    { id: 'Wishlist',  label: 'Wishlist',  link: `/wishlists/${ownerId}`,   },
     { id: 'Decks',     label: 'Decks',     link: '', content: 'Content for Decks',}
   ];
   
