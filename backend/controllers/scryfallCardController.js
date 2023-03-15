@@ -78,8 +78,6 @@ const isValidCardName = asyncHandler(async (cardName) => {
     // get all scryfallCards with corresponding names
     const scryfallCard = await ScryfallCard.findOne({ name: cardName });
 
-    console.log(`scryfallCard: ${scryfallCard}`);
-
     if (scryfallCard) {
         return true;
     } else {
