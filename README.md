@@ -28,7 +28,7 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
     - [ ] Validate username (no weird chars, no spaces)
     - [ ] Add user GET func which returns username and (public) decks
     - [ ] Add FOLLOWING [{name, userId}] so users can follow others
-- [ ] update api to NO LONGER USE CARDIDS, instead taking cardNames, then using middleware to go from name -> cardId
+- [X] update api to NO LONGER USE CARDIDS, instead taking cardNames
 - [X] inventoryCards
     - [X] design inventoryCardSchema model (what card info is needed on our server) and corresponding api calls
     - [X] implement inventoryCard model, router, and controller
@@ -39,8 +39,12 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 - [ ] \(potential) add some sort of LeagueModel which stores season, standings (all manually updated??), and like..."about"? So that I can add some of the flavor currently relegated to challonge.com
 
 ### Front End
-- [ ] Inventory
+- [ ] Inventory / Wishlist
     - [X] implement <Inventory /> component which queries our server for cardIds
+    - [X] implement addCard
+    - [ ] implement addCardList
+    
+- [ ] Sidebar
     - [X] implement <Sidebar /> component which has a button to view <Inventory />, <Wishlist />, <Decks />
     - [ ] Create file structure for Sidebar so that decks can display down the sidebar (and scroll)
     - [ ] implement <Decks /> component which grabs all decks w/ userId and lists them on left sidebar. Clicking navs to hosebox.net/decks/:deckId
@@ -51,6 +55,7 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
     - [ ] design and implement <Deckview /> page/component, which is GUI for user to view/edit their decklists
     - [ ] mainboard/sideboard/scratchpad
 - [ ] Fix Toast not displaying err messages correctly
+- [ ] <ManaVisualizer /> component
 - [ ] \(potential) add "League" to front-end
     - [ ] create "/league" page and add League button to <Header/>
     - [ ] create some sort of league schedule-view and/or standings-view.
