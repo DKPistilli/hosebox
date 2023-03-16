@@ -79,15 +79,32 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 });
 
-// @ desc  Get user data
+// @ desc  Get user's public data (name, decks_public)
+// @route  GET /api/users/:userId
+// @access Public
+const getUser = asyncHandler(async(req, res) => {
+    const returns = 'name decks_public'
+    const user    = await User.findOne({'_id': req.params.userId}, returns);
+
+    if (!user) {
+        res.status(400);
+        throw new Error(`No user found with id: ${req.params.userId}`);
+    } else {
+        res.status(200).json(user);
+    }
+});
+
+// @ desc  Get user's data (sans password)
 // @route  GET /api/users/me
 // @access Private
 const getMe = asyncHandler(async (req, res) => {
+    // errors handled in authMiddleware.js
     res.status(200).json(req.user);
 });
 
 module.exports = {
     registerUser,
     loginUser,
-    getMe
+    getUser,
+    getMe,
 }

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState }        from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Deckslist                  from './Deckslist';
+
 import './Sidebar.css';
 
 const Sidebar = (props) => {
@@ -16,7 +18,6 @@ const Sidebar = (props) => {
   const tabData = [
     { id: 'Inventory', label: 'Inventory', link: `/inventories/${ownerId}`, },
     { id: 'Wishlist',  label: 'Wishlist',  link: `/wishlists/${ownerId}`,   },
-    { id: 'Decks',     label: 'Decks',     link: '', content: 'Content for Decks',}
   ];
   
   const mapTabs = (tab) => {
@@ -36,6 +37,10 @@ const Sidebar = (props) => {
       <div className="tab-bar">
         {tabData.map(mapTabs)}
       </div>
+      <br />
+      Decks
+      <br />
+      <Deckslist ownerId={ownerId} />
     </div>
   );
 };

@@ -1,6 +1,6 @@
-function Decklist() {
+function Deck() {
   return (
-    <div> All My Decks! </div>
+    <div>Deck</div>
   )
 }
-export default Decklist
+export default Deck
