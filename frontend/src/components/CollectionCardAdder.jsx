@@ -39,10 +39,6 @@ function CollectionCardAdder(props) {
             toast.error(`Invalid card name: ${cardName}`);
             isValidCardRequest = false;
         }
-        if (!apiUrl) {
-            toast.error(`Invalid API Url: ${apiUrl}`);
-            isValidCardRequest = false;
-        }
 
         if (isValidCardRequest) {
             submitCard();

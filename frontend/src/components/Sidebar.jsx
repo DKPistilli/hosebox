@@ -16,7 +16,7 @@ const Sidebar = (props) => {
   }
   
   const tabData = [
-    { id: 'Inventory', label: 'Inventory', link: `/inventories/${ownerId}`, },
+    { id: `'Inventory'`, label: 'Inventory', link: `/inventories/${ownerId}`, },
     { id: 'Wishlist',  label: 'Wishlist',  link: `/wishlists/${ownerId}`,   },
   ];
   

@@ -20,7 +20,7 @@ function Inventory() {
 
    // leave invent uninitialized for spinner (could also be [], with spinner checking for inventory.length)
   const [inventory, setInventory]     = useState();
-  const [isOutOfDate, setIsOutOfDate] = useState(false);
+  const [isOutOfDate, setIsOutOfDate] = useState(true);
 
   // request user's inventory from server (re-request if inventory isOutOfDate)
   useEffect(() => {
@@ -32,9 +32,10 @@ function Inventory() {
         setInventory(response.data);
       }
     };
-
-    getInventory();
-    setIsOutOfDate(false);
+    if (isOutOfDate) {
+      getInventory();
+      setIsOutOfDate(false)
+    }
   }, [ownerId, isOutOfDate]);
 
   if (!inventory) {
