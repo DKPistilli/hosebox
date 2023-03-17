@@ -1,6 +1,6 @@
 /// CARD TABLE COMPONENT
 /// Takes in a prop of cards and returns a table of them
-/// props required: cards=[cards]
+/// props required: cards=[cards], updateParent=function that updates parent collection
 
 import { useState } from 'react'
 import { toast } from 'react-toastify';
@@ -9,14 +9,11 @@ import { useSelector } from 'react-redux'
 // import http request service
 import axios from 'axios';
 
-function CollectionCardAdder(props) {
+function CardAdder({ apiUrl, updateParent }) {
     
     // intialize necessary state (card name input, user, etc.)
     const [cardName, setCardName] = useState("");
     const { user } = useSelector((state) => state.auth);
-
-    const apiUrl = props.apiUrl;
-    const setIsParentOutOfDate = props.setIsParentOutOfDate
 
     // handle card addition submit event
     const onSubmit = (e) => {
@@ -30,19 +27,15 @@ function CollectionCardAdder(props) {
             };
 
             await axios.post(apiUrl, null, config);
+
+            updateParent();
         };
 
-        // verify that both fields have been filled
-        let isValidCardRequest = true;
-
+        // throw error if no cardName given, else, attempt ard addition
         if (!cardName) {
             toast.error(`Invalid card name: ${cardName}`);
-            isValidCardRequest = false;
-        }
-
-        if (isValidCardRequest) {
+        } else {
             submitCard();
-            setIsParentOutOfDate(true);
         }
     };
 
@@ -76,4 +69,4 @@ function CollectionCardAdder(props) {
     )
 }
 
-export default CollectionCardAdder
+export default CardAdder

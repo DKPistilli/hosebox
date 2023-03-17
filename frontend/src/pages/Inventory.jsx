@@ -1,59 +1,46 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Spinner   from '../components/Spinner';
 import Sidebar   from '../components/Sidebar';
-import CardTable from '../components/CardTable';
-import CollectionCardAdder from '../components/CollectionCardAdder';
+import Collection from '../components/Collection';
 
 // import http request service
 import axios from 'axios';
 
 // backend api url for authenticating user
-const API_URL = '/api/inventoryCards';
+const INVENTORY_API_URL = '/api/inventoryCards';
+const USER_API_URL      = '/api/users';
 
 function Inventory() {
 
   // init navigation && find user
   const { user } = useSelector((state) => state.auth);
   const { ownerId } = useParams();
-
-   // leave invent uninitialized for spinner (could also be [], with spinner checking for inventory.length)
-  const [inventory, setInventory]     = useState();
-  const [isOutOfDate, setIsOutOfDate] = useState(true);
-
-  // request user's inventory from server (re-request if inventory isOutOfDate)
-  useEffect(() => {
-    
-    const getInventory = async () => {
-      const response = await axios.get(API_URL + "/" + ownerId);
+  const [ owner, setOwner ] = useState({})
   
-      if (response.data) {
-        setInventory(response.data);
+  // find inventory's owner (can be diff than active user)
+  useEffect(() => {
+    const getOwner = async () => {
+      if (user._id === ownerId) {
+        setOwner(user);
+      } else {
+        let pageOwner = await axios.get(`${USER_API_URL}/${ownerId}`)
+        setOwner(pageOwner);
       }
-    };
-    if (isOutOfDate) {
-      getInventory();
-      setIsOutOfDate(false)
     }
-  }, [ownerId, isOutOfDate]);
 
-  if (!inventory) {
-    return <Spinner />
-  } 
+    getOwner();
+  }, [user, ownerId])
+
 
   return (
     <div>
-      <h1>Inventory</h1>
-      { (user) && (user._id === ownerId) ?
-        <CollectionCardAdder
-          apiUrl={API_URL}
-          setIsParentOutOfDate={setIsOutOfDate}
-        /> : 
-        <></>
-      } 
       <Sidebar activeTab="Inventory" />
-      <CardTable cards={inventory}  />
+      <h3>{ owner ? owner.name + "'s Inventory" : "" }</h3>
+      <Collection
+        apiUrl={INVENTORY_API_URL}
+        owner={owner}
+      />
     </div>
   )
 }

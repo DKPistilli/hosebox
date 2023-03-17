@@ -1,52 +1,46 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Spinner   from '../components/Spinner';
 import Sidebar   from '../components/Sidebar';
-import CardTable from '../components/CardTable';
-import CollectionCardAdder from '../components/CollectionCardAdder';
+import Collection from '../components/Collection';
 
 // import http request service
 import axios from 'axios';
 
 // backend api url for authenticating user
-const API_URL = '/api/wishlistCards/';
+const WISHLIST_API_URL = '/api/wishlistCards';
+const USER_API_URL      = '/api/users';
 
 function Wishlist() {
 
   // init navigation && find user
   const { user } = useSelector((state) => state.auth);
   const { ownerId } = useParams();
-
-  // initiate wishlist state
-  const [wishlist, setWishlist] = useState();
-
-  // request user's wishlist from server (re-request on wishlist change)
+  const [ owner, setOwner ] = useState({})
+  
+  // find Wishlist's owner (can be diff than active user)
   useEffect(() => {
-    //alert('using effect again, for some reason');
-    const wishlistCards = async () => {
-      
-      const response = await axios.get(API_URL + ownerId);
-  
-      if (response.data) {
-        setWishlist(response.data);
+    const getOwner = async () => {
+      if (user._id === ownerId) {
+        setOwner(user);
+      } else {
+        let pageOwner = await axios.get(`${USER_API_URL}/${ownerId}`)
+        setOwner(pageOwner);
       }
-    };
+    }
 
-    wishlistCards();
+    getOwner();
+  }, [user, ownerId])
 
-  }, [ownerId]);
 
-  if (!wishlist) {
-    return <Spinner />
-  }
-  
   return (
     <div>
-      <h1>Wishlist</h1>
-      { (user) && (user._id === ownerId) ? <CollectionCardAdder apiUrl={API_URL} /> : <></> }  
       <Sidebar activeTab="Wishlist" />
-      <CardTable cards={wishlist}/>
+      <h3>{ owner ? owner.name + "'s Wishlist" : "" }</h3>
+      <Collection
+        apiUrl={WISHLIST_API_URL}
+        owner={owner}
+      />
     </div>
   )
 }

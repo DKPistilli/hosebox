@@ -1,7 +1,8 @@
 /// CARD TABLE COMPONENT
 /// Takes in a prop of cards and returns a table of them
 /// props required: cards=[cards]
-import './CardTable.css'
+import './CardTable.css';
+import ManaSymbols from './ManaSymbols';
 
 function CardTable({ cards }) {
 
@@ -23,7 +24,7 @@ function CardTable({ cards }) {
                         <td className='quantity'  key={`quan${card.cardId}`}>{card.quantity   }</td>
                         <td className='name'      key={`name${card.cardId}`}>{card.name       }</td>
                         <td className='type_line' key={`type${card.cardId}`}>{card.type_line  }</td>
-                        <td className='mana_cost' key={`cost${card.cardId}`}>{card.mana_cost  }</td>
+                        <td className='mana_cost' key={`cost${card.cardId}`}><ManaSymbols manaString={card.mana_cost} /></td>
                         <td className='rarity'    key={`rare${card.cardId}`}>{card.rarity     }</td>
                         <td className='price'     key={`pric${card.cardId}`}>${card.prices.usd}</td>
                     </tr>

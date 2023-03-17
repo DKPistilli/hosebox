@@ -11,7 +11,6 @@ const asyncHandler = require('express-async-handler');
 //import InventoryCard db + scryfall card helper function
 const InventoryCard    = require('../models/inventoryCardModel');
 const scryfallCardsAPI = require('./scryfallCardController');
-const mongoose         = require('mongoose');
 
 // Set limit of cards to be returned per page
 const CARD_RES_LIMIT = 100;
@@ -54,24 +53,36 @@ const addCard = asyncHandler(async (req, res) => {
 
     // find card by userId and name
     const inventoryCard = await InventoryCard.findOne({userId: req.user.id, name: name});
+    let inventToScryfallCard = null;
+
     // if card doesn't exist in inventory, add it!
     // else, increment it by one.
     if (!inventoryCard) {
 
-        const newCard = {
+        newCard = {
             userId: req.user.id,
             name: name,
             quantity: quantity,
         };
 
-        await InventoryCard.create(newCard);
+        inventToScryfallCard = await InventoryCard.create(newCard);
 
     } else {
         inventoryCard.quantity += quantity;
         await inventoryCard.save();
+        inventToScryfallCard = inventoryCard;
+    }
+    
+    if (!inventToScryfallCard) {
+        res.status(500);
+        throw new Error('Server error adding card with name: ' + name);
     }
 
-    res.status(201).send();
+    // get full scryfall card info for this updated card -- needs to be array
+    // note: destructure array that's returned, to just return one card
+    const scryfallCard = await scryfallCardsAPI.getCards([inventToScryfallCard]);
+
+    res.status(201).json(scryfallCard[0]);
 });
 
 
