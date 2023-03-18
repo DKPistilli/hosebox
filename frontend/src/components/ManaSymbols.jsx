@@ -27,14 +27,12 @@ function ManaSymbols(props) {
             // if current character is }, push current string, reset string, look next
             case "}":
                 manaArray.push(symbolString);
-                console.log("Symbol String: " + symbolString);
                 symbolString = "";
                 i++;
                 break;
 
             // if current char isn't {}, add it to symbolString, keep moving
             default:
-                console.log(`adding ${manaString[i]} to the symbolString`)
                 symbolString += manaString[i]; 
                 i++;
         }
@@ -43,8 +41,8 @@ function ManaSymbols(props) {
     
 
     // define map function to turn text-symbols into image-symbols
-    const mapFunction = (symbol, i) => {
-        return(<i class={`ms ms-${symbol} ms-cost ms-shadow`}></i>)
+    const mapFunction = (symbol, index) => {
+        return(<i className={`ms ms-${symbol} ms-cost ms-shadow`} key={index}></i>)
     }
 
     return (

@@ -12,7 +12,7 @@ function Header() {
     const handleLogout = () => {
         dispatch(logout());
         dispatch(reset());
-        navigate('/');
+        navigate('/login');
     };
 
     // Login/Register buttons for anonymous user

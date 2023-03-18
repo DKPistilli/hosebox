@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux';
 import Spinner   from '../components/Spinner';
-import Sidebar   from '../components/Sidebar';
 import CardTable from '../components/CardTable';
 import CardAdder from '../components/CardAdder';
 
@@ -43,7 +42,6 @@ function Collection(props) {
                 apiUrl={apiUrl}
                 updateParent={refreshInventory} /> 
             : <></> }
-            <Sidebar activeTab="Inventory" />
             <CardTable cards={inventory}  />
         </div>
     )
