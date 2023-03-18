@@ -21,7 +21,7 @@ function Wishlist() {
   // find Wishlist's owner (can be diff than active user)
   useEffect(() => {
     const getOwner = async () => {
-      if (user._id === ownerId) {
+      if (user && (user._id === ownerId)) {
         setOwner(user);
       } else {
         let pageOwner = await axios.get(`${USER_API_URL}/${ownerId}`)

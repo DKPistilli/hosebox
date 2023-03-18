@@ -11,7 +11,6 @@ import axios from 'axios';
 // backend api url for authenticating user
 
 function Collection(props) {
-
     
     // init navigation && find user
     const { apiUrl, owner } = props;
@@ -35,7 +34,7 @@ function Collection(props) {
 
     if (!inventory) {
         return <Spinner />
-    } 
+    }
 
     return (
         <div>

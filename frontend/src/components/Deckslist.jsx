@@ -22,7 +22,7 @@ function Deckslist(props) {
 
             // determine if public or private decks
             
-            const hasPrivateAccess = ownerId === user._id ? true : false;
+            const hasPrivateAccess = (user && (ownerId === user._id)) ? true : false;
 
             let apiUrl = '';
             let config  = {};

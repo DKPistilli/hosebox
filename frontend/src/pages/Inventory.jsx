@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Sidebar   from '../components/Sidebar';
 import Collection from '../components/Collection';
@@ -17,30 +17,39 @@ function Inventory() {
   const { user } = useSelector((state) => state.auth);
   const { ownerId } = useParams();
   const [ owner, setOwner ] = useState({})
+  const navigate = useNavigate();
   
   // find inventory's owner (can be diff than active user)
   useEffect(() => {
     const getOwner = async () => {
-      if (user._id === ownerId) {
+      if (user && (user._id === ownerId)) {
         setOwner(user);
       } else {
         let pageOwner = await axios.get(`${USER_API_URL}/${ownerId}`)
-        setOwner(pageOwner);
+        if (!pageOwner) {
+          navigate('/NoPage.jsx');
+        } else {
+          setOwner(pageOwner);
+        }
       }
     }
 
     getOwner();
-  }, [user, ownerId])
+  }, [user, ownerId, navigate])
 
 
   return (
     <div>
       <Sidebar activeTab="Inventory" />
-      <h3>{ owner ? owner.name + "'s Inventory" : "" }</h3>
-      <Collection
-        apiUrl={INVENTORY_API_URL}
-        owner={owner}
-      />
+      { !owner ? "" :
+        <div>
+          <h3>{`${owner.name}'s Inventory`}</h3>
+          <Collection
+            apiUrl={INVENTORY_API_URL}
+            owner={owner}
+          />
+        </div>
+      }
     </div>
   )
 }
