@@ -8,12 +8,11 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  height: 100vh;
 }
 
-a {
+a, a:visited {
   text-decoration: none;
-  color: #000;
+  color: black;
 }
 
 p {
@@ -36,17 +35,18 @@ h3 {
 }
 
 #welcomeLogo {
-  maxWidth: 20%;
+  max-width: 20%;
   height: auto;
   float: left;
 }
 
 #welcomeTitle {
-  fontSize: 50;
+  font-size: 50;
   float: right;
 }
 
 .container {
+  height: 100%;
   width: 100%;
   max-width: 960px;
   margin: 0 auto;

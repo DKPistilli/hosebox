@@ -1,8 +1,8 @@
-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
-    border: 1px solid black;
+.card-table {
+   width: 100%;
+   border-collapse: collapse;
+   border-spacing: 0;
+   border: 1px solid black;
 }
 
 th, td {

@@ -7,6 +7,10 @@
     background-color: #f0f0f0;
     padding: 20px;
   }
+
+.sidebar a {
+  color: black;
+}
   
   .tab-bar {
     display: flex;
