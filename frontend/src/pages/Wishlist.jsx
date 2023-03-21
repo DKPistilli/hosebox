@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Sidebar   from '../components/Sidebar';
 import Collection from '../components/Collection';
@@ -17,6 +17,7 @@ function Wishlist() {
   const { user } = useSelector((state) => state.auth);
   const { ownerId } = useParams();
   const [ owner, setOwner ] = useState({})
+  const navigate = useNavigate();
   
   // find Wishlist's owner (can be diff than active user)
   useEffect(() => {
@@ -25,22 +26,30 @@ function Wishlist() {
         setOwner(user);
       } else {
         let pageOwner = await axios.get(`${USER_API_URL}/${ownerId}`)
-        setOwner(pageOwner);
+        if (!pageOwner) {
+          navigate('/NoPage.jsx');
+        } else {
+          setOwner(pageOwner);
+        }
       }
     }
 
     getOwner();
-  }, [user, ownerId])
+  }, [user, ownerId, navigate])
 
 
   return (
     <div>
       <Sidebar activeTab="Wishlist" />
-      <h3>{ owner ? owner.name + "'s Wishlist" : "" }</h3>
-      <Collection
-        apiUrl={WISHLIST_API_URL}
-        owner={owner}
-      />
+      { !owner ? "" :
+        <div>
+          <h3>{`${owner.name}'s Wishlist`}</h3>
+          <Collection
+            apiUrl={WISHLIST_API_URL}
+            owner={owner}
+          />
+        </div>
+      }
     </div>
   )
 }

@@ -9,9 +9,9 @@ const mongoose = require('mongoose');
 // card sub schema for use in the deck model
 // each card is just a scryfallCardId + quantity
 const cardSubSchema = {
-    "cardId": {
+    "name": {
         type: String,
-        required: [true, "CardId required for card"],
+        required: [true, "Name is required for card in deck."],
     },
     "quantity": {
         type: Number,

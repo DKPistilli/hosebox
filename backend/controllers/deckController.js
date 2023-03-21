@@ -16,7 +16,9 @@ const Deck             = require('../models/deckModel');
 const User             = require('../models/userModel');
 const scryfallCardsAPI = require('./scryfallCardController');
 
-const { handlePrivacyChange } = require('./deckControllerHelper');
+const { handlePrivacyChange,
+        putCardInList,
+        deleteCardInList, } = require('./deckControllerHelper');
 
 // @ desc  Get deck
 // @route  GET /api/decks/:deckId
@@ -32,12 +34,26 @@ const getDeck = asyncHandler(async (req, res) => {
     
     const deck = await Deck.findOne({_id: req.params.deckId})
     
-    if (deck) {
-        res.status(200).json(deck);
-    } else {
+    if (!deck) {
         res.status(404);
-        throw new Error('No deck found with given deckId');
+        throw new Error(`No deck found with deckId: ${deckId}`);
     }
+
+    const scryfallMainboard  = await scryfallCardsAPI.getCards(deck.mainboard);
+    const scryfallSideboard  = await scryfallCardsAPI.getCards(deck.sideboard);
+    const scryfallScratchpad = await scryfallCardsAPI.getCards(deck.scratchpad);
+
+    // create and send back a response deck with populated scryfall cards
+    const responseDeck = {
+        userId    : deck.userId,
+        name      : deck.name,
+        isPublic  : deck.isPublic,
+        mainboard : scryfallMainboard,
+        sideboard : scryfallSideboard,
+        scratchpad: scryfallScratchpad,
+    }
+
+    res.status(200).json(responseDeck);
 });
 
 // @ desc  Create new deck
@@ -81,26 +97,36 @@ const addDeck = asyncHandler(async (req, res) => {
 
 // @ desc  update deck by listtype/cardId/quantity, deleting if needed
 // @route  PUT /api/decks/:deckId
-// @query  list=(listtype)&cardId=(cardId)&quantity=(quantity to set)
+// @query  listType=(listtype)&name=(cardName)&quantity=(quantity to set)
 // @access Private
 const updateDeck = asyncHandler(async (req, res) => {
 
-    const userId = req.user.id;
-    
-    // throw error if given invalid type of ID
-    const deckId = req.params.deckId;
+    const userId   = req.user.id;
+    const deckId   = req.params.deckId;
+    const listType = req.query.listType;
+    const name     = req.query.name;
+    const quantity = parseInt(req.query.quantity);
 
-    if (!mongoose.Types.ObjectId.isValid(deckId)) {
+    // confirm req has all  parameters (note: this doesn't confirm their accuracy, just presence)
+    if (!userId || !name || !mongoose.Types.ObjectId.isValid(deckId) || (quantity < 0)) {
         res.status(400);
-        throw new Error('Request sent with invalid deckId');
+        throw new Error('Request parameters invalid to update card in Deck.');
     }
 
-    // determine which list in deck we're updating
-    // if quantity = 0, delete card from list
-    // if card doesn't exist yet, add it
-    // else update card quantity to given quantity
-    res.status(200).send('STUB IN UPDATEDECK');
+    // get deck from decksDb
+    const deck = await Deck.findOne({_id: deckId});
 
+    if (!deck) {
+        res.status(400);
+        throw new Error(`No deck found with id: ${deckId}`);
+    }
+
+    // if quantity = 0, delete card from list (both helpers send res to client)
+    if (quantity === 0) {
+        deleteCardInList(req, res, deckId, listType, name);
+    } else {
+        putCardInList(req, res, deckId, listType, name, quantity);
+    }
 });
 
 // @ desc  update deck by listtype/cardId/quantity, deleting if needed
@@ -108,9 +134,7 @@ const updateDeck = asyncHandler(async (req, res) => {
 // @query  access=('public' or 'private') REQUIRED AND EXACT!
 // @access Private
 const updateDeckPrivacy = asyncHandler(async (req, res) => {
-
     handlePrivacyChange(req, res, req.query.access);
-
 });
 
 // @ desc  Delete deck

@@ -84,8 +84,6 @@ const handlePrivacyChange = asyncHandler(async (req, res, access) => {
         // handle error if deck not found in decks_private
         const deckIndex = user.decks_public.findIndex((deck) => deck.deckId.toString() === deckId);
 
-        console.log(`deckIndex: ${deckIndex}`);
-
         if (deckIndex === -1) {
             res.status(400);
             throw new Error('Error privatizing deck: deckId not found in users public decks');
@@ -118,6 +116,71 @@ const handlePrivacyChange = asyncHandler(async (req, res, access) => {
     }
 });
 
+const putCardInList = asyncHandler(async (req, res, deckId, listType, name, quantity) => {
+    // run input validation
+    const deck = await Deck.findById(deckId);
+    if (!deck) {
+        res.status(400);
+        throw new Error('Unable to delete card from list: invalid DeckId');
+    }
+
+    if (listType !== "mainboard" &&
+        listType !== "sideboard" &&
+        listType !== "scratchpad") {
+        res.status(400)
+        throw new Error(`Invalid listType given for deleting card from list: ${listType}`);
+    }
+
+    // create new card to put/post
+    const newCard = {
+        name,
+        quantity,
+    };
+
+    indexToUpdate = deck[listType].findIndex((card) => card.name === name);
+
+    // if card isn't found by name, add it to list, else update it
+    if (indexToUpdate === -1) {
+        deck[listType].push(newCard);
+    } else {
+        deck[listType][indexToUpdate] = newCard;
+    }
+
+    // save and send!
+    await deck.save();
+    res.status(201).send();
+});
+
+const deleteCardInList = asyncHandler(async (req, res, deckId, listType, name) => {
+    
+    // run input validation
+    const deck = await Deck.findById(deckId);
+    if (!deck) {
+        res.status(400);
+        throw new Error('Unable to delete card from list: invalid DeckId');
+    }
+
+    if (listType !== "mainboard" &&
+        listType !== "sideboard" &&
+        listType !== "scratchpad") {
+        res.status(400)
+        throw new Error(`Invalid listType given for deleting card from list: ${listType}`);
+    }
+
+    indexToRemove = deck[listType].findIndex((card) => card.name === name);
+
+    if (indexToRemove === -1) {
+        res.status(400);
+        throw new Error(`Invalid name given for deleting card from list: ${name}`);
+    } else {
+        deck[listType].splice(indexToRemove, 1);
+        await deck.save();
+        res.status(204).send();
+    }
+});
+
 module.exports = {
     handlePrivacyChange,
+    putCardInList,
+    deleteCardInList,
 }

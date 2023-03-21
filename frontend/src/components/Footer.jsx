@@ -10,7 +10,7 @@ const Footer = () => {
                 <div className="footer-intro">Created by </div>
                 <div className='footer-link'>
                     <a href="https://github.com/DKPistilli">
-                        Dorian, Glimmering Baldness - Legendary Planeswalker
+                        Dorian, the Baldest - Legendary Creature - Human Wizard
                     </a>
                 </div>
                 <br />
