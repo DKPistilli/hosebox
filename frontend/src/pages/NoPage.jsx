@@ -1,14 +1,14 @@
-import hoseboxLogoImg from '../assets/hosebox.png';
+import hoseboxImage from '../assets/HoseboxFzzt.png';
 
 function NoPage() {
 
     const hoseboxLogoStyle = {
-        maxWidth: '25%',
+        maxWidth: '45%',
         height: 'auto',
     };
     
     const hoseboxTitleStyle = {
-        fontSize: 50,
+        fontSize: 45,
     };
 
     const hoseboxSubtitleStyle = {
@@ -21,13 +21,16 @@ function NoPage() {
     return (
         <div>
             <h1 style={hoseboxTitleStyle}> url.notFound===true </h1>
+            <br />
             <img
-                src={hoseboxLogoImg}
+                src={hoseboxImage}
                 alt='hosebox logo'
                 style={hoseboxLogoStyle}
             />
-
-            <p style={hoseboxSubtitleStyle}> Ktzzzz...short circuit. Faithful mending required. </p>
+            <br />
+            <br />
+            <p style={hoseboxSubtitleStyle}> Faithful mending required. </p>
+            <br />
         </div>
     )
 }
