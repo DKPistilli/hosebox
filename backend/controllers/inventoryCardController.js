@@ -17,22 +17,60 @@ const CARD_RES_LIMIT = 100;
 
 // @ desc  Get inventory, filtered by page/search params
 // @route  GET /api/inventoryCards/:userId
-// @query  pg=(page number)&name=(card name or portion of card name)
+// @query  page=(page number)&limit=(# of results)&name=(card name or portion of card name)
+// @res    res.cards, res.previous, res.next, res.totalPages
 // @access Public
 const getCards = asyncHandler(async (req, res) => {
 
-    //TBD -- HANDLE QUERY CASES (ie pg number and name)
-    if (req.query.pg || req.query.name) {
-        console.log(`page: ${req.query.pg} name: ${req.query.name}`);
+    const page  = parseInt(req.query.page)  || 1;
+    const limit = parseInt(req.query.limit) || CARD_RES_LIMIT;
+    const name  = req.query.name || "";
+
+    const startIndex = (page - 1) * limit // 0 based index, ofc
+    const endIndex   = page * limit;      // page we're on * results per page
+    const results    = {}
+
+    // filter by userId and by cardName (if given)
+    var filter = {
+        userId: req.params.userId,
+    };
+
+    if (name !== undefined) {
+        filter = {
+            ...filter,
+            name: {"$regex": name, "$options": "i" } };
     }
 
     const inventoryCards = await InventoryCard
-        .find({ userId: req.params.userId }) // find inventory at given userId
-        .limit(CARD_RES_LIMIT);            // limit cards back from db
+        .find(filter)
+        .skip(startIndex)
+        .limit(limit)
+        .sort({ "name": 1 }) // STUB FOR TRUE SORTING!! HAVE TO FIX IN SCRYFALL CONTROLLER, TOO!
+        .exec();
 
-    const scryfallCards = await scryfallCardsAPI.getCards(inventoryCards);
+    // Check if there is a previous page
+    if (startIndex > 0) {
+        results.previous = {
+            page : page - 1,
+            limit: limit,
+        };
+    }
 
-    res.status(200).json(scryfallCards);
+    // check if there is a next
+    results.totalCards = await InventoryCard.countDocuments(filter);
+
+    if (endIndex < results.totalCards) {
+        results.next = {
+            page: page + 1,
+            limit: limit,
+        };
+    }
+
+    results.totalPages = Math.ceil(results.totalCards / limit);
+
+    results.cards = await scryfallCardsAPI.getCards(inventoryCards);
+
+    res.status(200).json(results);
 });
 
 

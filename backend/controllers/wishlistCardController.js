@@ -17,13 +17,13 @@ const CARD_RES_LIMIT = 100;
 
 // @ desc  Get inventory, filtered by page/search params
 // @route  GET /api/wishlistCards/:userId
-// @query  pg=(page number)&name=(card name or portion of card name)
+// @query  page=(page number)&name=(card name or portion of card name)
 // @access Public
 const getCards = asyncHandler(async (req, res) => {
 
-    //TBD -- HANDLE QUERY CASES (ie pg number and name)
-    if (req.query.pg || req.query.name) {
-        console.log(`page: ${req.query.pg} name: ${req.query.name}`);
+    //TBD -- HANDLE QUERY CASES (ie page number and name)
+    if (req.query.page || req.query.name) {
+        console.log(`page: ${req.query.page} name: ${req.query.name}`);
     }
 
     const wishlistCards = await WishlistCard

@@ -30,7 +30,7 @@ const getCards = asyncHandler(async (cardsArray) => {
 
 
     // get all scryfallCards with corresponding names
-    const scryfallCardsArray = await ScryfallCard.find({ name: { $in: nameArray } });
+    const scryfallCardsArray = await ScryfallCard.find({ name: { $in: nameArray } }).sort({ "name": 1 }); //STUB
 
     // create new array of those cards, with quantity added and unnecessary info removed
     const scryfallWithQuantityArray = scryfallCardsArray.map((scryfallCard) => {

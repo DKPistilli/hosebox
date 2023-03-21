@@ -5,12 +5,18 @@ import { CTable, CTableHead, CTableBody, CTableRow, CTableHeaderCell, CTableData
 import ManaSymbols   from './ManaSymbols';
 import RaritySymbols from './RaritySymbols';
 import Card          from './Card';
+import Spinner       from './Spinner';
+
 import './CardTable.css';
 
-function CardTableCT({ cards }) {
+function CardTable({ cards }) {
+    
+    if (!cards) {
+        return (<Spinner />) ;
+    }
 
     return (
-        <CTable bordered>
+        <CTable bordered className='ctable' >
             <CTableHead>
                 <CTableRow>
                     <CTableHeaderCell scope="col">#</CTableHeaderCell>
@@ -49,4 +55,4 @@ function CardTableCT({ cards }) {
     );
 };
 
-export default CardTableCT
+export default CardTable
