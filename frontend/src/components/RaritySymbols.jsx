@@ -2,7 +2,7 @@ import common   from '../assets/rarity_symbols/common.png';
 import uncommon from '../assets/rarity_symbols/uncommon.png';
 import rare     from '../assets/rarity_symbols/rare.png';
 import mythic   from '../assets/rarity_symbols/mythic.png';
-import './RaritySymbols.css';
+import '../styles/RaritySymbols.css';
 
 function RaritySymbols({ rarityString }) {
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./Card.css";
+import "../styles/Card.css";
 
 const Card = ({ name, imageUrl, uri }) => {
   const [showImage, setShowImage] = useState(false);

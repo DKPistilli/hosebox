@@ -1,5 +1,5 @@
 import { Pagination } from 'antd';
-import './CollectionPagination.css';
+import '../styles/CollectionPagination.css';
 
 function CollectionPagination(props) {
     const { currentPage,

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 
-import './CardTable.css';
+import '../styles/CardTable.css';
 
 import { CTable, CTableHead, CTableBody, CTableRow,
          CTableHeaderCell, CTableDataCell, CTableCaption } from '@coreui/react'
@@ -13,8 +13,6 @@ import ManaSymbols   from './ManaSymbols';
 import RaritySymbols from './RaritySymbols';
 import Card          from './Card';
 import Spinner       from './Spinner';
-
-import './CardTable.css';
 
 const DECK_API_URL = '/api/decks';
 

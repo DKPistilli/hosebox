@@ -4,7 +4,7 @@ import { useNavigate }     from 'react-router-dom';
 import Deckslist from './Deckslist';
 import Spinner   from './Spinner';
 
-import './Sidebar.css';
+import '../styles/Sidebar.css';
 
 const Sidebar = (props) => {
 

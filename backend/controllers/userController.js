@@ -83,6 +83,12 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route  GET /api/users/:userId
 // @access Public
 const getUser = asyncHandler(async(req, res) => {
+
+    if (!req.params.userId) {
+        res.status(400)
+        throw new Error(`User ID required for Get User operation.`)
+    }
+
     const returns = 'name decks_public'
     const user    = await User.findOne({'_id': req.params.userId}, returns);
 

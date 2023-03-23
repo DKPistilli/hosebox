@@ -1,6 +1,6 @@
 import { CTableDataCell } from '@coreui/react';
-import { useState, useEffect } from 'react';
-import './QuantityForm.css'
+import { useState } from 'react';
+import '../styles/QuantityForm.css'
 
 function QuantityForm({quantity, cardName, handleSubmit}) {
 

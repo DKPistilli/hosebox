@@ -20,8 +20,12 @@ function Deckslist(props) {
 
         const getDecks = async () => {
 
+            // if no ownerId given in props, no decks to get!
+            if (!ownerId) {
+                return;
+            }
+
             // determine if public or private decks
-            
             const hasPrivateAccess = (user && (ownerId === user._id)) ? true : false;
 
             let apiUrl = '';

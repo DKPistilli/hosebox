@@ -30,6 +30,11 @@ const getCards = asyncHandler(async (req, res) => {
     const endIndex   = page * limit;      // page we're on * results per page
     const results    = {}
 
+    if (!req.params.userId) {
+        res.status(400);
+        throw new Error('User Id Required in params to Get Cards.');
+    }
+
     // filter by userId and by cardName (if given)
     var filter = {
         userId: req.params.userId,
@@ -67,7 +72,6 @@ const getCards = asyncHandler(async (req, res) => {
     }
 
     results.totalPages = Math.ceil(results.totalCards / limit);
-
     results.cards = await scryfallCardsAPI.getCards(inventoryCards);
 
     res.status(200).json(results);

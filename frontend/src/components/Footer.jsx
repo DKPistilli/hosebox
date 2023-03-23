@@ -1,6 +1,6 @@
 import React from 'react';
 import {CFooter } from '@coreui/react';
-import './Footer.css';
+import '../styles/Footer.css';
 
 const Footer = () => {
     return (

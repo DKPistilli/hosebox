@@ -31,6 +31,11 @@ function Collection({ apiUrl, owner, collectionName }) {
     const [cardName, setCardName]           = useState("");
 
     const getCollection = useCallback( async () => {
+
+        // if there's no owner, then there's no collection to get yet!
+        if (!owner || !owner._id) {
+            return;
+        }
         
         // query server for 
         const response = await axios.get(apiUrl + "/" + owner._id, {
@@ -63,7 +68,7 @@ function Collection({ apiUrl, owner, collectionName }) {
             { (user) && (user._id === owner._id) ?
             <CardAdder
                 apiUrl={apiUrl}
-                updateParent={getCollection} /> 
+                updateParent={getCollection} />
             : <></> }
             <CollectionPagination
                 currentPage={currentPage}

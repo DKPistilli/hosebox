@@ -4,7 +4,7 @@ import RaritySymbols from './RaritySymbols';
 import Card          from './Card';
 import Spinner       from './Spinner';
 
-import './CardTable.css';
+import '../styles/CardTable.css';
 
 function CollectionCardTable({ cards, tableName }) {
     
