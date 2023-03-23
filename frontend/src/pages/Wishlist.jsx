@@ -1,7 +1,5 @@
 import CollectionPage from '../components/CollectionPage';
 
-// import http request service
-
 // backend api url for authenticating user
 const WISHLIST_API_URL = '/api/wishlistCards';
 const USER_API_URL      = '/api/users';

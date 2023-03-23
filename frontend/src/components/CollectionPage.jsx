@@ -47,24 +47,27 @@ const CollectionPage = ({ collectionType, collectionApiUrl, userApiUrl }) => {
   }
 
   return(
-    <div>
+    <>
       {!owner ? "" :
-      <div>
-        <Sidebar
-          activeTab={collectionType}
-          owner={ owner }
-        />
         <div>
-          {owner.name}'s {collectionType}
+          <Sidebar
+            activeTab={collectionType}
+            owner={ owner }
+          />
+          <div>
+            <h2>{owner.name}'s {collectionType}</h2>
+            <br />
+          </div>
+          <div>
+            <Collection 
+              apiUrl={collectionApiUrl}
+              owner={owner}
+              collectionName={collectionType}
+            />
+          </div>
         </div>
-        <Collection 
-          apiUrl={collectionApiUrl}
-          owner={owner}
-          collectionName={collectionType}
-        />
-      </div>
       }
-    </div>
+    </>
   );
 };
 

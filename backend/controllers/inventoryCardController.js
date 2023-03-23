@@ -127,7 +127,6 @@ const addCard = asyncHandler(async (req, res) => {
     res.status(201).json(scryfallCard[0]);
 });
 
-
 // @ desc  update card by name with quantity, deleting if needed
 // @route  PUT /api/inventoryCards
 // @query  name=(name)&quantity=(quantity to set) -- unlike addCard, quantity is required!
@@ -172,8 +171,10 @@ const updateCard = asyncHandler(async (req, res) => {
 
     // if updating to quantity of ZERO, delete card
     if (quantity === 0) {
+        console.log(quantity);
         await InventoryCard.deleteOne(filter);
         res.status(204).send();
+        return;
     }
 
     const card = await InventoryCard.findOneAndUpdate(filter, update, settings);

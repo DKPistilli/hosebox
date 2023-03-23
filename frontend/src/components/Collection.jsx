@@ -26,11 +26,14 @@ function Collection({ apiUrl, owner, collectionName }) {
     // default state (leave collection uninitialized for spinner)
     const [collection, setCollection]         = useState();
     const [collectionSize, setCollectionSize] = useState(0);
-    const [currentPage, setCurrentPage]     = useState(1);
+    const [currentPage, setCurrentPage]       = useState(1);
     // eslint-disable-next-line
-    const [cardName, setCardName]           = useState("");
+    const [cardName, setCardName] = useState("");
+    const [trigger, setTrigger] = useState(false);
 
     const getCollection = useCallback( async () => {
+
+        setCollection(null)
 
         // if there's no owner, then there's no collection to get yet!
         if (!owner || !owner._id) {
@@ -56,8 +59,18 @@ function Collection({ apiUrl, owner, collectionName }) {
 
     // request user's collection from server
     useEffect(() => {
-        getCollection(currentPage, cardName);
-    }, [getCollection, currentPage, cardName]);
+        getCollection();
+    }, [getCollection, currentPage, cardName, trigger]);
+
+    // define how CardAdder should addCards
+    const addCard = async (cardName) => {
+        const config = {
+            headers: { Authorization: `Bearer ${user.token}` },
+            params : { name: cardName },
+        };
+        const res = await axios.post(apiUrl, null, config);
+        console.log(res.data);
+    };
 
     if (!collection) {
         return <Spinner />
@@ -67,8 +80,9 @@ function Collection({ apiUrl, owner, collectionName }) {
         <div>
             { (user) && (user._id === owner._id) ?
             <CardAdder
-                apiUrl={apiUrl}
-                updateParent={getCollection} />
+                addCard={addCard}
+                updateTrigger={setTrigger}
+            />
             : <></> }
             <CollectionPagination
                 currentPage={currentPage}
