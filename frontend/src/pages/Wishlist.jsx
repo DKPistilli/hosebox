@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Sidebar   from '../components/Sidebar';
+import Sidebar    from '../components/Sidebar';
+import Spinner    from '../components/Spinner';
 import Collection from '../components/Collection';
 
 // import http request service
@@ -37,16 +38,21 @@ function Wishlist() {
     getOwner();
   }, [user, ownerId, navigate])
 
+  if (!owner) {
+    return <Spinner />
+  }
+
 
   return (
     <div>
-      <Sidebar activeTab="Wishlist" />
+      <Sidebar activeTab="Wishlist" owner={owner} />
       { !owner ? "" :
         <div>
           <h3>{`${owner.name}'s Wishlist`}</h3>
           <Collection
             apiUrl={WISHLIST_API_URL}
             owner={owner}
+            collectionName="Wishlist"
           />
         </div>
       }

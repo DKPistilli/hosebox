@@ -6,6 +6,12 @@
    border: 1px solid black;
 }
 
+.caption-left {
+   text-align: left;
+   caption-side: top;
+   padding-left: 5px;
+}
+
 th, td {
    padding: 8px;
    vertical-align: middle;
@@ -40,6 +46,10 @@ tr {
 
 .name {
    width: 35%;
+}
+
+.quantity-col {
+   width: 5%;
 }
 
 .quantity, .mana_cost, .rarity, .price {

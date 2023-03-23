@@ -1,7 +1,7 @@
 /// COLLECTION COMPONENT
 ///
 /// Fetches and displays collection of cards for users to view and
-/// for owners to manipulate (can be inventory or wishlist
+/// for owners to manipulate (can be inventory or wishlist)
 ///
 /// props required: apiUrl="url for CollectionCardReqs" owner={ownerObject}
 
@@ -18,19 +18,19 @@ import axios from 'axios';
 // cards per page in Collection
 const CARDS_PER_PAGE = 14;
 
-function Collection({ apiUrl, owner }) {
+function Collection({ apiUrl, owner, collectionName }) {
     
     // init navigation && find user
     const { user } = useSelector((state) => state.auth);
 
-    // default state (leave inventory uninitialized for spinner)
-    const [inventory, setInventory]         = useState();
-    const [inventorySize, setInventorySize] = useState(0);
+    // default state (leave collection uninitialized for spinner)
+    const [collection, setCollection]         = useState();
+    const [collectionSize, setCollectionSize] = useState(0);
     const [currentPage, setCurrentPage]     = useState(1);
     // eslint-disable-next-line
     const [cardName, setCardName]           = useState("");
 
-    const getInventory = useCallback( async (page, name) => {
+    const getCollection = useCallback( async () => {
         
         // query server for 
         const response = await axios.get(apiUrl + "/" + owner._id, {
@@ -41,20 +41,20 @@ function Collection({ apiUrl, owner }) {
             }
         });
 
-        // set card inventory and pagination
+        // set card collection and pagination
         if (response.data) {
-            setInventory(response.data.cards);
-            setInventorySize(response.data.totalCards)
+            setCollection(response.data.cards);
+            setCollectionSize(response.data.totalCards)
         }
 
     }, [apiUrl, owner, currentPage, cardName]);
 
-    // request user's inventory from server
+    // request user's collection from server
     useEffect(() => {
-        getInventory(currentPage, cardName);
-    }, [getInventory, currentPage, cardName]);
+        getCollection(currentPage, cardName);
+    }, [getCollection, currentPage, cardName]);
 
-    if (!inventory) {
+    if (!collection) {
         return <Spinner />
     }
 
@@ -63,15 +63,15 @@ function Collection({ apiUrl, owner }) {
             { (user) && (user._id === owner._id) ?
             <CardAdder
                 apiUrl={apiUrl}
-                updateParent={getInventory} /> 
+                updateParent={getCollection} /> 
             : <></> }
             <CollectionPagination
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
-                totalCards={inventorySize}
+                totalCards={collectionSize}
                 cardsPerPage={CARDS_PER_PAGE}
             />
-            <CardTable cards={inventory}  />
+            <CardTable cards={collection} tableName={collectionName} tableStyle="collection" />
         </div>
     )
 }

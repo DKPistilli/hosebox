@@ -1,6 +1,8 @@
-import React, { useState }        from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Deckslist                  from './Deckslist';
+import React, { useState } from 'react';
+import { useNavigate }     from 'react-router-dom';
+
+import Deckslist from './Deckslist';
+import Spinner   from './Spinner';
 
 import './Sidebar.css';
 
@@ -8,7 +10,7 @@ const Sidebar = (props) => {
 
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(props.activeTab);
-  const { ownerId } = useParams();
+  const owner = props.owner;
     
   const handleTabClick = (tab) => {
     setActiveTab(tab.id);
@@ -16,8 +18,8 @@ const Sidebar = (props) => {
   }
   
   const tabData = [
-    { id: `'Inventory'`, label: 'Inventory', link: `/inventories/${ownerId}`, },
-    { id: 'Wishlist',  label: 'Wishlist',  link: `/wishlists/${ownerId}`,   },
+    { id: 'Inventory', label: 'Inventory', link: `/inventories/${owner._id}`, },
+    { id: 'Wishlist',  label: 'Wishlist',  link: `/wishlists/${owner._id}`,   },
   ];
   
   const mapTabs = (tab) => {
@@ -32,6 +34,10 @@ const Sidebar = (props) => {
     );
   }
 
+  if (!owner) {
+    return <Spinner />
+  }
+
   return (
     <div className="sidebar">
       <div className="tab-bar">
@@ -40,7 +46,7 @@ const Sidebar = (props) => {
       <br />
       Decks
       <br />
-      <Deckslist ownerId={ownerId} />
+      <Deckslist ownerId={owner._id} />
     </div>
   );
 };

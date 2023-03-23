@@ -1,0 +1,14 @@
+.quantity-input {
+    border: none;
+    outline: none;
+    text-align: center;
+    width: 20px;
+}
+
+.quantity:hover {
+    background-color: #fffaf3;
+}
+
+.quantity:hover .quantity-input {
+    background-color: #fffaf3;
+}

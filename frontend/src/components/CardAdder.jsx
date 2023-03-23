@@ -1,6 +1,6 @@
-/// CARD TABLE COMPONENT
-/// Takes in a prop of cards and returns a table of them
-/// props required: cards=[cards], updateParent=function that updates parent collection
+/// CARD ADDER COMPONENT
+/// Adds cards to whatever deck or collection it belongs to
+/// props required: apiUrl="path/of/api/url" updateParent=function that updates parent collection
 
 import { useState } from 'react'
 import { toast } from 'react-toastify';
@@ -16,7 +16,7 @@ function CardAdder({ apiUrl, updateParent }) {
     const { user } = useSelector((state) => state.auth);
 
     // handle card addition submit event
-    const onSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         const submitCard = async () => {
@@ -39,14 +39,14 @@ function CardAdder({ apiUrl, updateParent }) {
         }
     };
 
-    const onChange = ((e) => {
+    const handleChange = ((e) => {
         setCardName(e.target.value);
     });
   
     return (
         <div>
             <section className="form">
-                <form onSubmit={onSubmit}>
+                <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <input
                         type={'text'}
@@ -55,7 +55,7 @@ function CardAdder({ apiUrl, updateParent }) {
                         name='cardName'
                         value={cardName}
                         placeholder='Add card here e.g. Jace, the Mind Sculptor'
-                        onChange={onChange}
+                        onChange={handleChange}
                         />
                     </div>
                     <div className="form-group">
