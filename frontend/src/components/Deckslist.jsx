@@ -2,19 +2,26 @@
 /// DECKSLIST COMPONENT (for the sidebar)
 /// Gets decklist
 import { useEffect, useState }   from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from 'axios';
+import { BsPlusSquare } from 'react-icons/bs'
 
-const API_URL = '/api/users';
+import '../styles/Deckslist.css';
+
+const USER_API_URL = '/api/users';
+const DECK_API_URL = '/api/decks';
 
 function Deckslist(props) {
 
     const { user } = useSelector((state) => state.auth);
     const ownerId  = props.ownerId;
 
+    const navigate = useNavigate();
+
     const [decksPublic, setDecksPublic]   = useState([]);
     const [decksPrivate, setDecksPrivate] = useState([]);
+    const [hasPrivateAccess, setHasPrivateAccess] = useState(false);
 
     useEffect(() => {
 
@@ -26,19 +33,21 @@ function Deckslist(props) {
             }
 
             // determine if public or private decks
-            const hasPrivateAccess = (user && (ownerId === user._id)) ? true : false;
+            if (user && (ownerId === user._id)) {
+                setHasPrivateAccess(true);
+            }
 
             let apiUrl = '';
             let config  = {};
 
             // determine GET url / config by private access
             if (hasPrivateAccess) {
-                apiUrl = API_URL + '/me'; 
+                apiUrl = USER_API_URL + '/me'; 
                 config  = {
                     headers: { Authorization: `Bearer ${user.token}` },
                 };
             } else {
-                apiUrl = API_URL + `/${ownerId}`;
+                apiUrl = USER_API_URL + `/${ownerId}`;
             };
 
             // get and set deckOwner
@@ -61,8 +70,7 @@ function Deckslist(props) {
 
         getDecks();
 
-
-    }, [ownerId, user]);
+    }, [ownerId, user, hasPrivateAccess]);
 
     // display deck name as link to deck page by deckId
     const deckMapper = (deck) =>
@@ -72,12 +80,35 @@ function Deckslist(props) {
         </Link>
     </div>);
 
+    // onclick function for newDeck button
+    const createNewDeck = async () => {
+        const config  = {
+            headers: { Authorization: `Bearer ${user.token}` },
+            params: {name: "Shiny New Deck!"},
+        };
+
+        const newDeck = await axios.post(DECK_API_URL, null, config);
+        navigate(`/decks/${newDeck.data._id}`);
+    }
+
     return (
-        <div>
+        <div className="deckslist-container">
+            <div className="decks-header">
+                <div className="decks-header-inner">
+                    <h2 style={{marginRight: '5px'}}>Decks</h2>
+
+                    { hasPrivateAccess ?
+                        <BsPlusSquare
+                            size='12px'
+                            className="plus-icon"
+                            onClick={createNewDeck}/> :
+                        <></>
+                    }
+                </div>
+            </div>
             {decksPublic.length  > 0 && decksPublic.map (deckMapper)}
             {decksPrivate.length > 0 && decksPrivate.map(deckMapper)}
         </div>
-        
     )
 }
 export default Deckslist

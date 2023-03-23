@@ -16,7 +16,7 @@ const handlePrivacyChange = asyncHandler(async (req, res, access) => {
         
         // update isPublic on deck in decksDB
         const updatedDeck = await Deck.findOneAndUpdate(
-            { _id: req.params.deckId }, // filter
+            { _id: deckId }, // filter
             { isPublic: true },         // update isPublic placement
             { new: true },             // return new deck
         );
@@ -64,7 +64,7 @@ const handlePrivacyChange = asyncHandler(async (req, res, access) => {
     else if (access === "private") {
         // update isPublic on deck in decksDB
         const updatedDeck = await Deck.findOneAndUpdate(
-            { _id: req.params.deckId }, // filter
+            { _id: deckId }, // filter
             { isPublic: false },        // update isPublic placement
             { new: true },              // return updated deck
         );
@@ -179,8 +179,40 @@ const deleteCardInList = asyncHandler(async (req, res, deckId, listType, name) =
     }
 });
 
+const handleDeleteDeck = asyncHandler(async (req, res) => {
+
+    const deckId = req.params.deckId;
+    // First, delete from decksDB    
+    const result = await Deck.deleteOne({ _id: deckId });
+
+    if (result.deletedCount !== 1) {
+        res.status(404);
+        throw new Error(`Unable to delete deck with id: ${deckId}`);
+    }
+
+    // then, find and update user deckslist (public or private)
+    const user = await User.findById(req.user.id);
+    const publicIndex = user.decks_public.findIndex((deck) => deck.deckId.toString() === deckId);
+    const privateIndex = user.decks_private.findIndex((deck) => deck.deckId.toString() === deckId);
+
+    // if deck was public, delete from public list. Elif private, from private. Else, throw Error.
+    if (publicIndex !== -1) {
+        user.decks_public.splice(publicIndex, 1)
+        await user.save();
+        res.status(204).send();
+    } else if (privateIndex !== -1) {
+        user.decks_private.splice(privateIndex, 1);
+        await user.save();
+        res.status(204).send();
+    } else {
+        res.status(404);
+        throw new Error(`Error deleting deck. No deck found in users public/private list with id: ${deckId}`);
+    }
+});
+
 module.exports = {
     handlePrivacyChange,
     putCardInList,
     deleteCardInList,
+    handleDeleteDeck,
 }

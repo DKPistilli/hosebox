@@ -18,7 +18,8 @@ const scryfallCardsAPI = require('./scryfallCardController');
 
 const { handlePrivacyChange,
         putCardInList,
-        deleteCardInList, } = require('./deckControllerHelper');
+        deleteCardInList,
+        handleDeleteDeck, } = require('./deckControllerHelper');
 
 // @ desc  Get deck
 // @route  GET /api/decks/:deckId
@@ -141,8 +142,7 @@ const updateDeckPrivacy = asyncHandler(async (req, res) => {
 // @route  DELETE /api/decks/:deckId
 // @access Private
 const deleteDeck = asyncHandler(async (req, res) => {
-    // delete deck reference from user's [decks]
-    // delete deck from decksDB
+    handleDeleteDeck(req, res);
 });
 
 module.exports = {

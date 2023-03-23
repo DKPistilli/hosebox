@@ -40,13 +40,15 @@ const Sidebar = (props) => {
 
   return (
     <div className="sidebar">
+      <div>
+        <h2>Collections</h2>
+      </div>
       <div className="tab-bar">
         {tabData.map(mapTabs)}
       </div>
-      <br />
-      Decks
-      <br />
-      <Deckslist ownerId={owner._id} />
+      <div>
+        <Deckslist ownerId={owner._id} />
+      </div>
     </div>
   );
 };
