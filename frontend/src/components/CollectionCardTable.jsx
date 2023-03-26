@@ -12,7 +12,7 @@ import QuantityForm from './QuantityForm';
 
 import '../styles/CardTable.css';
 
-function CollectionCardTable({ cards, tableName, collectionSize }) {
+function CollectionCardTable({ cards, tableName, collectionSize, getCollection }) {
 
     const { ownerId } = useParams();
     const { user }    = useSelector((state) => state.auth);
@@ -41,10 +41,8 @@ function CollectionCardTable({ cards, tableName, collectionSize }) {
         };
         
         // update card quantity
-        await axios.put(`/api/${collectionRoute}Cards`, null, config)
-
-        // reload page to refresh inventory w/ new quant
-        window.location.reload();
+        await axios.put(`/api/${collectionRoute}Cards`, null, config);
+        getCollection();
     }
     
     return (

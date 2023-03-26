@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import Sidebar    from '../components/Sidebar';
 import Spinner    from '../components/Spinner';
 import CardTable  from '../components/CardTable';
@@ -23,6 +24,11 @@ function Deck() {
 
   const [ owner, setOwner ] = useState({})
   const [ deck, setDeck ]   = useState({});
+
+  const [ mainboard, setMainboard ]   = useState([])
+  const [ sideboard, setSideboard ]   = useState([])
+  const [ scratchpad, setScratchpad ] = useState([])
+
   const [ loadingDeck, setLoadingDeck] = useState(true);
 
   const navigate = useNavigate();
@@ -38,6 +44,9 @@ function Deck() {
       navigate('/NoPage.jsx');
     } else {
       setDeck(response.data);
+      setMainboard(response.data.mainboard);
+      setSideboard(response.data.sideboard);
+      setScratchpad(response.data.scratchpad);
     }
 
     setLoadingDeck(false);
@@ -74,6 +83,11 @@ function Deck() {
     if (!cardName || !deckId || !user) {
       return;
     } else {
+      const alreadyInDeckIndex = deck[listType].findIndex(card => (card.name === cardName));
+      if (alreadyInDeckIndex !== -1) {
+        toast.error(`${cardName} is already in your ${listType}, Planeswalker...`);
+        return;
+      }
 
       // @query  listType=(listtype)&cardName=(cardName)&quantity=(quantity to set)
       const config = {
@@ -85,7 +99,17 @@ function Deck() {
         },
       };
 
-      await axios.put(`${DECK_API_URL}/${deckId}`, null, config);
+      const res = await axios.put(`${DECK_API_URL}/${deckId}`, null, config);
+
+      if (listType === 'mainboard') {
+        setMainboard(res.data);
+      } else if (listType === 'sideboard') {
+        setSideboard(res.data);
+      } else if (listType === 'scratchpad') {
+        setScratchpad(res.data);
+      } else {
+        throw new Error(`Incorrect listtype given: ${listType}`);
+      }
     }
   }
 
@@ -131,6 +155,8 @@ function Deck() {
           <div className='deck-header'>
             <DeckTitle
               deckTitle={deck.name}
+              deckId={deckId}
+              isPublic={deck.isPublic}
               updateTitle={updateDeckTitle}
             />
           </div>
@@ -144,8 +170,8 @@ function Deck() {
             : <></> }
           </div>
           <div className='deck-table-main'>
-            {deck.mainboard && (
-              <CardTable cards={deck.mainboard}
+            {mainboard && (
+              <CardTable cards={mainboard}
                         tableName={"Mainboard"}
                         key={`mainboard-${deckId}`}
                         tableStyle={"deck"} />
@@ -153,8 +179,8 @@ function Deck() {
           </div>
           <br />
           <div className='deck-table-side'>
-            {deck.sideboard && (
-              <CardTable cards={deck.sideboard}
+            {sideboard && (
+              <CardTable cards={sideboard}
                         tableName={"Sideboard"}
                         key={`sideboard-${deckId}`}
                         tableStyle={"deck"} />
@@ -162,8 +188,8 @@ function Deck() {
           </div>
           <br />
           <div className='deck-table-scratch'>
-            {deck.scratchpad && (
-              <CardTable cards={deck.scratchpad}
+            {scratchpad && (
+              <CardTable cards={scratchpad}
                         tableName={"Scratchpad"}
                         key={`scratchpad-${deckId}`}
                         tableStyle={"deck"} />

@@ -4,8 +4,11 @@
     top: 0;
     bottom: 0;
     width: 200px;
-    background-color: #f0f0f0;
+    min-height: 100vh; 
+    background-color: #c7ffc4;
     padding: 20px;
+    z-index: 9999;
+    overflow: auto;
   }
 
 .sidebar a {

@@ -2,26 +2,51 @@
 /// Adds cards to whatever deck or collection it belongs to
 /// props required: addCard fx from parent that takes in a "cardName" and that's it
 
-import { useState } from 'react'
-import { toast } from 'react-toastify'
+import { useState, useEffect }     from 'react'
+import { toast }        from 'react-toastify'
+import { AutoComplete } from 'antd';
 
 import '../styles/CardAdder.css';
+
+import axios from 'axios';
+const SCRYFALL_API_URL = 'https://api.scryfall.com/catalog/card-names'
+
 
 function CardAdder({ addCard, isDeck }) {
     
     // intialize necessary state (card name input, user, etc.)
-    const [cardName, setCardName] = useState("");
-    const [listType, setListType] = useState("mainboard");
+    const [listType, setListType]         = useState("mainboard");
+    const [cardOptions, setCardOptions]   = useState([]);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [inputValue, setInputValue]     = useState('');
+
+    // get all potential card options from scryfall cards API for autocomplete
+    useEffect(() => {
+        const getCardOptions = async () => {
+            const response = await axios.get(SCRYFALL_API_URL);
+            if (response) {
+                const formattedCardOptions = response.data.data.map(cardName => ({
+                    value: cardName,
+                    label: cardName,
+                }));
+                setCardOptions(formattedCardOptions);
+            }
+        }
+    
+        getCardOptions();
+    }, []);
+
+    const handleChange = (value) => {
+        setInputValue(value);
+    }
 
     // handle card addition submit event
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleCardNameSelect = async (cardName) => {
 
         // throw error if no cardName given, else, add Card
         if (!cardName) {
             toast.error(`Invalid card name: ${cardName}`);
         } else {
-
             // check to see if listType given, or if it's adding to a collection
             if (isDeck) {
                 await addCard(cardName, listType);
@@ -29,10 +54,9 @@ function CardAdder({ addCard, isDeck }) {
                 await addCard(cardName);
             }
         }
-    };
 
-    const handleCardNameChange = (e) => {
-        setCardName(e.target.value);
+        setInputValue('');
+        setDropdownOpen(false);
     };
 
     const handleListTypeChange = (e) => {
@@ -42,17 +66,30 @@ function CardAdder({ addCard, isDeck }) {
     return (
         <div>
             <section className="form">
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <input
-                        type={'text'}
+                <div className="form-group input-field-and-button-container">
+                        <AutoComplete
+                        options={cardOptions}
+                        value={inputValue}
+                        onChange={handleChange}
                         className="form-control add-card-field"
                         id='cardName'
                         name='cardName'
-                        value={cardName}
                         placeholder='Add card here e.g. Jace, the Mind Sculptor'
-                        onChange={handleCardNameChange}
+                        onSelect={handleCardNameSelect}
+                        // only begin suggesting after first character
+                        open={dropdownOpen}
+                        onSearch={(value) => setDropdownOpen(value ? true : false)}
+                        // case insensitive search
+                        filterOption={(inputValue, option) =>
+                            inputValue && option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                        }
+                        notFoundContent="This card doesn't exist, Planeswalker."
                         />
+                        <div className="button-container">
+                            <button type="submit" className="btn btn-block add-card-button">
+                            Submit
+                            </button>
+                        </div>
                     </div>
                     {isDeck ? (
                         <div className="form-group radio-group">
@@ -82,12 +119,6 @@ function CardAdder({ addCard, isDeck }) {
                             </div>
                         </div>
                     ) : null}
-                    <div className="form-group add-card-button-container">
-                        <button type="submit" className='btn btn-block add-card-button '>
-                            Submit
-                        </button>
-                    </div>
-                </form>
             </section>
         </div>
     )

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate }     from 'react-router-dom';
+import { useNavigate, useLocation }     from 'react-router-dom';
 
 import Deckslist from './Deckslist';
 import Spinner   from './Spinner';
@@ -8,9 +8,10 @@ import '../styles/Sidebar.css';
 
 const Sidebar = (props) => {
 
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(props.activeTab);
-  const owner = props.owner;
+  const owner    = props.owner;
+  const navigate = useNavigate();
+  const location = useLocation();
     
   const handleTabClick = (tab) => {
     setActiveTab(tab.id);
@@ -47,7 +48,7 @@ const Sidebar = (props) => {
         {tabData.map(mapTabs)}
       </div>
       <div>
-        <Deckslist ownerId={owner._id} />
+        <Deckslist key={location} ownerId={owner._id} />
       </div>
     </div>
   );

@@ -7,6 +7,7 @@
 ///      scryfallCards db calls to convert these names into fully populated cards for res to client
 
 const asyncHandler = require('express-async-handler');
+const mongoose     = require('mongoose');
 
 //import InventoryCard db + scryfall card helper function
 const InventoryCard    = require('../models/inventoryCardModel');
@@ -62,21 +63,50 @@ const getCards = asyncHandler(async (req, res) => {
     }
 
     // check if there is a next
-    results.totalCards = await InventoryCard.countDocuments(filter);
+    results.totalUniqueCards = await InventoryCard.countDocuments(filter);
 
-    if (endIndex < results.totalCards) {
+    if (endIndex < results.totalUniqueCards) {
         results.next = {
             page: page + 1,
             limit: limit,
         };
     }
 
-    results.totalPages = Math.ceil(results.totalCards / limit);
+    results.totalPages = Math.ceil(results.totalUniqueCards / limit);
     results.cards = await scryfallCardsAPI.getCards(inventoryCards);
 
     res.status(200).json(results);
 });
 
+// @ desc  Get inventory size (total cards)
+// @route  GET /api/inventoryCards/:userId/size
+// @access Public
+const getInventorySize = asyncHandler(async (req, res) => {
+
+    const ownerId = req.params.userId;
+
+    if (!ownerId || !mongoose.Types.ObjectId.isValid(ownerId)) {
+        res.status(404);
+        throw new Error(`No inventory found with owner of id: ${ownerId}`)
+    }
+
+    const result = await InventoryCard.aggregate([
+        {
+            $match: { userId: mongoose.Types.ObjectId(ownerId) }
+        },
+        { 
+            $group: { _id: null, totalQuantity: { $sum: '$quantity' } }
+        }
+    ]);
+
+    if (!result) {
+        res.status(404);
+        throw new Error(`Error finding inventory size of user with ID: ${ownerId}`);
+    } else {
+        const totalQuantity = result.length > 0 ? result[0].totalQuantity : 0;
+        res.status(200).json(totalQuantity);
+    }
+});
 
 // @ desc  Add card with id/quantity to inventory 
 // @route  POST /api/inventoryCards
@@ -213,6 +243,7 @@ const deleteCards = asyncHandler(async (req, res) => {
 
 module.exports = {
     getCards,
+    getInventorySize,
     addCard,
     updateCard,
     deleteCards,

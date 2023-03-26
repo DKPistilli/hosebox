@@ -2,12 +2,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 100%;
-    font-size: 0.8rem
-  }
+    margin-top: -22px;
+}
   
-  .form-check-inline {
-    margin: 7px;
+.form-check-inline {
+    margin-left: 7px;
+    margin-right: 7px;
+}
+
+.input-field-and-button-container {
+    display: flex;
+    align-items: stretch;
+  }
+
+.button-container {
+    display: flex;
+    align-items: center;
   }
 
 .add-card-field {
@@ -18,22 +28,29 @@
 }
   
 .form-control.add-card-field {
+    text-align: left;
     width: 100%;
-    min-width: 400px;
+    min-width: 420px;
 }
 
 .add-card-button-container {
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .add-card-button {
+    display: flex;
     justify-content: center;
-    padding: 5px 10px;
     max-width: 200px
+}
+
+.form-group label {
+    font-size: smaller;
 }
 
 .form {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }

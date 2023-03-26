@@ -7,6 +7,7 @@
 ///      scryfallCards db calls to convert these names into fully populated cards for res to client
 
 const asyncHandler = require('express-async-handler');
+const mongoose     = require('mongoose');
 
 //import WishlistCard db + scryfall card helper function
 const WishlistCard     = require('../models/wishlistCardModel');
@@ -57,20 +58,51 @@ const getCards = asyncHandler(async (req, res) => {
     }
 
     // check if there is a next
-    results.totalCards = await WishlistCard.countDocuments(filter);
+    results.totalUniqueCards = await WishlistCard.countDocuments(filter);
 
-    if (endIndex < results.totalCards) {
+    if (endIndex < results.totalUniqueCards) {
         results.next = {
             page: page + 1,
             limit: limit,
         };
     }
 
-    results.totalPages = Math.ceil(results.totalCards / limit);
+    results.totalPages = Math.ceil(results.totalUniqueCards / limit);
 
     results.cards = await scryfallCardsAPI.getCards(wishlistCards);
 
     res.status(200).json(results);
+});
+
+// @ desc  Get wishlist size (total cards)
+// @route  GET /api/wishlistCards/:userId/size
+// @access Public
+const getWishlistSize = asyncHandler(async (req, res) => {
+
+    const ownerId = req.params.userId;
+
+    if (!ownerId || !mongoose.Types.ObjectId.isValid(ownerId)) {
+        res.status(404);
+        throw new Error(`No wishlist found with owner of id: ${ownerId}`)
+    }
+
+    const result = await WishlistCard.aggregate([
+        {
+            $match: { userId: mongoose.Types.ObjectId(ownerId) }
+        },
+        { 
+            $group: { _id: null, totalQuantity: { $sum: '$quantity' } }
+        }
+    ]);
+
+    if (!result) {
+        res.status(404);
+        throw new Error(`Error finding wishlist size of user with ID: ${ownerId}`);
+    } else {
+        const totalQuantity = result.length > 0 ? result[0].totalQuantity : 0;
+        console.log('total Quantity: ' + totalQuantity);
+        res.status(200).json(totalQuantity);
+    }
 });
 
 
@@ -208,6 +240,7 @@ const deleteCards = asyncHandler(async (req, res) => {
 
 module.exports = {
     getCards,
+    getWishlistSize,
     addCard,
     updateCard,
     deleteCards,

@@ -1,11 +1,12 @@
 /// CARD TABLE COMPONENT
 /// Takes in a prop of cards and returns a table of them
-/// props required: cards=[cards]
+/// props required: cards=[cards], "tableName", "tableStyle"
+/// props optional: number collectionSize, fx getCollection
 
 import CollectionCardTable from "./CollectionCardTable";
 import DeckCardTable       from "./DeckCardTable";
 
-function CardTable({ cards, tableName, tableStyle, collectionSize }) {
+function CardTable({ cards, tableName, tableStyle, collectionSize, getCollection }) {
     return (
         <div>
             {
@@ -18,6 +19,7 @@ function CardTable({ cards, tableName, tableStyle, collectionSize }) {
                         cards={ cards }
                         tableName={ tableName }
                         collectionSize={collectionSize}
+                        getCollection={getCollection}
                     />
             }
         </div>

@@ -21,7 +21,7 @@ function DeckCardTable({ cards, tableName }) {
     const { deckId } = useParams();
     const { user }   = useSelector((state) => state.auth);
 
-    const [tableCards, setTableCards] = useState(cards);
+    const [tableCards, setTableCards] = useState([]);
     const [totalCards, setTotalCards] = useState(0);
 
     // initiate state variable of sorted card arrays
@@ -31,6 +31,10 @@ function DeckCardTable({ cards, tableName }) {
         enchantments : [], planeswalkers: [],
         lands        : [], unmatched    : [],
     })
+
+    useEffect(() => {
+        setTableCards(cards);
+    }, [cards]);
 
     // define function to sort input cards by type for table display
     const sortCardsByType = useCallback(() => {

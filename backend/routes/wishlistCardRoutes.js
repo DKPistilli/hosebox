@@ -12,6 +12,7 @@ const { protect } = require('../middleware/authMiddleware');
 // import wishlist controller functions
 const {
     getCards,          // GET    /api/wishlists/:userId
+    getWishlistSize,   // GET    /api/wishlists/:userId/size
     addCard,           // POST   /api/wishlists/:userId
     updateCard,        // PUT    /api/wishlists/:userId
     deleteCards,       // DELETE /api/wishlists/:userId  
@@ -23,6 +24,7 @@ router.route('/').post(protect, addCard)
                  .delete(protect, deleteCards);
                  
 router.route('/:userId').get(getCards)
+router.route('/:userId/size').get(getWishlistSize)
 
 
 module.exports = router;

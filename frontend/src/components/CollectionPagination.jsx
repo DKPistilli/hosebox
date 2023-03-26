@@ -4,7 +4,7 @@ import '../styles/CollectionPagination.css';
 function CollectionPagination(props) {
     const { currentPage,
             setCurrentPage,
-            totalCards,
+            totalUniqueCards,
             cardsPerPage } = props;
 
     const handleChange = (page, pageSize) => {
@@ -16,7 +16,7 @@ function CollectionPagination(props) {
             <Pagination
                 style={{textAlign: "right", marginBottom: "8px"}}
                 current={currentPage}
-                total={totalCards}
+                total={totalUniqueCards}
                 pageSize={cardsPerPage}
                 onChange={handleChange}
                 size={"small"}

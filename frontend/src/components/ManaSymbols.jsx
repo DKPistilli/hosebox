@@ -3,18 +3,18 @@
 /// to the Magic: The Gathering image symbols for (2)(B)(B)
 /// props: manaString("{U}{B}{G}{W}{R}{etc}")
 
-function ManaSymbols(props) {
+function ManaSymbols({manaString}) {
 
-    const manaString    = props.manaString.toLowerCase();
+    const lowerCaseManaString = manaString ? manaString.toLowerCase() : "";
     const manaArray     = [];
     var   symbolString  = "";
 
     // split strings into substrings for help
     let i = 0;
 
-    while (i < manaString.length) {
+    while (i < lowerCaseManaString.length) {
 
-        switch (manaString[i]) {
+        switch (lowerCaseManaString[i]) {
 
             // if current character is {/, just look next
             case "{":
@@ -33,7 +33,7 @@ function ManaSymbols(props) {
 
             // if current char isn't {}, add it to symbolString, keep moving
             default:
-                symbolString += manaString[i]; 
+                symbolString += lowerCaseManaString[i]; 
                 i++;
         }
     }
