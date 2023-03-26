@@ -8,6 +8,8 @@ import Spinner from '../components/Spinner';
 
 import { register, reset } from '../features/auth/authSlice';
 
+import '../styles/LoginRegister.css'
+
 function Register() {
 
   const [formData, setFormData] = useState({
@@ -80,7 +82,7 @@ function Register() {
         </h1>
         <p>Please create an account</p>
       </section>
-      <section className="form">
+      <section className="form login-register-form">
         <form onSubmit={onSubmit}>
         <div className="form-group">
             <input

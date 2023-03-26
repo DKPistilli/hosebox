@@ -2,12 +2,13 @@
 /// DECKSLIST COMPONENT (for the sidebar)
 /// Gets decklist
 import { useEffect, useState }   from "react";
-import { Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from 'axios';
 import { BsPlusSquare } from 'react-icons/bs'
 
 import '../styles/Deckslist.css';
+import '../styles/Sidebar.css';
 
 const USER_API_URL = '/api/users';
 const DECK_API_URL = '/api/decks';
@@ -18,10 +19,12 @@ function Deckslist(props) {
     const ownerId  = props.ownerId;
 
     const navigate = useNavigate();
+    const { deckId } = useParams(); // determine if we're on deck's page.
 
     const [decksPublic, setDecksPublic]   = useState([]);
     const [decksPrivate, setDecksPrivate] = useState([]);
     const [hasPrivateAccess, setHasPrivateAccess] = useState(false);
+    
 
     useEffect(() => {
 
@@ -76,7 +79,10 @@ function Deckslist(props) {
     const deckMapper = (deck) =>
     (<div key={deck.deckId}>
         <Link to ={`/decks/${deck.deckId}`}>
-            {deck.name}
+            { deck.deckId === deckId ? 
+                <div className="active-sidebar-tab">{deck.name}</div> :
+                <div>{deck.name}</div>
+            }
         </Link>
     </div>);
 
@@ -84,7 +90,7 @@ function Deckslist(props) {
     const createNewDeck = async () => {
         const config  = {
             headers: { Authorization: `Bearer ${user.token}` },
-            params: {name: "Shiny New Deck!"},
+            params : { deckName: "New Potential" },
         };
 
         const newDeck = await axios.post(DECK_API_URL, null, config);

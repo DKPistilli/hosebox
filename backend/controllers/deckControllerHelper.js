@@ -4,6 +4,48 @@ const asyncHandler = require('express-async-handler');
 const Deck             = require('../models/deckModel');
 const User             = require('../models/userModel');
 
+const handleDeckNameChange = asyncHandler(async (req, res, deckName, deckId) => {
+
+    if (!deckName || !deckId) {
+        res.status(400);
+        throw new Error('deckName and ID required for updating Deck Name.');
+    }
+
+    const filter   = { _id: deckId };
+    const update   = { name: deckName };
+    const settings = { new: true };
+
+    // update deck in decksDB
+    const deck = await Deck.findOneAndUpdate(filter, update, settings);
+
+    if (!deck || (deck.name !== deckName)) {
+        res.status(400);
+        throw new Error(`No deck found with id: ${deckId} at updateDeckName`);
+    }
+
+    // then, find and update user deckName (could be public or private)
+    const user = await User.findById(req.user.id);
+    const publicIndex = user.decks_public.findIndex((deck) => deck.deckId.toString() === deckId);
+    const privateIndex = user.decks_private.findIndex((deck) => deck.deckId.toString() === deckId);
+
+    // if deck was public, delete from public list. Elif private, from private. Else, throw Error.
+    if (publicIndex !== -1) {
+        user.decks_public[publicIndex].name = deckName;
+        await user.save();
+        res.status(204).send();
+    } else if (privateIndex !== -1) {
+        user.decks_private[privateIndex].name = deckName;
+        await user.save();
+        res.status(204).send();
+    } else {
+        res.status(404);
+        throw new Error(`Error deleting deck. No deck found in users public/private list with id: ${deckId}`);
+    }
+
+
+
+});
+
 // updateDeckPrivacy helper function
 const handlePrivacyChange = asyncHandler(async (req, res, access) => {
 
@@ -148,7 +190,7 @@ const putCardInList = asyncHandler(async (req, res, deckId, listType, name, quan
 
     // save and send!
     await deck.save();
-    res.status(201).send();
+    return deck[listType];
 });
 
 const deleteCardInList = asyncHandler(async (req, res, deckId, listType, name) => {
@@ -175,7 +217,7 @@ const deleteCardInList = asyncHandler(async (req, res, deckId, listType, name) =
     } else {
         deck[listType].splice(indexToRemove, 1);
         await deck.save();
-        res.status(204).send();
+        return deck[listType];
     }
 });
 
@@ -211,6 +253,7 @@ const handleDeleteDeck = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+    handleDeckNameChange,
     handlePrivacyChange,
     putCardInList,
     deleteCardInList,

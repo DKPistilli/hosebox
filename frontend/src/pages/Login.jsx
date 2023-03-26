@@ -7,6 +7,8 @@ import Spinner from '../components/Spinner';
 
 import { login, reset } from '../features/auth/authSlice';
 
+import '../styles/LoginRegister.css'
+
 function Login() {
 
   // load in state/redux vars and initialize nav/dispatch
@@ -71,7 +73,7 @@ function Login() {
         </h1>
         <p>Enter email address and password</p>
       </section>
-      <section className="form">
+      <section className="form login-register-form">
         <form onSubmit={onSubmit}>
           <div className="form-group">
             <input

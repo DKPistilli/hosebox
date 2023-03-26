@@ -5,6 +5,7 @@ import Sidebar    from '../components/Sidebar';
 import Spinner    from '../components/Spinner';
 import CardTable  from '../components/CardTable';
 import CardAdder  from '../components/CardAdder';
+import DeckTitle  from '../components/DeckTitle';
 import DeleteDeck from '../components/DeleteDeck';
 
 // import http request service
@@ -68,11 +69,46 @@ function Deck() {
 
   }, [deck, user])
 
+  // onSubmit fx for adding card of cardName to deck
+  const addCardToDeck = async ( cardName, listType ) => {
+    if (!cardName || !deckId || !user) {
+      return;
+    } else {
+
+      // @query  listType=(listtype)&cardName=(cardName)&quantity=(quantity to set)
+      const config = {
+        headers: { Authorization: `Bearer ${user.token}` },
+        params : { 
+          cardName: cardName,
+          listType: listType,
+          quantity: 1,
+        },
+      };
+
+      await axios.put(`${DECK_API_URL}/${deckId}`, null, config);
+    }
+  }
+
+  // onSubmit fx for updating the deck's title
+  const updateDeckTitle = async (newName) => {
+    if (!newName || !deckId || !user) {
+      return;
+    } else {
+
+      const config = {
+        headers: { Authorization: `Bearer ${user.token}` },
+        params : { deckName: newName },
+      };
+
+      await axios.put(`${DECK_API_URL}/${deckId}/name`, null, config);
+      navigate(0);
+    }
+  };
+
   const deleteDeck = async () => {
     if (!deck || !deckId || !user) {
       return;
     } else {
-      console.log('deleting deck with id: ' + deckId)
       const config = {
         headers: { Authorization: `Bearer ${user.token}`},
       };
@@ -93,17 +129,25 @@ function Deck() {
             <Sidebar activeTab="" owner={ owner } />
           </div>
           <div className='deck-header'>
-            <h3>{ !deck ? "" : deck.name }</h3>
+            <DeckTitle
+              deckTitle={deck.name}
+              updateTitle={updateDeckTitle}
+            />
           </div>
           <br />
           <div className='card-adder'>
-            <CardAdder apiUrl={DECK_API_URL} updateParent={getDeck} />
+          { (user) && (user._id === owner._id) ?
+            <CardAdder
+                addCard={addCardToDeck}
+                isDeck={true}
+            />
+            : <></> }
           </div>
           <div className='deck-table-main'>
             {deck.mainboard && (
               <CardTable cards={deck.mainboard}
                         tableName={"Mainboard"}
-                        key={`scratchpad-${deckId}`}
+                        key={`mainboard-${deckId}`}
                         tableStyle={"deck"} />
             )}
           </div>

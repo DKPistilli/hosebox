@@ -16,7 +16,7 @@ import CollectionPagination from './CollectionPagination';
 import axios from 'axios';
 
 // cards per page in Collection
-const CARDS_PER_PAGE = 14;
+const CARDS_PER_PAGE = 16;
 
 function Collection({ apiUrl, owner, collectionName }) {
     
@@ -29,7 +29,6 @@ function Collection({ apiUrl, owner, collectionName }) {
     const [currentPage, setCurrentPage]       = useState(1);
     // eslint-disable-next-line
     const [cardName, setCardName] = useState("");
-    const [trigger, setTrigger] = useState(false);
 
     const getCollection = useCallback( async () => {
 
@@ -44,7 +43,7 @@ function Collection({ apiUrl, owner, collectionName }) {
         const response = await axios.get(apiUrl + "/" + owner._id, {
             params: {
                 page : currentPage,
-                name : cardName,
+                cardName : cardName,
                 limit: CARDS_PER_PAGE,
             }
         });
@@ -60,13 +59,13 @@ function Collection({ apiUrl, owner, collectionName }) {
     // request user's collection from server
     useEffect(() => {
         getCollection();
-    }, [getCollection, currentPage, cardName, trigger]);
+    }, [getCollection, currentPage, cardName]);
 
     // define how CardAdder should addCards
     const addCard = async (cardName) => {
         const config = {
             headers: { Authorization: `Bearer ${user.token}` },
-            params : { name: cardName },
+            params : { cardName: cardName },
         };
         const res = await axios.post(apiUrl, null, config);
         console.log(res.data);
@@ -81,7 +80,6 @@ function Collection({ apiUrl, owner, collectionName }) {
             { (user) && (user._id === owner._id) ?
             <CardAdder
                 addCard={addCard}
-                updateTrigger={setTrigger}
             />
             : <></> }
             <CollectionPagination
@@ -90,7 +88,11 @@ function Collection({ apiUrl, owner, collectionName }) {
                 totalCards={collectionSize}
                 cardsPerPage={CARDS_PER_PAGE}
             />
-            <CardTable cards={collection} tableName={collectionName} tableStyle="collection" />
+            <CardTable cards={collection}
+                       tableName={collectionName}
+                       tableStyle="collection"
+                       collectionSize={collectionSize}
+            />
         </div>
     )
 }

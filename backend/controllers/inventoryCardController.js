@@ -17,14 +17,14 @@ const CARD_RES_LIMIT = 100;
 
 // @ desc  Get inventory, filtered by page/search params
 // @route  GET /api/inventoryCards/:userId
-// @query  page=(page number)&limit=(# of results)&name=(card name or portion of card name)
+// @query  page=(page number)&limit=(# of results)&cardName=(card cardName or portion of card name)
 // @res    res.cards, res.previous, res.next, res.totalPages
 // @access Public
 const getCards = asyncHandler(async (req, res) => {
 
     const page  = parseInt(req.query.page)  || 1;
     const limit = parseInt(req.query.limit) || CARD_RES_LIMIT;
-    const name  = req.query.name || "";
+    const cardName  = req.query.cardName || "";
 
     const startIndex = (page - 1) * limit // 0 based index, ofc
     const endIndex   = page * limit;      // page we're on * results per page
@@ -40,10 +40,10 @@ const getCards = asyncHandler(async (req, res) => {
         userId: req.params.userId,
     };
 
-    if (name !== undefined) {
+    if (cardName !== undefined) {
         filter = {
             ...filter,
-            name: {"$regex": name, "$options": "i" } };
+            name: {"$regex": cardName, "$options": "i" } };
     }
 
     const inventoryCards = await InventoryCard
@@ -80,21 +80,21 @@ const getCards = asyncHandler(async (req, res) => {
 
 // @ desc  Add card with id/quantity to inventory 
 // @route  POST /api/inventoryCards
-// @query  name=(name) -- if card is new to inventory, create. If card is already found, card.quantity++
+// @query  cardName=(cardName) -- if card is new to inventory, create. If card is already found, card.quantity++
 // @access Private
 const addCard = asyncHandler(async (req, res) => {
 
-    const name        = req.query.name;
-    const isValidName = await scryfallCardsAPI.isValidCardName(name);
+    const cardName        = req.query.cardName;
+    const isValidName = await scryfallCardsAPI.isValidCardName(cardName);
     const quantity    = 1;
 
-    if (!name || !isValidName) {
+    if (!cardName || !isValidName) {
         res.status(400);
         throw new Error('Valid card name required for card addition operation.');
     }
 
     // find card by userId and name
-    const inventoryCard = await InventoryCard.findOne({userId: req.user.id, name: name});
+    const inventoryCard = await InventoryCard.findOne({userId: req.user.id, name: cardName});
     let inventToScryfallCard = null;
 
     // if card doesn't exist in inventory, add it!
@@ -103,7 +103,7 @@ const addCard = asyncHandler(async (req, res) => {
 
         newCard = {
             userId: req.user.id,
-            name: name,
+            name: cardName,
             quantity: quantity,
         };
 
@@ -117,7 +117,7 @@ const addCard = asyncHandler(async (req, res) => {
     
     if (!inventToScryfallCard) {
         res.status(500);
-        throw new Error('Server error adding card with name: ' + name);
+        throw new Error('Server error adding card with name: ' + cardName);
     }
 
     // get full scryfall card info for this updated card -- needs to be array
@@ -129,17 +129,17 @@ const addCard = asyncHandler(async (req, res) => {
 
 // @ desc  update card by name with quantity, deleting if needed
 // @route  PUT /api/inventoryCards
-// @query  name=(name)&quantity=(quantity to set) -- unlike addCard, quantity is required!
+// @query  cardName=(cardName)&quantity=(quantity to set) -- unlike addCard, quantity is required!
 // @access Private
 const updateCard = asyncHandler(async (req, res) => {
 
-    const name   = req.query.name;
+    const cardName   = req.query.cardName;
     const quantity = Number(req.query.quantity);
 
     // validate card name
-    const isValidName = await scryfallCardsAPI.isValidCardName(name);
+    const isValidName = await scryfallCardsAPI.isValidCardName(cardName);
 
-    if (!name || !isValidName) {
+    if (!cardName || !isValidName) {
         res.status(400);
         throw new Error('Valid card name required for card addition operation.');
     }
@@ -150,16 +150,16 @@ const updateCard = asyncHandler(async (req, res) => {
         throw new Error('Quantity required (must be non-negative integer).')
     }
 
-    // find card by userId and name
+    // find card by userId and cardName
     const filter = {
         userId: req.user.id,
-        name  : name,
+        name  : cardName,
     };
 
     // update card with new Quantity
     const update = {
         userId  : req.user.id,
-        name    : name,
+        name    : cardName,
         quantity: quantity,
     };
 
@@ -181,7 +181,7 @@ const updateCard = asyncHandler(async (req, res) => {
 
     if (!card) {
         res.status(500);
-        throw new Error('Server error adding card with name: ' + name);
+        throw new Error('Server error adding card with name: ' + cardName);
     }
 
     // get full scryfall card info for this updated card -- needs to be array

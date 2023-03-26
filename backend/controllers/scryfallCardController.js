@@ -21,7 +21,7 @@ const ScryfallCard = require('../models/scryfallCardModel');
 // @access Internal Only
 const getCards = asyncHandler(async (cardsArray) => {
 
-    if (!cardsArray) {
+    if (!cardsArray || !Array.isArray(cardsArray)) {
         throw new Error('Card array required to query ScryfallCards Database.');
     }
 

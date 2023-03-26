@@ -1,0 +1,19 @@
+.deck-title-input {
+    border: none;
+    outline: none;
+    text-align: center;
+    font-size: xx-large;
+    font-family: 'Poppins', sans-serif;
+    background-color: transparent;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add a smooth transition for background-color and box-shadow */
+    box-shadow: none; /* Initialize box-shadow as none */
+}
+
+.deck-title-input:focus {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add box-shadow when the input is focused */
+}
+
+.deck-title-input:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

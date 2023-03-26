@@ -16,7 +16,8 @@ const Deck             = require('../models/deckModel');
 const User             = require('../models/userModel');
 const scryfallCardsAPI = require('./scryfallCardController');
 
-const { handlePrivacyChange,
+const { handleDeckNameChange,
+        handlePrivacyChange,
         putCardInList,
         deleteCardInList,
         handleDeleteDeck, } = require('./deckControllerHelper');
@@ -59,15 +60,15 @@ const getDeck = asyncHandler(async (req, res) => {
 
 // @ desc  Create new deck
 // @route  POST /api/decks/
-// @query  name=(name) -- optional, will default to ""
+// @query  deckName=(deckName) -- optional, will default to ""
 // @access Private
 const addDeck = asyncHandler(async (req, res) => {
-    const name = req.query.name || "";
+    const deckName = req.query.deckName || "";
     const userId = req.user.id; // assigned by authMiddleware
 
     // add new deck to decks database
     const deck = await Deck.create({
-        name,
+        name: deckName,
         userId,
     });
 
@@ -98,23 +99,24 @@ const addDeck = asyncHandler(async (req, res) => {
 
 // @ desc  update deck by listtype/cardId/quantity, deleting if needed
 // @route  PUT /api/decks/:deckId
-// @query  listType=(listtype)&name=(cardName)&quantity=(quantity to set)
+// @query  listType=(listtype)&cardName=(cardName)&quantity=(quantity to set)
+// @res    [cards] (updated cards array of the deck listType, main/side/scratch)
 // @access Private
 const updateDeck = asyncHandler(async (req, res) => {
 
     const userId   = req.user.id;
     const deckId   = req.params.deckId;
     const listType = req.query.listType;
-    const name     = req.query.name;
+    const cardName = req.query.cardName;
     const quantity = parseInt(req.query.quantity);
 
     // confirm req has all  parameters (note: this doesn't confirm their accuracy, just presence)
-    if (!userId || !name || !mongoose.Types.ObjectId.isValid(deckId) || (quantity < 0)) {
+    if (!userId || !cardName || !mongoose.Types.ObjectId.isValid(deckId) || (quantity < 0)) {
         res.status(400);
         throw new Error('Request parameters invalid to update card in Deck.');
     }
 
-    // get deck from decksDb
+    // get and verify deck from decksDb
     const deck = await Deck.findOne({_id: deckId});
 
     if (!deck) {
@@ -122,12 +124,25 @@ const updateDeck = asyncHandler(async (req, res) => {
         throw new Error(`No deck found with id: ${deckId}`);
     }
 
+    var cardsArray = [];
+
     // if quantity = 0, delete card from list (both helpers send res to client)
     if (quantity === 0) {
-        deleteCardInList(req, res, deckId, listType, name);
+        cardsArray = await deleteCardInList(req, res, deckId, listType, cardName);
     } else {
-        putCardInList(req, res, deckId, listType, name, quantity);
+        cardsArray = await putCardInList(req, res, deckId, listType, cardName, quantity);
     }
+
+    const scryCardsArray = await scryfallCardsAPI.getCards(cardsArray);
+    res.status(201).json(scryCardsArray);
+});
+
+// @ desc  update deck by listtype/cardId/quantity, deleting if needed
+// @route  PUT /api/decks/:deckId/name
+// @query  deckName="New Deck Name" Required.
+// @access Private
+const updateDeckName = asyncHandler(async (req, res) => {
+    handleDeckNameChange(req, res, req.query.deckName, req.params.deckId)
 });
 
 // @ desc  update deck by listtype/cardId/quantity, deleting if needed
@@ -149,6 +164,7 @@ module.exports = {
     getDeck,
     addDeck,
     updateDeck,
+    updateDeckName,
     updateDeckPrivacy,
     deleteDeck,
 };

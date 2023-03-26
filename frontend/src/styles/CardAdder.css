@@ -1,0 +1,39 @@
+.radio-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    font-size: 0.8rem
+  }
+  
+  .form-check-inline {
+    margin: 7px;
+  }
+
+.add-card-field {
+    justify-content: center;
+    height: 30px;
+    padding: 5px;
+    width: 100%;
+}
+  
+.form-control.add-card-field {
+    width: 100%;
+    min-width: 400px;
+}
+
+.add-card-button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.add-card-button {
+    justify-content: center;
+    padding: 5px 10px;
+    max-width: 200px
+}
+
+.form {
+    display: flex;
+    justify-content: center;
+}

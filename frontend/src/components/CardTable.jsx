@@ -5,7 +5,7 @@
 import CollectionCardTable from "./CollectionCardTable";
 import DeckCardTable       from "./DeckCardTable";
 
-function CardTable({ cards, tableName, tableStyle, updateQuantity }) {
+function CardTable({ cards, tableName, tableStyle, collectionSize }) {
     return (
         <div>
             {
@@ -17,6 +17,7 @@ function CardTable({ cards, tableName, tableStyle, updateQuantity }) {
                     <CollectionCardTable
                         cards={ cards }
                         tableName={ tableName }
+                        collectionSize={collectionSize}
                     />
             }
         </div>

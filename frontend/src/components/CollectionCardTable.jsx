@@ -2,7 +2,8 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 
-import { CTable, CTableHead, CTableBody, CTableRow, CTableHeaderCell, CTableDataCell } from '@coreui/react'
+import { CTable, CTableHead, CTableBody, CTableRow,
+    CTableHeaderCell, CTableDataCell, CTableCaption } from '@coreui/react'
 import ManaSymbols   from './ManaSymbols';
 import RaritySymbols from './RaritySymbols';
 import Card          from './Card';
@@ -11,7 +12,7 @@ import QuantityForm from './QuantityForm';
 
 import '../styles/CardTable.css';
 
-function CollectionCardTable({ cards, tableName }) {
+function CollectionCardTable({ cards, tableName, collectionSize }) {
 
     const { ownerId } = useParams();
     const { user }    = useSelector((state) => state.auth);
@@ -34,7 +35,7 @@ function CollectionCardTable({ cards, tableName }) {
         const config = {
             headers: { Authorization: `Bearer ${user.token}`},
             params : {
-                name: cardName,
+                cardName: cardName,
                 quantity: quantity,
             }
         };
@@ -48,6 +49,7 @@ function CollectionCardTable({ cards, tableName }) {
     
     return (
         <CTable bordered className='ctable' >
+            <CTableCaption className="caption-left">{`${tableName} (${collectionSize} cards)`}</CTableCaption>
             <CTableHead>
                 <CTableRow>
                     <CTableHeaderCell scope="col">#</CTableHeaderCell>
@@ -62,8 +64,8 @@ function CollectionCardTable({ cards, tableName }) {
                 {cards.map((card) => (
                     <CTableRow key={`card${card.cardId}`}>
                         <QuantityForm className='quantity-col' quantity={card.quantity} cardName={card.name} handleSubmit={updateCardQuantity} />
-                        <CTableDataCell className='name'      key={`name${card.cardId}`}>
-                            {<Card name={card.name} imageUrl={card.image_uris.normal} uri={card.related_uris.gatherer} />}
+                        <CTableDataCell className='cardName' key={`cardName${card.cardId}`}>
+                            {<Card cardName={card.name} imageUrl={card.image_uris.normal} uri={card.related_uris.gatherer} />}
                         </CTableDataCell>
                         <CTableDataCell className='type_line' key={`type${card.cardId}`}>
                             {card.type_line  }

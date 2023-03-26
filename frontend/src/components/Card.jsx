@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../styles/Card.css";
 
-const Card = ({ name, imageUrl, uri }) => {
+const Card = ({ cardName, imageUrl, uri }) => {
   const [showImage, setShowImage] = useState(false);
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
   const hoverContainerRef = useRef(null);
@@ -55,10 +55,10 @@ const Card = ({ name, imageUrl, uri }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <a href={uri} target="_blank" rel="noreferrer">{name}</a>
+      <a href={uri} target="_blank" rel="noreferrer">{cardName}</a>
       {showImage && (
         <div className="hover-image" style={imageStyle}>
-          <img src={imageUrl} alt={name} />
+          <img src={imageUrl} alt={cardName} />
         </div>
       )}
     </span>

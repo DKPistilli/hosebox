@@ -1,15 +1,25 @@
 import { CTableDataCell } from '@coreui/react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { toast } from 'react-toastify'
 import '../styles/QuantityForm.css'
 
 function QuantityForm({quantity, cardName, handleSubmit}) {
 
     const [currentQuantity, setCurrentQuantity] = useState(parseInt(quantity));
-
+    const inputRef = useRef(null);
 
     const submitQuantity = (e) => {
         e.preventDefault();
-        handleSubmit(currentQuantity, cardName);
+
+        if (isNaN(currentQuantity)) {
+            toast.error('Quantity must be a number!');
+        } else if (currentQuantity < 0) {
+            toast.error('Quantity must be greater than or equal to zero!');
+        } else {
+            handleSubmit(currentQuantity, cardName);
+        }
+
+        inputRef.current.blur();
     }
 
     const handleChange = (e) => {
@@ -21,6 +31,7 @@ function QuantityForm({quantity, cardName, handleSubmit}) {
         <CTableDataCell className='quantity'>
             <form onSubmit={submitQuantity} >
             <input
+                ref={inputRef}
                 className='quantity-input'
                 onChange={handleChange}
                 value={currentQuantity}
@@ -35,4 +46,4 @@ function QuantityForm({quantity, cardName, handleSubmit}) {
     );
 }
 
-export default QuantityForm
+export default QuantityForm;

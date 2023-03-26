@@ -21,6 +21,7 @@ function DeckCardTable({ cards, tableName }) {
     const { deckId } = useParams();
     const { user }   = useSelector((state) => state.auth);
 
+    const [tableCards, setTableCards] = useState(cards);
     const [totalCards, setTotalCards] = useState(0);
 
     // initiate state variable of sorted card arrays
@@ -52,8 +53,8 @@ function DeckCardTable({ cards, tableName }) {
 
         // for each card, match it up to each cardtype,
         // and add to correct sorted Array in state
-        cards.forEach((card) => {
-
+        tableCards.forEach((card) => {
+            
             let matched = false;
             setTotalCards((count) => count + card.quantity);
 
@@ -73,16 +74,16 @@ function DeckCardTable({ cards, tableName }) {
             setSortedByType(sortedCards);
         }
 
-    )}, [cards]);
+    )}, [tableCards]);
 
     // sort cards when mounted / cards are updated
     useEffect(() => {
-        if (cards) {
+        if (tableCards) {
             sortCardsByType();
         }
-    }, [cards, sortCardsByType]);
+    }, [tableCards, sortCardsByType]);
     
-    if (!cards) {
+    if (!tableCards) {
         return (<Spinner />) ;
     }
 
@@ -94,25 +95,23 @@ function DeckCardTable({ cards, tableName }) {
             headers: { Authorization: `Bearer ${user.token}`},
             params : {
                 listType: tableName.toLowerCase(),
-                name: cardName,
+                cardName: cardName,
                 quantity: quantity,
             }
         };
         
         // update card quantity
-        await axios.put(`${DECK_API_URL}/${deckId}`, null, config)
-
-        // reload page to refresh inventory w/ new quant
-        window.location.reload();
+        const res = await axios.put(`${DECK_API_URL}/${deckId}`, null, config);
+        setTableCards(res.data);
     }
 
     // tablify a card
     const renderCard = (card) => {
         return(
             <CTableRow key={`card${card.cardId}`}>
-                <QuantityForm className='quantity-col' quantity={card.quantity} cardName={card.name} handleSubmit={updateCardQuantity} />
+                <QuantityForm className='quantity-col' quantity={card.quantity} cardName={card.name} card={card} handleSubmit={updateCardQuantity} />
                 <CTableDataCell className='name'      key={`name${card.cardId}`}>
-                    {<Card name={card.name} imageUrl={card.image_uris.normal} uri={card.related_uris.gatherer} />}
+                    {<Card cardName={card.name} imageUrl={card.image_uris.normal} uri={card.related_uris.gatherer} />}
                 </CTableDataCell>
                 <CTableDataCell className='type_line' key={`type${card.cardId}`}>
                     {card.type_line}
@@ -148,7 +147,7 @@ function DeckCardTable({ cards, tableName }) {
 
     // return the table!
     return (
-        <CTable bordered className='ctable'>
+        <CTable bordered className='ctable' style={{padding: '4px'}}>
             <CTableCaption className="caption-left">{`${tableName} (${totalCards} cards)`}</CTableCaption>
             <CTableHead>
                 <CTableRow>
