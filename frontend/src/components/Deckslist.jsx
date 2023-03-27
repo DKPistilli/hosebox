@@ -101,9 +101,9 @@ function Deckslist(props) {
           )}
         </div>
       </div>
-      {decksPublic.length > 0 ? <p><i>Public</i></p> : <></>}
-      {decksPublic.length > 0 && decksPublic.map(deckMapper)}
-      {decksPrivate.length > 0 ? <p><i>Private</i></p> : <></>}
+      { decksPublic.length > 0 ? <p style={{margin: '8px'}}><i>Public</i></p>  : <></>}
+      { decksPublic.length > 0 && decksPublic.map(deckMapper)}
+      {decksPrivate.length > 0 ? <p style={{margin: '8px'}}><i>Private</i></p> : <></>}
       {decksPrivate.length > 0 && decksPrivate.map(deckMapper)}
     </div>
   );

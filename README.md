@@ -23,10 +23,10 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 
 - [ ] Decks
     - [X] design deckSchema and corresponding api calls. Big Question: how to structure mainboard/sideboard/scratchpad (needs privateList option! don't forget).
-    - [ ] implement decks model, router, and controller
+    - [X] implement decks model, router, and controller
 - [ ] Users
     - [ ] Validate username (no weird chars, no spaces)
-    - [ ] Add user GET func which returns username and (public) decks
+    - [X] Add user GET func which returns username and (public) decks
     - [ ] Add FOLLOWING [{name, userId}] so users can follow others
 - [X] update api to NO LONGER USE CARDIDS, instead taking cardNames
 - [X] inventoryCards
@@ -44,18 +44,18 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
     - [X] implement addCard
     - [ ] implement addCardList
     
-- [ ] Sidebar
+- [X] Sidebar
     - [X] implement <Sidebar /> component which has a button to view <Inventory />, <Wishlist />, <Decks />
-    - [ ] Create file structure for Sidebar so that decks can display down the sidebar (and scroll)
-    - [ ] implement <Decks /> component which grabs all decks w/ userId and lists them on left sidebar. Clicking navs to hosebox.net/decks/:deckId
+    - [X] Create file structure for Sidebar so that decks can display down the sidebar (and scroll)
+    - [X] implement <Decks /> component which grabs all decks w/ userId and lists them on left sidebar. Clicking navs to hosebox.net/decks/:deckId
 - [ ] Register
     - [X] Hide passwords
     - [ ] Validate username (no weird chars, no spaces)
-- [ ] Deckview
-    - [ ] design and implement <Deckview /> page/component, which is GUI for user to view/edit their decklists
-    - [ ] mainboard/sideboard/scratchpad
+- [X] Deckview
+    - [X] design and implement <Deckview /> page/component, which is GUI for user to view/edit their decklists
+    - [X] mainboard/sideboard/scratchpad
 - [ ] Fix Toast not displaying err messages correctly
-- [ ] <ManaVisualizer /> component
+- [X] <ManaVisualizer /> component
 - [ ] \(potential) add "League" to front-end
     - [ ] create "/league" page and add League button to <Header/>
     - [ ] create some sort of league schedule-view and/or standings-view.

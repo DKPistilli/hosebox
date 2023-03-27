@@ -5,11 +5,11 @@ import '../styles/Footer.css';
 const Footer = () => {
     return (
         <CFooter>
-            <div>
+            <div className='footer'>
                 <br />
                 <div className="footer-intro">Created by </div>
                 <div className='footer-link'>
-                    <a href="https://github.com/DKPistilli">
+                    <a href="/about">
                         Dorian, the Baldest - Legendary Creature - Human Wizard
                     </a>
                 </div>

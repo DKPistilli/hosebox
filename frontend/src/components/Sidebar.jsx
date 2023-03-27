@@ -41,9 +41,7 @@ const Sidebar = (props) => {
 
   return (
     <div className="sidebar">
-      <div>
         <h2>Collections</h2>
-      </div>
       <div className="tab-bar">
         {tabData.map(mapTabs)}
       </div>
