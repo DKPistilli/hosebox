@@ -33,7 +33,7 @@ const getCards = asyncHandler(async (req, res) => {
 
     if (!req.params.userId) {
         res.status(400);
-        throw new Error('User Id Required in params to Get Cards.');
+        throw new Error('User Id required to get inventory.');
     }
 
     // filter by userId and by cardName (if given)
@@ -147,7 +147,7 @@ const addCard = asyncHandler(async (req, res) => {
     
     if (!inventToScryfallCard) {
         res.status(500);
-        throw new Error('Server error adding card with name: ' + cardName);
+        throw new Error('Server error adding card with name: ' + cardName + '.');
     }
 
     // get full scryfall card info for this updated card -- needs to be array
@@ -211,7 +211,7 @@ const updateCard = asyncHandler(async (req, res) => {
 
     if (!card) {
         res.status(500);
-        throw new Error('Server error adding card with name: ' + cardName);
+        throw new Error('Server error adding card with name: ' + cardName + '.');
     }
 
     // get full scryfall card info for this updated card -- needs to be array

@@ -17,7 +17,7 @@ const wishlistCardSchema = mongoose.Schema({
 
     "name": {
         type: String, // id to card in total_cards db
-        required: [true, "Wishlist Card Name required."],
+        required: [true, "Card Name required for adding card to wishlist."],
     },
 
     "quantity": {

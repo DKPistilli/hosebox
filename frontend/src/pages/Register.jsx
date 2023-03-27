@@ -2,13 +2,12 @@ import { useState, useEffect } from 'react';
 // selector allows us to select something from state, dispatch gives access to functions
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { FaUser } from 'react-icons/fa';
 import Spinner from '../components/Spinner';
-
 import { register, reset } from '../features/auth/authSlice';
+import '../styles/LoginRegister.css';
 
-import '../styles/LoginRegister.css'
+import { toast } from 'react-toastify';
 
 function Register() {
 
@@ -29,6 +28,16 @@ function Register() {
     isError,
     isSuccess,
     message} = useSelector((state) => state.auth);
+
+  // basic client-side username/email validation (NOT EXTREMELY THOROUGH!)
+  const isValidUsername = (username) => {
+    const usernameRegex = /^[a-zA-Z0-9]{6,}$/;
+    return usernameRegex.test(username);
+  };
+  const isValidEmail = (email) => {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(email);
+  };
 
   //setup use effect to [do thing x] when auth state changes  
   useEffect(() => {
@@ -59,6 +68,10 @@ function Register() {
     // verify "confirm password" and dispatch register function w/ inputted Data
     if (password !== password2) {
       toast.error('Passwords do not match.');
+    } else if (!isValidUsername(name)) {
+      toast.error('Username must be at least 6 characters long and contain only letters and numbers.');
+    } else if (!isValidEmail(email)) {
+      toast.error('Please enter a valid email address.');
     } else {
       const userData = {
         'name': name,

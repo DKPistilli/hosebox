@@ -31,7 +31,7 @@ const getDeck = asyncHandler(async (req, res) => {
     // throw error if given invalid type of ID
     if (!mongoose.Types.ObjectId.isValid(deckId)) {
         res.status(400);
-        throw new Error('Request sent with invalid deckId');
+        throw new Error('Request sent with invalid deckId.');
     }
     
     const deck = await Deck.findOne({_id: req.params.deckId})
@@ -74,7 +74,7 @@ const addDeck = asyncHandler(async (req, res) => {
 
     if (!deck) {
         res.status(500)
-        throw new Error('Error creating deck.');
+        throw new Error('Server error while creating deck.');
     }
 
     // add ref to deck to associated user
@@ -91,7 +91,7 @@ const addDeck = asyncHandler(async (req, res) => {
 
     if (!updatedUser) {
         res.status(500);
-        throw new Error('Error updating users decks_public collection');
+        throw new Error("Server error while updating the 'decks_public' collection");
     }
 
     res.status(201).json(deck);

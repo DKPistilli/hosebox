@@ -16,7 +16,7 @@ const inventoryCardSchema = mongoose.Schema({
 
     "name": {
         type: String, // card name
-        required: [true, "Card name required."],
+        required: [true, "Card name require for adding card to inventory."],
     },
 
     "quantity": {

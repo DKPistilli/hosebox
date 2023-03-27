@@ -25,6 +25,11 @@ function Login() {
 
   const { email, password } = formData;
 
+  const isValidEmail = (email) => {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(email);
+  };
+
   // handle response from server to our login request
   useEffect(() => {
     if (isError) {
@@ -54,10 +59,12 @@ function Login() {
     // verify that both fields have been filled
     if (!email || !password) {
       toast.error('Please fill in both email and password.');
+    } else if (!isValidEmail(email)) {
+      toast.error('Please enter a valid email address.');
+    } else {
+      dispatch(login({ email, password }));
     }
 
-    // call login funtion with form input data
-    dispatch(login({ email, password }));
   };
 
   // spin while waiting for server

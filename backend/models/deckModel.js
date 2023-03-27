@@ -31,7 +31,7 @@ const deckSchema = mongoose.Schema({
 
     "name": {
         type: String,
-        default: "New Decklist",
+        default: "Generic Deck Name",
     },
 
     "isPublic": {

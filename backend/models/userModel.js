@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const deckSubSchema = {
     deckId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: [true, "Deck ID for decks owner required."],
+        required: [true, "Deck ID required when adding deck to User's public and/or private decks."],
         ref: 'Deck'
     },
 
@@ -23,18 +23,19 @@ const userSchema = mongoose.Schema({
 
     name: {
         type: String,
-        required: [true, "Name required for User"],
+        required: [true, "Name required for creating User."],
+        unique: true,
     },
 
     email: {
         type: String,
-        required: [true, "Email required for User"],
+        required: [true, "Email required for creating User."],
         unique: true,
     },
 
     password: {
         type: String,
-        required: [true, "Password required for User"],
+        required: [true, "Password required for creating User."],
     },
 
     decks_public: {

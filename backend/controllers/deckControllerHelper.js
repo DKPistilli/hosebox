@@ -20,7 +20,7 @@ const handleDeckNameChange = asyncHandler(async (req, res, deckName, deckId) => 
 
     if (!deck || (deck.name !== deckName)) {
         res.status(400);
-        throw new Error(`No deck found with id: ${deckId} at updateDeckName`);
+        throw new Error(`No deck found with id: ${deckId} at updateDeckName.`);
     }
 
     // then, find and update user deckName (could be public or private)
@@ -39,7 +39,7 @@ const handleDeckNameChange = asyncHandler(async (req, res, deckName, deckId) => 
         res.status(204).send();
     } else {
         res.status(404);
-        throw new Error(`Error deleting deck. No deck found in users public/private list with id: ${deckId}`);
+        throw new Error(`Error deleting deck. No deck found in users public/private list with id: ${deckId}.`);
     }
 
 
@@ -65,7 +65,7 @@ const handlePrivacyChange = asyncHandler(async (req, res, access) => {
 
         if (!updatedDeck) {
             res.status(400);
-            throw new Error('error updating deck privacy in decksDB');
+            throw new Error('Error updating deck privacy in Decks Database.');
         }
 
         // move deck from decks_private to decks_public for user in usersDB

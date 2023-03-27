@@ -2,6 +2,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 
+const { toUsernameFormat,
+        isValidUsername,
+        isValidEmail } = require('./userControllerHelper');
+
 //import collections
 const User = require('../models/userModel');
 
@@ -14,19 +18,39 @@ const generateToken = (id) => {
 // @route  POST /api/users
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
+
     const { name, email, password } = req.body;
 
     // verify req body contains necessary information
     if (!name || !email || !password) {
         res.status(400);
-        throw new Error('Please add all fields (name/email/password)');
+        throw new Error('Unable to create new User. Please add all required fields (name/email/password).');
     }
 
-    // check if user already exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
+    // basic input validation on un/email. Does not take place of email confirmation link.
+    if (!isValidUsername(name)) {
         res.status(400);
-        throw new Error('User already exists');
+        throw new Error(`Unable to create new User: invalid username given (${name}).`)
+    } else if (!isValidEmail(email)) {
+        res.status(400);
+        throw new Error(`Unable to create new User: invalid email given (${email}).`)
+    }
+
+    const username = toUsernameFormat(name);
+
+    // check if user already exists with that username
+    const nameExists = await User.findOne({ name: username });
+    console.log(nameExists);
+    if (nameExists) {
+        res.status(400);
+        throw new Error(`Error: User already exists with username "${username}"`);
+    }
+
+    // check if user already exists with that email
+    const emailExists = await User.findOne({ email: email });
+    if (emailExists) {
+        res.status(400);
+        throw new Error(`Error: User already exists with email ${email}.`);
     }
 
     // hash password for privacy
@@ -35,7 +59,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // create new user
     const user = await User.create({
-        name,
+        name: username,
         email,
         password: hashedPassword,
     });
