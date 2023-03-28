@@ -14,7 +14,7 @@ import RaritySymbols from './RaritySymbols';
 import Card          from './Card';
 import Spinner       from './Spinner';
 
-const DECK_API_URL = 'http://3.135.246.186/api/decks';
+const DECK_API_URL = 'https://api.hosebox.net/api/decks';
 
 function DeckCardTable({ cards, tableName }) {
 

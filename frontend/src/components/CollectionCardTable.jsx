@@ -12,7 +12,7 @@ import QuantityForm from './QuantityForm';
 
 import '../styles/CardTable.css';
 
-const COLLECTION_API_URL = 'http://3.135.246.186/api/';
+const COLLECTION_API_URL = 'https://api.hosebox.net/api/';
 
 function CollectionCardTable({ cards, tableName, collectionSize, getCollection }) {
 

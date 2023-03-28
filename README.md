@@ -66,4 +66,7 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 
 EC2 setup/systemd: https://www.youtube.com/watch?v=oHAQ3TzUTro
 EC2 nginx: https://www.youtube.com/watch?v=_EBARqreeao (localhost:8k)
+EC2 ssl certbot: https://dev.to/greenteabiscuit/using-let-s-encrypt-on-aws-ec2-instance-2aca
+sudo systemctl start/restart/status nginx/hosebox.service
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2023.html#ssl_enable
 

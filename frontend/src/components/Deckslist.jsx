@@ -7,8 +7,8 @@ import { BsPlusSquare } from "react-icons/bs";
 import "../styles/Deckslist.css";
 import "../styles/Sidebar.css";
 
-const USER_API_URL = "http://3.135.246.186/api/users";
-const DECK_API_URL = "http://3.135.246.186/api/decks";
+const USER_API_URL = "https://api.hosebox.net/api/users";
+const DECK_API_URL = "https://api.hosebox.net/api/decks";
 
 function Deckslist(props) {
   const { user } = useSelector((state) => state.auth);
