@@ -1,8 +1,8 @@
 import CollectionPage from '../components/CollectionPage';
 
 // backend api url for authenticating user
-const WISHLIST_API_URL = '/api/wishlistCards';
-const USER_API_URL      = '/api/users';
+const WISHLIST_API_URL = '3.135.246.186/api/wishlistCards';
+const USER_API_URL     = '3.135.246.186/api/users';
 
 function Wishlist() {
 

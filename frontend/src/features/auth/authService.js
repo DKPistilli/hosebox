@@ -4,7 +4,7 @@
 import axios from 'axios';
 
 // backend api url for authenticating user
-const API_URL = '/api/users/';
+const API_URL = '3.135.246.186/api/users/';
 
 // Register user
 const register = async (userData) => {

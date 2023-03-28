@@ -21,11 +21,11 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 
 ### Back End
 
-- [ ] Decks
+- [X] Decks
     - [X] design deckSchema and corresponding api calls. Big Question: how to structure mainboard/sideboard/scratchpad (needs privateList option! don't forget).
     - [X] implement decks model, router, and controller
 - [ ] Users
-    - [ ] Validate username (no weird chars, no spaces)
+    - [X] Validate username (no weird chars, no spaces)
     - [X] Add user GET func which returns username and (public) decks
     - [ ] Add FOLLOWING [{name, userId}] so users can follow others
 - [X] update api to NO LONGER USE CARDIDS, instead taking cardNames
@@ -63,4 +63,7 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 - [X] Add hosebot and generate mock "Welcome" landing index
 - [X] make the to-do list lol
 
+
+EC2 setup/systemd: https://www.youtube.com/watch?v=oHAQ3TzUTro
+EC2 nginx: https://www.youtube.com/watch?v=_EBARqreeao (localhost:8k)
 
