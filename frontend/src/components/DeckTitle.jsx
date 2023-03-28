@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 
 import '../styles/DeckTitle.css';
 
-const DECK_API_URL = '3.135.246.186/api/decks/'
+const DECK_API_URL = 'http://3.135.246.186/api/decks/'
 
 const DeckTitle = ({ deckTitle, deckId, isPublic, updateTitle }) => {
 

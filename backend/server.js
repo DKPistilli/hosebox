@@ -3,6 +3,7 @@ const colors = require('colors');
 const dotenv = require('dotenv').config();
 const connectDB = require('./config/db');
 const port = process.env.PORT || 8080;
+const cors = require('cors');
 
 connectDB();
 
@@ -11,6 +12,9 @@ const app = express();
 // Parse JSON/URL encoded request body information
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Enable cross origin
+app.use(cors());
 
 // Routes
 app.use('/api/users',          require('./routes/userRoutes'));

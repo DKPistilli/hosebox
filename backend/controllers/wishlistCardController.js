@@ -202,6 +202,7 @@ const updateCard = asyncHandler(async (req, res) => {
     if (quantity === 0) {
         await WishlistCard.deleteOne(filter);
         res.status(204).send();
+        return;
     }
 
     const card = await WishlistCard.findOneAndUpdate(filter, update, settings);

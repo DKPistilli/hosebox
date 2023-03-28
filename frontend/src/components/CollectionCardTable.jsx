@@ -12,6 +12,8 @@ import QuantityForm from './QuantityForm';
 
 import '../styles/CardTable.css';
 
+const COLLECTION_API_URL = 'http://3.135.246.186/api/';
+
 function CollectionCardTable({ cards, tableName, collectionSize, getCollection }) {
 
     const { ownerId } = useParams();
@@ -41,7 +43,7 @@ function CollectionCardTable({ cards, tableName, collectionSize, getCollection }
         };
         
         // update card quantity
-        await axios.put(`/api/${collectionRoute}Cards`, null, config);
+        await axios.put(`${COLLECTION_API_URL}${collectionRoute}Cards`, null, config);
         getCollection();
     }
     

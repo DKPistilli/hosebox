@@ -13,8 +13,8 @@ import DeleteDeck from '../components/DeleteDeck';
 import axios from 'axios';
 
 // backend api url for authenticating user
-const DECK_API_URL = '3.135.246.186/api/decks';
-const USER_API_URL = '3.135.246.186/api/users';
+const DECK_API_URL = 'http://3.135.246.186/api/decks';
+const USER_API_URL = 'http://3.135.246.186/api/users';
 
 function Deck() {
 

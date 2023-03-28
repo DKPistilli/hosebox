@@ -201,7 +201,6 @@ const updateCard = asyncHandler(async (req, res) => {
 
     // if updating to quantity of ZERO, delete card
     if (quantity === 0) {
-        console.log(quantity);
         await InventoryCard.deleteOne(filter);
         res.status(204).send();
         return;

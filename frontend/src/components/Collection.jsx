@@ -90,8 +90,8 @@ function Collection({ apiUrl, owner, collectionName }) {
             headers: { Authorization: `Bearer ${user.token}` },
             params : { cardName: cardName },
         };
-        const res = await axios.post(apiUrl, null, config);
-        console.log(res.data);
+        await axios.post(apiUrl, null, config);
+        getCollection();
     };
 
     return (
