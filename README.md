@@ -50,7 +50,7 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
     - [X] implement <Decks /> component which grabs all decks w/ userId and lists them on left sidebar. Clicking navs to hosebox.net/decks/:deckId
 - [ ] Register
     - [X] Hide passwords
-    - [ ] Validate username (no weird chars, no spaces)
+    - [X] Validate username (no weird chars, no spaces)
 - [X] Deckview
     - [X] design and implement <Deckview /> page/component, which is GUI for user to view/edit their decklists
     - [X] mainboard/sideboard/scratchpad
