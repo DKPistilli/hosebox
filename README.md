@@ -39,11 +39,11 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 - [ ] \(potential) add some sort of LeagueModel which stores season, standings (all manually updated??), and like..."about"? So that I can add some of the flavor currently relegated to challonge.com
 
 ### Front End
+- [ ] KNOWN BUG: MDFC (Modal Dual Face Cards). Currently, they do not display correctly, and could end up breaking decklists.
 - [ ] Inventory / Wishlist
     - [X] implement <Inventory /> component which queries our server for cardIds
     - [X] implement addCard
     - [ ] implement addCardList
-    
 - [X] Sidebar
     - [X] implement <Sidebar /> component which has a button to view <Inventory />, <Wishlist />, <Decks />
     - [X] Create file structure for Sidebar so that decks can display down the sidebar (and scroll)
@@ -51,9 +51,10 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 - [ ] Register
     - [X] Hide passwords
     - [X] Validate username (no weird chars, no spaces)
-- [X] Deckview
+- [ ] Deckview
     - [X] design and implement <Deckview /> page/component, which is GUI for user to view/edit their decklists
     - [X] mainboard/sideboard/scratchpad
+    - [ ] FUTURE VERSIONS: Add inventory qty to deckview, which will require a GET to api.hosebox.net/api/users/inventoryCards/:userId/:deckId (most likely)
 - [ ] Fix Toast not displaying err messages correctly
 - [X] <ManaVisualizer /> component
 - [ ] \(potential) add "League" to front-end
