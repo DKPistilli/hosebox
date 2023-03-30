@@ -9,6 +9,7 @@ import RaritySymbols from './RaritySymbols';
 import Card          from './Card';
 import Spinner       from './Spinner';
 import QuantityForm from './QuantityForm';
+import { toast } from 'react-toastify'
 
 import '../styles/CardTable.css';
 
@@ -43,8 +44,13 @@ function CollectionCardTable({ cards, tableName, collectionSize, getCollection }
         };
         
         // update card quantity
-        await axios.put(`${COLLECTION_API_URL}${collectionRoute}Cards`, null, config);
-        getCollection();
+        const res = await axios.put(`${COLLECTION_API_URL}${collectionRoute}Cards`, null, config);
+
+        if (!res.data) {
+            toast.error(`Error updating quantity of ${cardName}`);
+        } else {
+            getCollection();
+        }
     }
     
     return (

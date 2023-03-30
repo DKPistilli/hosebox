@@ -79,10 +79,10 @@ const DeckTitle = ({ deckTitle, deckId, isPublic, updateTitle }) => {
                     </CModalHeader>
                     <CModalBody className='privacy-deck-modal-body'>
                         {isPublic ? 
-                        <p>Are you sure you'd like to make {deckTitle} private? Even your friends won't be able to see the brilliant tinkering you've done here.</p>
+                        <p>Are you sure you'd like to make {deckTitle} private? Your friends won't be able to see the brilliant tinkering you've done here.</p>
                         :
-                        <p>Are you sure you'd like to mak {deckTitle} public? Any planeswalker will be able to see your list, and Goose, the Greedlord is ever-watchful.</p>
-                        } 
+                        <p>Are you sure you'd like to make {deckTitle} public? Any planeswalker will be able to see your list, and Goose, the Greedlord is ever-watchful.</p>
+                        }
                     </CModalBody>
                     <CModalFooter className='privacy-deck-modal-footer'>
                         <CButton className='cancel-privacy-btn' color="secondary" onClick={() => setVisible(false)}>

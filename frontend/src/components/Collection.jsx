@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import CardTable from '../components/CardTable';
 import CardAdder from '../components/CardAdder';
 import CollectionPagination from './CollectionPagination';
+import { toast } from 'react-toastify'
 
 // import http request service
 import axios from 'axios';
@@ -90,8 +91,13 @@ function Collection({ apiUrl, owner, collectionName }) {
             headers: { Authorization: `Bearer ${user.token}` },
             params : { cardName: cardName },
         };
-        await axios.post(apiUrl, null, config);
-        getCollection();
+
+        await axios.post(apiUrl, null, config)
+            .then( res => getCollection() )
+            .catch(err => {
+                console.log(err);
+                toast.error(`${cardName} is not in hosebox yet (this is likely a spoiler/unreleased card.)`);
+            });
     };
 
     return (
