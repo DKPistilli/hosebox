@@ -2,3 +2,13 @@
     width: 100%;
     min-width: 500px;
 }
+
+@media (max-width: 1000px) {
+    .login-register-form .form-group input {
+        min-width: 250px;
+    }
+}
+
+.title {
+    margin-right: 40px;
+}

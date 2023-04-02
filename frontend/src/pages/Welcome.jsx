@@ -15,7 +15,7 @@ function Welcome() {
     };
     
     const hoseboxTitleStyle = {
-        fontSize: 80,
+        fontSize: '7vw',
     };
 
     const hoseboxSubtitleStyle = {

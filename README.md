@@ -2,7 +2,7 @@
 <br>
 <p align="center">
     <img src="https://user-images.githubusercontent.com/8059632/221677261-528c2ae4-a199-4fff-92a5-bdeab8bfb812.jpeg" />
-    <h1 align='center'> hosebox.net </h1>
+    <h1 align='center'> <a href='https://www.hosebox.net'>Hosebox</a></h1>
     <h3 align='center'> The official deckbuilding and inventory-management application for the competitors of the Meadow Lane: Magic the Gathering (MLMTG) league. </h3>
 </p>
 
@@ -21,13 +21,12 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 
 ### Back End
 
-- [X] Decks
-    - [X] design deckSchema and corresponding api calls. Big Question: how to structure mainboard/sideboard/scratchpad (needs privateList option! don't forget).
-    - [X] implement decks model, router, and controller
 - [ ] Users
     - [X] Validate username (no weird chars, no spaces)
     - [X] Add user GET func which returns username and (public) decks
     - [ ] Add FOLLOWING [{name, userId}] so users can follow others
+- [ ] \(potential) add userInventory to User with array of first 50 cards (true scryfall card objects, not pointers) so init inventory doesn't require a scryfall api call
+- [ ] \(potential) add some sort of LeagueModel which stores season, standings (all manually updated??), and like..."about"? So that I can add some of the flavor currently relegated to challonge.com
 - [X] update api to NO LONGER USE CARDIDS, instead taking cardNames
 - [X] inventoryCards
     - [X] design inventoryCardSchema model (what card info is needed on our server) and corresponding api calls
@@ -35,33 +34,34 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 - [X] scryfallCards
     - [X] design local scryfall DB and corresponding api (non-http, local server requests only). 
     - [X] implement scryfallCard model, router, and controller, so that all card information is blackboxed from the front end -- they send cardId, they get a full card, and never need to know about implementation or what extra fields we're removing from the actual scryfall.com card schema.
-- [ ] \(potential) add userInventory to User with array of first 50 cards (true scryfall card objects, not pointers) so init inventory doesn't require a scryfall api call
-- [ ] \(potential) add some sort of LeagueModel which stores season, standings (all manually updated??), and like..."about"? So that I can add some of the flavor currently relegated to challonge.com
+- [X] Decks
+    - [X] design deckSchema and corresponding api calls. Big Question: how to structure mainboard/sideboard/scratchpad (needs privateList option! don't forget).
+    - [X] implement decks model, router, and controller
 
 ### Front End
-- [ ] KNOWN BUG: MDFC (Modal Dual Face Cards). Currently, they do not display correctly, and could end up breaking decklists.
+- [ ] KNOWN BUG: MDFC (Modal Dual Face Cards). Currently, they do not display correctly, due to JSON structure.
 - [ ] Inventory / Wishlist
     - [X] implement <Inventory /> component which queries our server for cardIds
     - [X] implement addCard
     - [ ] implement addCardList
-- [X] Sidebar
-    - [X] implement <Sidebar /> component which has a button to view <Inventory />, <Wishlist />, <Decks />
-    - [X] Create file structure for Sidebar so that decks can display down the sidebar (and scroll)
-    - [X] implement <Decks /> component which grabs all decks w/ userId and lists them on left sidebar. Clicking navs to hosebox.net/decks/:deckId
-- [ ] Register
-    - [X] Hide passwords
-    - [X] Validate username (no weird chars, no spaces)
 - [ ] Deckview
     - [X] design and implement <Deckview /> page/component, which is GUI for user to view/edit their decklists
     - [X] mainboard/sideboard/scratchpad
     - [ ] FUTURE VERSIONS: Add inventory qty to deckview, which will require a GET to api.hosebox.net/api/users/inventoryCards/:userId/:deckId (most likely)
-- [ ] Fix Toast not displaying err messages correctly
-- [X] <ManaVisualizer /> component
 - [ ] \(potential) add "League" to front-end
     - [ ] create "/league" page and add League button to <Header/>
     - [ ] create some sort of league schedule-view and/or standings-view.
     - [ ] write and display some sort of flavor about the history of the league?
+- [X] Sidebar
+    - [X] implement <Sidebar /> component which has a button to view <Inventory />, <Wishlist />, <Decks />
+    - [X] Create file structure for Sidebar so that decks can display down the sidebar (and scroll)
+    - [X] implement <Decks /> component which grabs all decks w/ userId and lists them on left sidebar. Clicking navs to hosebox.net/decks/:deckId
+- [X] Register
+    - [X] Hide passwords
+    - [X] Validate username (no weird chars, no spaces)
+- [X] <ManaVisualizer /> component    
 - [X] Add hosebot and generate mock "Welcome" landing index
+- [X] Fix Toast not displaying err messages correctly
 - [X] make the to-do list lol
 
 
