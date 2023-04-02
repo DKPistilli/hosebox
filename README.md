@@ -21,12 +21,12 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 
 ### Back End
 
-- [ ] Users
-    - [X] Validate username (no weird chars, no spaces)
-    - [X] Add user GET func which returns username and (public) decks
-    - [ ] Add FOLLOWING [{name, userId}] so users can follow others
 - [ ] \(potential) add userInventory to User with array of first 50 cards (true scryfall card objects, not pointers) so init inventory doesn't require a scryfall api call
 - [ ] \(potential) add some sort of LeagueModel which stores season, standings (all manually updated??), and like..."about"? So that I can add some of the flavor currently relegated to challonge.com
+- [X] Users
+    - [X] Validate username (no weird chars, no spaces)
+    - [X] Add user GET func which returns username and (public) decks
+    - [X] Add FOLLOWING [{name, userId}] so users can follow others
 - [X] update api to NO LONGER USE CARDIDS, instead taking cardNames
 - [X] inventoryCards
     - [X] design inventoryCardSchema model (what card info is needed on our server) and corresponding api calls

@@ -33,6 +33,12 @@ const userSchema = mongoose.Schema({
         unique: true,
     },
 
+    // array of userIDs that represent whom User follows
+    follows: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: [],
+    },
+
     password: {
         type: String,
         required: [true, "Password required for creating User."],

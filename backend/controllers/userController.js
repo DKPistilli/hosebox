@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 
-const { toUsernameFormat,
+const { lowerAllButFirstChar,
         isValidUsername,
         isValidEmail } = require('./userControllerHelper');
 
@@ -14,8 +14,9 @@ const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '90d' });
 }
 
-// @ desc  Register new user
+// @desc   Register new user
 // @route  POST /api/users
+// @body   name="name", email="email", password="password"
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
 
@@ -27,7 +28,7 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('Unable to create new User. Please add all required fields (name/email/password).');
     }
 
-    // basic input validation on un/email. Does not take place of email confirmation link.
+    // basic input validation on username/email. Does not take place of email confirmation link.
     if (!isValidUsername(name)) {
         res.status(400);
         throw new Error(`Unable to create new User: invalid username given (${name}).`)
@@ -36,21 +37,21 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error(`Unable to create new User: invalid email given (${email}).`)
     }
 
-    const username = toUsernameFormat(name);
+    const formattedUsername = lowerAllButFirstChar(name);
+    const formattedEmail = lowerAllButFirstChar(email);
 
-    // check if user already exists with that username
-    const nameExists = await User.findOne({ name: username });
-    console.log(nameExists);
+    // check if user already exists with that formattedUsername
+    const nameExists = await User.findOne({ name: formattedUsername });
     if (nameExists) {
         res.status(400);
-        throw new Error(`Error: User already exists with username "${username}"`);
+        throw new Error(`Error: User already exists with username "${formattedUsername}"`);
     }
 
     // check if user already exists with that email
-    const emailExists = await User.findOne({ email: email });
+    const emailExists = await User.findOne({ email: formattedEmail });
     if (emailExists) {
         res.status(400);
-        throw new Error(`Error: User already exists with email ${email}.`);
+        throw new Error(`Error: User already exists with email ${formattedEmail}.`);
     }
 
     // hash password for privacy
@@ -59,8 +60,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // create new user
     const user = await User.create({
-        name: username,
-        email,
+        name: formattedUsername,
+        email: formattedEmail,
         password: hashedPassword,
     });
 
@@ -79,12 +80,20 @@ const registerUser = asyncHandler(async (req, res) => {
 
 // @ desc  Authentite a user
 // @route  POST /api/users/login
+// @body   email="email", password="password"
 // @access Public
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
+    const formattedEmail = lowerAllButFirstChar(email)
+
     // check for user email in db
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: formattedEmail });
+
+    if (!user) {
+        res.status(401);
+        throw new Error('No user found with given email address.');
+    }
 
     // veryify password
     const matchingPasswords = await bcrypt.compare(password, user.password);
@@ -132,9 +141,60 @@ const getMe = asyncHandler(async (req, res) => {
     res.status(200).json(req.user);
 });
 
+// @ desc  Follow user @ given userId
+// @route  PUT /api/users/:userId/follow
+// @access Private
+const followUser = asyncHandler(async (req, res) => {
+
+    const idToFollow = req.params.userId;
+
+    if (!req.user || !idToFollow) {
+        res.status(404);
+        throw new Error('Error while attempting to follow user.');
+    }
+
+    if (req.user.follows.includes(idToFollow)) {
+        res.status(400);
+        throw new Error('You are already following this user.');
+    }
+
+    req.user.follows = [...req.user.follows, idToFollow];
+    
+    await req.user.save();
+
+    res.status(201).json(req.user.follows);
+});
+
+// @ desc  Unfollow user @ given userId
+// @route  PUT /api/users/:userId/unfollow
+// @access Private
+const unfollowUser = asyncHandler(async (req, res) => {
+
+    const idToUnfollow = req.params.userId;
+
+    if (!req.user || !idToUnfollow) {
+        res.status(404);
+        throw new Error('Error while attempting to unfollow user.');
+    }
+
+    if (!req.user.follows.includes(idToUnfollow)) {
+        res.status(400);
+        throw new Error('You are not following this user.');
+    }
+    
+    // create an array with unfollow ID filtered out, then assign to user.
+    req.user.follows = req.user.follows.filter(id => id.toString() !== idToUnfollow.toString());
+    
+    await req.user.save();
+
+    res.status(201).json(req.user.follows);
+});
+
 module.exports = {
     registerUser,
     loginUser,
     getUser,
     getMe,
-}
+    followUser,
+    unfollowUser,
+};

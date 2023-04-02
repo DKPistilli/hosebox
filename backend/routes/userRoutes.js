@@ -5,7 +5,9 @@ const router  = express.Router();
 const { registerUser,
         loginUser,
         getMe,
-        getUser, } = require('../controllers/userController');
+        getUser,
+        followUser,
+        unfollowUser } = require('../controllers/userController');
 
 // import auth middleware
 const { protect } = require('../middleware/authMiddleware');
@@ -17,5 +19,9 @@ router.post('/login', loginUser);
 // set get routes for getting users public/private data
 router.get('/me',      protect, getMe);
 router.get('/:userId', getUser )
+
+// set routes for following/unfollowing users
+router.put('/:userId/follow',   protect, followUser);
+router.put('/:userId/unfollow', protect, unfollowUser);
 
 module.exports = router;
