@@ -94,7 +94,7 @@ function Collection({ apiUrl, owner, collectionName }) {
 
         await axios.post(apiUrl, null, config)
             .then( res => getCollection() )
-            .catch(err => {
+            .catch( err => {
                 console.log(err);
                 toast.error(`${cardName} is not in hosebox yet (this is likely a spoiler/unreleased card.)`);
             });

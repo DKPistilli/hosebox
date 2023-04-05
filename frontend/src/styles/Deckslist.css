@@ -20,3 +20,9 @@
   transform: translateY(-33%);
   cursor: pointer;
 }
+
+.deckslist-deck {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

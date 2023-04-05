@@ -3,6 +3,8 @@
     outline: none;
     text-align: center;
     font-size: xx-large;
+    width: 100%;
+    max-width: 600px;
     font-family: 'Poppins', sans-serif;
     background-color: transparent;
     transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add a smooth transition for background-color and box-shadow */

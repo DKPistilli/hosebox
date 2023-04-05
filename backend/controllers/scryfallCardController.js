@@ -67,7 +67,7 @@ const getCards = asyncHandler(async (cardsArray) => {
     return scryfallWithQuantityArray;
 });
 
-// @ desc  Takes in [inventoryCards] and returns [modified scryfall card object] array
+// @ desc takes in a cardname, returns true if card exists in scryfall invent
 // @access Internal Only
 const isValidCardName = asyncHandler(async (cardName) => {
 

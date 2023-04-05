@@ -61,7 +61,7 @@ function Deckslist(props) {
   }, [ownerId, user]);
 
   const deckMapper = (deck) => (
-    <div key={deck.deckId}>
+    <div key={deck.deckId} className="deckslist-deck">
       <Link to={`/decks/${deck.deckId}`}>
         {deck.deckId === deckId ? (
           <div className="active-sidebar-tab">{deck.name}</div>

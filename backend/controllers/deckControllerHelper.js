@@ -3,6 +3,7 @@ const asyncHandler = require('express-async-handler');
 // import models
 const Deck             = require('../models/deckModel');
 const User             = require('../models/userModel');
+const { isValidCardName } = require('./scryfallCardController');
 
 const handleDeckNameChange = asyncHandler(async (req, res, deckName, deckId) => {
 
@@ -161,9 +162,16 @@ const handlePrivacyChange = asyncHandler(async (req, res, access) => {
 const putCardInList = asyncHandler(async (req, res, deckId, listType, name, quantity) => {
     // run input validation
     const deck = await Deck.findById(deckId);
+    const validCardname = await isValidCardName(name);
+
     if (!deck) {
-        res.status(400);
+        res.status(404);
         throw new Error('Unable to delete card from list: invalid DeckId');
+    }
+
+    if (!validCardname) {
+        res.status(404);
+        throw new Error(`Invalid scryfall card name given: ${name}`);
     }
 
     if (listType !== "mainboard" &&

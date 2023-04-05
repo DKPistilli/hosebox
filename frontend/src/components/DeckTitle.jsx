@@ -8,7 +8,8 @@ import { toast } from 'react-toastify';
 
 import '../styles/DeckTitle.css';
 
-const DECK_API_URL = 'https://api.hosebox.net/api/decks/'
+const DECK_API_URL     = 'https://api.hosebox.net/api/decks/'
+const MAX_TITLE_LENGTH = 22;
 
 const DeckTitle = ({ deckTitle, deckId, isPublic, updateTitle }) => {
 
@@ -49,7 +50,12 @@ const DeckTitle = ({ deckTitle, deckId, isPublic, updateTitle }) => {
     //handle submit of new deck title
     const handleSubmit = (e) => {
         e.preventDefault();
-        updateTitle(currentTitle);
+        if (currentTitle.length > MAX_TITLE_LENGTH) {
+            toast.error(`That title is too long, planeswalker. ${MAX_TITLE_LENGTH} chars...max.`);
+            setCurrentTitle(deckTitle);
+        } else {
+            updateTitle(currentTitle);
+        }
     }
     
     //handle char-by-char typing of new deck title

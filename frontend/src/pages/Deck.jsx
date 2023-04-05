@@ -80,6 +80,7 @@ function Deck() {
 
   // onSubmit fx for adding card of cardName to deck
   const addCardToDeck = async ( cardName, listType ) => {
+    console.log('adding card to deck');
     if (!cardName || !deckId || !user) {
       return;
     } else {
@@ -99,16 +100,22 @@ function Deck() {
         },
       };
 
-      const res = await axios.put(`${DECK_API_URL}/${deckId}`, null, config);
-
-      if (listType === 'mainboard') {
-        setMainboard(res.data);
-      } else if (listType === 'sideboard') {
-        setSideboard(res.data);
-      } else if (listType === 'scratchpad') {
-        setScratchpad(res.data);
-      } else {
-        throw new Error(`Incorrect listtype given: ${listType}`);
+      try {
+        console.log('entering try statement');
+        const res = await axios.put(`${DECK_API_URL}/${deckId}`, null, config);
+        console.log(`res: ${JSON.stringify(res)}`);
+        if (listType === 'mainboard') {
+          setMainboard(res.data);
+        } else if (listType === 'sideboard') {
+          setSideboard(res.data);
+        } else if (listType === 'scratchpad') {
+          setScratchpad(res.data);
+        } else {
+          throw new Error(`Incorrect listtype given: ${listType}`);
+        }
+      } catch (err) {
+        console.log(err);
+        toast.error(`${cardName} is not in hosebox yet (this is likely a spoiler/unreleased card.)`);
       }
     }
   }
