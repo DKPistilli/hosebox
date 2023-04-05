@@ -15,10 +15,12 @@ const SCRYFALL_API_URL = 'https://api.scryfall.com/catalog/card-names'
 function CardAdder({ addCard, isDeck }) {
     
     // intialize necessary state (card name input, user, etc.)
-    const [listType, setListType]         = useState("mainboard");
-    const [cardOptions, setCardOptions]   = useState([]);
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [inputValue, setInputValue]     = useState('');
+    const [listType, setListType]               = useState("mainboard");
+    const [dropdownOpen, setDropdownOpen]       = useState(false);
+    const [inputValue, setInputValue]           = useState('');
+    const [cardOptions, setCardOptions]         = useState([]);
+    const [filteredOptions, setFilteredOptions] = useState([]);
+
 
     // get all potential card options from scryfall cards API for autocomplete
     useEffect(() => {
@@ -29,7 +31,9 @@ function CardAdder({ addCard, isDeck }) {
                     value: cardName,
                     label: cardName,
                 }));
+                //initialize base options and filtered options with response
                 setCardOptions(formattedCardOptions);
+                setFilteredOptions(formattedCardOptions);
             }
         }
     
@@ -57,33 +61,67 @@ function CardAdder({ addCard, isDeck }) {
 
         setInputValue('');
         setDropdownOpen(false);
+        setFilteredOptions(cardOptions);
     };
 
     const handleListTypeChange = (e) => {
         setListType(e.target.value);
     }
+
+    // search filter function for dropdown matching
+    const searchFilter = (inputValue, option) => {
+        if (!inputValue) return false;
+
+        const inputUpper = inputValue.toUpperCase();
+        const optionUpper = option.value.toUpperCase();
+
+        // Prioritize options that start with the input value
+        if (optionUpper.startsWith(inputUpper)) return true;
+
+        // If the option does not start with the input value,
+        // still show it if the input value is found elsewhere in the option
+        return optionUpper.indexOf(inputUpper) !== -1;
+    }
+
+    // sorting algorithm: if Z, prioritizes Zebra over Ooze.
+    const customSort = (inputValue, a, b) => {
+        const inputUpper = inputValue.toUpperCase();
+        const aUpper = a.value.toUpperCase();
+        const bUpper = b.value.toUpperCase();
+
+        if (aUpper.startsWith(inputUpper) && !bUpper.startsWith(inputUpper)) {
+            return -1;
+        }
+        if (!aUpper.startsWith(inputUpper) && bUpper.startsWith(inputUpper)) {
+            return 1;
+        }
+        return aUpper.localeCompare(bUpper);
+    };
   
     return (
         <div>
             <section className="form">
                 <div className="form-group input-field-and-button-container">
                         <AutoComplete
-                        options={cardOptions}
-                        value={inputValue}
-                        onChange={handleChange}
-                        className="form-control add-card-field"
-                        id='cardName'
-                        name='cardName'
-                        placeholder='Add card here e.g. Jace, the Mind Sculptor'
-                        onSelect={handleCardNameSelect}
-                        // only begin suggesting after first character
-                        open={dropdownOpen}
-                        onSearch={(value) => setDropdownOpen(value ? true : false)}
-                        // case insensitive search
-                        filterOption={(inputValue, option) =>
-                            inputValue && option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                        }
-                        notFoundContent="This card doesn't exist, Planeswalker."
+                            options={filteredOptions}
+                            value={inputValue}
+                            onChange={handleChange}
+                            className="form-control add-card-field"
+                            id='cardName'
+                            name='cardName'
+                            placeholder='Add card here e.g. Jace, the Mind Sculptor'
+                            onSelect={handleCardNameSelect}
+                            // only begin suggesting after first character
+                            open={dropdownOpen}
+                            onSearch={(value) => {
+                                setDropdownOpen(value ? true : false);
+                                setFilteredOptions(
+                                    cardOptions
+                                        .filter((option) => searchFilter(value, option))
+                                        .sort((a, b) => customSort(value, a, b))
+                                );
+                            }}
+                            notFoundContent="This card doesn't exist, Planeswalker."
                         />
                         <div className="button-container">
                             <button type="submit" className="btn btn-block add-card-button">

@@ -32,7 +32,7 @@ function RaritySymbols({ rarityString }) {
     }
 
     return (
-        <div>{!rarity ? rarityString : <img className="rarity-symbol" src={rarity} alt={rarityString} />}</div>
+        <div>{!rarity ? rarityString : <img className="rarity-symbol" title={rarityString} src={rarity} alt={rarityString} />}</div>
     )
 }
 

@@ -60,6 +60,7 @@ const getCards = asyncHandler(async (cardsArray) => {
             set_id          : scryfallCard.set_id,
             set             : scryfallCard.set,
             image_uris      : scryfallCard.image_uris,
+            scryfall_uri    : scryfallCard.scryfall_uri,
             related_uris    : scryfallCard.related_uris,
             prices: scryfallCard.prices,
         });

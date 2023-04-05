@@ -71,7 +71,7 @@ function CollectionCardTable({ cards, tableName, collectionSize, getCollection }
                     <CTableRow key={`card${card.cardId}`}>
                         <QuantityForm className='quantity-col' quantity={card.quantity} cardName={card.name} handleSubmit={updateCardQuantity} />
                         <CTableDataCell className='cardName' key={`cardName${card.cardId}`}>
-                            {<Card cardName={card.name} imageUrl={card.image_uris.normal} uri={card.related_uris.gatherer} />}
+                            {<Card cardName={card.name} imageUrl={card.image_uris.normal} uri={card.scryfall_uri} />}
                         </CTableDataCell>
                         <CTableDataCell className='type_line' key={`type${card.cardId}`}>
                             {card.type_line  }
