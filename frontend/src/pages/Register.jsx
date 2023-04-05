@@ -31,7 +31,7 @@ function Register() {
 
   // basic client-side username/email validation (NOT EXTREMELY THOROUGH!)
   const isValidUsername = (username) => {
-    const usernameRegex = /^[a-zA-Z0-9]{6,}$/;
+    const usernameRegex = /^[a-zA-Z0-9]{5,}$/;
     return usernameRegex.test(username);
   };
   const isValidEmail = (email) => {
@@ -69,7 +69,7 @@ function Register() {
     if (password !== password2) {
       toast.error('Passwords do not match.');
     } else if (!isValidUsername(name)) {
-      toast.error('Username must be at least 6 characters long and contain only letters and numbers.');
+      toast.error('Username must be at least 5 characters long and contain only letters and numbers.');
     } else if (!isValidEmail(email)) {
       toast.error('Please enter a valid email address.');
     } else {
