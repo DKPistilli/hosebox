@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../styles/Card.css";
 
-const Card = ({ cardName, imageUrl, uri }) => {
+const CardName = ({ cardName, imageUrl, uri, layout }) => {
   const [showImage, setShowImage] = useState(false);
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
   const hoverContainerRef = useRef(null);
@@ -65,4 +65,4 @@ const Card = ({ cardName, imageUrl, uri }) => {
   );
 };
 
-export default Card;
+export default CardName;

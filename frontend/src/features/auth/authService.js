@@ -4,7 +4,7 @@
 import axios from 'axios';
 
 // backend api url for authenticating user
-const API_URL = 'https://api.hosebox.net/api/users/';
+const API_URL = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/users' : 'https://api.hosebox.net/api/users';
 
 // Register user
 const register = async (userData) => {

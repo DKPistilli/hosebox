@@ -13,8 +13,8 @@ import DeleteDeck from '../components/DeleteDeck';
 import axios from 'axios';
 
 // backend api url for authenticating user
-const DECK_API_URL = 'https://api.hosebox.net/api/decks';
-const USER_API_URL = 'https://api.hosebox.net/api/users';
+const USER_API_URL = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/users' : 'https://api.hosebox.net/api/users';
+const DECK_API_URL = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/decks' : 'https://api.hosebox.net/api/decks';
 
 function Deck() {
 

@@ -39,6 +39,7 @@ const scryfallCardSchema = mongoose.Schema({
     "oracle_text":String,
     "colors":[String],
     "color_identity":[String],
+    "card_faces":[],
     "keywords":[],
     "legalities":{
         "standard":         String,

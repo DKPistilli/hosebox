@@ -3,17 +3,15 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 
 import { CTable, CTableHead, CTableBody, CTableRow,
-    CTableHeaderCell, CTableDataCell, CTableCaption } from '@coreui/react'
-import ManaSymbols   from './ManaSymbols';
-import RaritySymbols from './RaritySymbols';
-import Card          from './Card';
-import Spinner       from './Spinner';
-import QuantityForm from './QuantityForm';
+    CTableHeaderCell, CTableCaption } from '@coreui/react'
+import CardTableRow from './CardTableRow';
+
+import Spinner   from './Spinner';
 import { toast } from 'react-toastify'
 
 import '../styles/CardTable.css';
 
-const COLLECTION_API_URL = 'https://api.hosebox.net/api/';
+const COLLECTION_API_URL = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/' : 'https://api.hosebox.net/api/';
 
 function CollectionCardTable({ cards, tableName, collectionSize, getCollection }) {
 
@@ -68,24 +66,7 @@ function CollectionCardTable({ cards, tableName, collectionSize, getCollection }
             </CTableHead>
             <CTableBody>
                 {cards.map((card) => (
-                    <CTableRow key={`card${card.cardId}`}>
-                        <QuantityForm className='quantity-col' quantity={card.quantity} cardName={card.name} handleSubmit={updateCardQuantity} />
-                        <CTableDataCell className='cardName' key={`cardName${card.cardId}`}>
-                            {<Card cardName={card.name} imageUrl={card.image_uris.normal} uri={card.scryfall_uri} />}
-                        </CTableDataCell>
-                        <CTableDataCell className='type_line' key={`type${card.cardId}`}>
-                            {card.type_line  }
-                        </CTableDataCell>
-                        <CTableDataCell className='mana_cost' key={`cost${card.cardId}`}>
-                            <ManaSymbols manaString={card.mana_cost}  />
-                        </CTableDataCell>
-                        <CTableDataCell className='rarity'    key={`rare${card.cardId}`}>
-                            <RaritySymbols rarityString={card.rarity} />
-                        </CTableDataCell>
-                        <CTableDataCell className='price'     key={`pric${card.cardId}`}>
-                            ${card.prices.usd}
-                        </CTableDataCell>
-                    </CTableRow>
+                    <CardTableRow key={`card${card.cardId}`} card={card} updateCardQuantity={updateCardQuantity} />
                 ))}
             </CTableBody>
         </CTable>

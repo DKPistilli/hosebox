@@ -7,14 +7,11 @@ import '../styles/CardTable.css';
 
 import { CTable, CTableHead, CTableBody, CTableRow,
          CTableHeaderCell, CTableDataCell, CTableCaption } from '@coreui/react'
+import CardTableRow from './CardTableRow';
 
-import QuantityForm  from './QuantityForm'
-import ManaSymbols   from './ManaSymbols';
-import RaritySymbols from './RaritySymbols';
-import Card          from './Card';
 import Spinner       from './Spinner';
 
-const DECK_API_URL = 'https://api.hosebox.net/api/decks';
+const DECK_API_URL = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/decks' : 'https://api.hosebox.net/api/decks';
 
 function DeckCardTable({ cards, tableName }) {
 
@@ -26,18 +23,22 @@ function DeckCardTable({ cards, tableName }) {
     // initiate state to keep track of # cards  in array
     const [totalCards, setTotalCards]   = useState(0);
     const [totalByType, setTotalByType] = useState({
-        creatures    : 0, lands        : 0,
-        sorceries    : 0, artifacts    : 0,
-        enchantments : 0, planeswalkers: 0,
-        instants     : 0, unmatched    : 0,
+        creatures    : 0,
+        instants     : 0,
+        sorceries    : 0,
+        planeswalkers: 0,
+        lands        : 0,
+        enchantments : 0,
+        artifacts    : 0,
+        unmatched    : 0,
     })
 
     // initiate state variable of sorted card arrays
     const [sortedByType, setSortedByType] = useState({
-        creatures    : [], lands        : [],
-        sorceries    : [], artifacts    : [],
-        enchantments : [], planeswalkers: [],
-        instants     : [], unmatched    : [],
+        creatures    : [], instants     : [],
+        sorceries    : [], planeswalkers: [],
+        lands        : [], enchantments : [],
+        artifacts    : [], unmatched    : [],
     })
 
     useEffect(() => {
@@ -47,26 +48,28 @@ function DeckCardTable({ cards, tableName }) {
     // define function to sort input cards by type for table display
     const sortCardsByType = useCallback(() => {
 
+        // NOTE: ORDER MATTERS HERE. eg artifact lands are lands, so land must come before artifact)
         const cardTypes = {
-            creatures    : 'creature',    lands        : 'land',
-            sorceries    : 'sorcery',     artifacts    : 'artifact',
-            enchantments : 'enchantment', planeswalkers: 'planeswalker',
-            instants     : 'instant',     unmatched    : 'sdadsfasdfasdf',
+            creatures    : 'creature',    instants     : 'instant',
+            sorceries    : 'sorcery',     planeswalkers: 'planeswalker',
+            lands        : 'land',        artifacts    : 'artifact',
+            enchantments : 'enchantment', unmatched    : 'unmatched',
         }
 
         let sortedCards = {
-            creatures    : [], lands        : [],
-            sorceries    : [], artifacts    : [],
-            enchantments : [], planeswalkers: [],
-            instants     : [], unmatched    : [],
+            creatures    : [], instants     : [],
+            sorceries    : [], planeswalkers: [],
+            lands        : [], artifacts    : [],
+            enchantments : [], unmatched    : [],
         };
 
         let totalInTable = 0;
+
         let totals = {
-            creatures    : 0, lands        : 0,
-            sorceries    : 0, artifacts    : 0,
-            enchantments : 0, planeswalkers: 0,
-            instants     : 0, unmatched    : 0,
+            creatures    : 0, instants     : 0,
+            sorceries    : 0, planeswalkers: 0,
+            lands        : 0, artifacts    : 0,
+            enchantments : 0, unmatched    : 0,
         };
 
         // for each card, match it up to each cardtype,
@@ -135,24 +138,7 @@ function DeckCardTable({ cards, tableName }) {
     // tablify a card
     const renderCard = (card) => {
         return(
-            <CTableRow key={`card${card.cardId}`}>
-                <QuantityForm className='quantity-col' quantity={card.quantity} cardName={card.name} card={card} handleSubmit={updateCardQuantity} />
-                <CTableDataCell className='name'      key={`name${card.cardId}`}>
-                    {<Card cardName={card.name} imageUrl={card.image_uris.normal} uri={card.scryfall_uri} />}
-                </CTableDataCell>
-                <CTableDataCell className='type_line' key={`type${card.cardId}`}>
-                    {card.type_line}
-                </CTableDataCell>
-                <CTableDataCell className='mana_cost' key={`cost${card.cardId}`}>
-                    <ManaSymbols manaString={card.mana_cost}  />
-                </CTableDataCell>
-                <CTableDataCell className='rarity'    key={`rare${card.cardId}`}>
-                    <RaritySymbols rarityString={card.rarity} />
-                </CTableDataCell>
-                <CTableDataCell className='price'     key={`pric${card.cardId}`}>
-                    ${card.prices.usd}
-                </CTableDataCell>
-            </CTableRow>
+            <CardTableRow key={`card${card.cardId}`} card={card} updateCardQuantity={updateCardQuantity} />
         )
     };
 

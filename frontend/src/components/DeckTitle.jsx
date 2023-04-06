@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 
 import '../styles/DeckTitle.css';
 
-const DECK_API_URL     = 'https://api.hosebox.net/api/decks/'
+const DECK_API_URL     = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/decks' : 'https://api.hosebox.net/api/decks';
 const MAX_TITLE_LENGTH = 22;
 
 const DeckTitle = ({ deckTitle, deckId, isPublic, updateTitle }) => {

@@ -3,7 +3,7 @@
 /// to the Magic: The Gathering image symbols for (2)(B)(B)
 /// props: manaString("{U}{B}{G}{W}{R}{etc}")
 
-function ManaSymbols({manaString}) {
+function ManaSymbols({ manaString, layout }) {
 
     const lowerCaseManaString = manaString ? manaString.toLowerCase() : "";
     const manaArray     = [];
@@ -15,15 +15,18 @@ function ManaSymbols({manaString}) {
     while (i < lowerCaseManaString.length) {
 
         switch (lowerCaseManaString[i]) {
-
-            // if current character is {/, just look next
+            // if current character is {, just look next
             case "{":
                 i++;
                 break;
-            case "/":
-                i++
+                
+            // if space, we know it's in the format {n0}{n99} // {m0}{m99}
+            // so we add a text symbol of " // " to separate n from m
+            case " ":
+                manaArray.push(" // ");
+                i += 4; // increment past the ' // ' chars
                 break;
-
+        
             // if current character is }, push current string, reset string, look next
             case "}":
                 manaArray.push(symbolString);
@@ -38,11 +41,13 @@ function ManaSymbols({manaString}) {
         }
     }
 
-    
-
     // define map function to turn text-symbols into image-symbols
     const mapFunction = (symbol, index) => {
-        return(<i className={`ms ms-${symbol} ms-cost ms-shadow`} key={index}></i>)
+        if (symbol === (' // ')) {
+            return symbol;
+        } else {
+            return(<i className={`ms ms-${symbol} ms-cost ms-shadow`} key={index}></i>)
+        }
     }
 
     return (

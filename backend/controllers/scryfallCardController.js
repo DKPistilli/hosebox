@@ -51,9 +51,12 @@ const getCards = asyncHandler(async (cardsArray) => {
             name            : scryfallCard.name,
             cardId          : scryfallCard.id,
             oracle_id       : scryfallCard.oracle_id,
+            layout          : scryfallCard.layout,
+            card_faces      : scryfallCard.card_faces,
             mana_cost       : scryfallCard.mana_cost,
             colors          : scryfallCard.colors,
             color_identity  : scryfallCard.color_identity,
+            card_faces      : scryfallCard.card_faces,
             cmc             : scryfallCard.cmc,
             type_line       : scryfallCard.type_line,
             rarity          : scryfallCard.rarity,
@@ -62,7 +65,7 @@ const getCards = asyncHandler(async (cardsArray) => {
             image_uris      : scryfallCard.image_uris,
             scryfall_uri    : scryfallCard.scryfall_uri,
             related_uris    : scryfallCard.related_uris,
-            prices: scryfallCard.prices,
+            prices          : scryfallCard.prices,
         });
     });
     return scryfallWithQuantityArray;
