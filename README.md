@@ -21,7 +21,6 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 
 ### Back End
 
-- [ ] \(potential) add userInventory to User with array of first 50 cards (true scryfall card objects, not pointers) so init inventory doesn't require a scryfall api call
 - [ ] \(potential) add some sort of LeagueModel which stores season, standings (all manually updated??), and like..."about"? So that I can add some of the flavor currently relegated to challonge.com
 - [X] Users
     - [X] Validate username (no weird chars, no spaces)
@@ -39,7 +38,6 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
     - [X] implement decks model, router, and controller
 
 ### Front End
-- [ ] KNOWN BUG: MDFC (Modal Dual Face Cards). Currently, they do not display correctly, due to JSON structure.
 - [ ] Inventory / Wishlist
     - [X] implement <Inventory /> component which queries our server for cardIds
     - [X] implement addCard
@@ -52,6 +50,7 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
     - [ ] create "/league" page and add League button to <Header/>
     - [ ] create some sort of league schedule-view and/or standings-view.
     - [ ] write and display some sort of flavor about the history of the league?
+- [X] KNOWN BUG: MDFC (Modal Dual Face Cards). Currently, they do not display correctly, due to JSON structure.
 - [X] Sidebar
     - [X] implement <Sidebar /> component which has a button to view <Inventory />, <Wishlist />, <Decks />
     - [X] Create file structure for Sidebar so that decks can display down the sidebar (and scroll)
@@ -65,9 +64,9 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
 - [X] make the to-do list lol
 
 
-EC2 setup/systemd: https://www.youtube.com/watch?v=oHAQ3TzUTro
-EC2 nginx: https://www.youtube.com/watch?v=_EBARqreeao (localhost:8k)
-EC2 ssl certbot: https://dev.to/greenteabiscuit/using-let-s-encrypt-on-aws-ec2-instance-2aca
-sudo systemctl start/restart/status nginx/hosebox.service
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2023.html#ssl_enable
+- EC2 setup/systemd: https://www.youtube.com/watch?v=oHAQ3TzUTro
+- EC2 nginx: https://www.youtube.com/watch?v=_EBARqreeao (localhost:8k)
+- EC2 ssl certbot: https://dev.to/greenteabiscuit/using-let-s-encrypt-on-aws-ec2-instance-2aca
+- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2023.html#ssl_enable
+// sudo systemctl start/restart/status nginx/hosebox.service
 
