@@ -30,7 +30,17 @@ const getCards = asyncHandler(async (cardsArray) => {
 
 
     // get all scryfallCards with corresponding names
-    const scryfallCardsArray = await ScryfallCard.find({ name: { $in: nameArray } }).sort({ "name": 1 }); //STUB
+    const scryfallCardsArray = await ScryfallCard.find({ name: { $in: nameArray } }).sort({ "name": 1 });
+
+    const uniqueScryfallCardsArray = [];
+    
+    // filter out duplicates (this handles sneaky duplicates getting passed from scryfall JSON)
+    scryfallCardsArray.forEach((currentCard) => {
+        const foundCard = uniqueScryfallCardsArray.find((card) => card.name === currentCard.name);
+        if (!foundCard) {
+            uniqueScryfallCardsArray.push(currentCard);
+        }
+    });
 
     // create new array of those cards, with quantity added and unnecessary info removed
     const scryfallWithQuantityArray = scryfallCardsArray.map((scryfallCard) => {
