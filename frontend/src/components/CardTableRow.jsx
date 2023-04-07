@@ -53,7 +53,26 @@ function CardTableRow({ card, updateCardQuantity }) {
         // transform, eg Silundi Vision
         case "modal_dfc":
             imageUri = card.card_faces[0].image_uris.normal;
-            manaString = card.mana_cost;
+
+            // cases: no mana (mdfc land), front-face mana (silundi vision), both-face mana (birgi, god of storytelling)
+            const frontMana = card.card_faces[0].mana_cost;
+            const backMana  = card.card_faces[1].mana_cost;
+
+            // add front ie not an mdfc land
+            if (frontMana) {
+                manaString += frontMana;
+            }
+
+            // add visual separator if both
+            if (frontMana && backMana) {
+                manaString += " // ";
+            }
+
+            // now that separator's added, add backMana
+            if (backMana) {
+                manaString += backMana;
+            }
+
             break;
 
         // abnormal types that don't require cases (saga, battle, etc.)
