@@ -20,7 +20,7 @@ const register = async (userData) => {
 
 // login user
 const login = async (userData) => {
-    const response = await axios.post(API_URL + 'login', userData);
+    const response = await axios.post(API_URL + '/login', userData);
 
     // if post request receives userdata response, save in local storage
     if (response.data) {
