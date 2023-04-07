@@ -57,6 +57,7 @@ function CardTableRow({ card, updateCardQuantity }) {
             // cases: no mana (mdfc land), front-face mana (silundi vision), both-face mana (birgi, god of storytelling)
             const frontMana = card.card_faces[0].mana_cost;
             const backMana  = card.card_faces[1].mana_cost;
+            manaString = "";
 
             // add front ie not an mdfc land
             if (frontMana) {
