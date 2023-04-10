@@ -20,6 +20,7 @@ function CollectionPagination(props) {
                 pageSize={cardsPerPage}
                 onChange={handleChange}
                 size={"small"}
+                showSizeChanger={false}
             />
         </div>
     )
