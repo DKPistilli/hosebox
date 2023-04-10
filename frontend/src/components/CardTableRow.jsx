@@ -11,15 +11,23 @@ import CardTypeLine  from './CardTypeLine';
 //        isolate the logic of special cards -- mdfcs, splits, flips, transforms (and potential futures)
 function CardTableRow({ card, updateCardQuantity }) {
 
+    // catch in case table breaks
+    if (!card) {
+        return (<></>);
+    }
+
     // declare the constants that are NOT affected by layout/special cards
-    const layout = card.layout;
-    const cardName = card.name;
-    const cardId = card.cardId;
-    const quantity = card.quantity;
-    const typeLine = card.type_line;
+    const layout       = card.layout;
+    const cardName     = card.name;
+    const cardId       = card.cardId;
+    const quantity     = card.quantity;
+    const typeLine     = card.type_line;
     const rarityString = card.rarity;
-    const price = card.prices.usd;
-    const cardUri = card.scryfall_uri;
+    const cardUri      = card.scryfall_uri;
+
+    // some cards...don't have prices! Strange MODO ticket cards.
+    const price = card.prices.usd ? `$${card.prices.usd}` : "n/a";
+
 
     let imageUri, manaString;
     
@@ -99,7 +107,7 @@ function CardTableRow({ card, updateCardQuantity }) {
                 <RaritySymbols rarityString={rarityString} />
             </CTableDataCell>
             <CTableDataCell className='price' key={`pric${cardId}`}>
-                ${price}
+                {price}
             </CTableDataCell>
         </CTableRow>
     )
