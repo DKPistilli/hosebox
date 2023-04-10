@@ -83,8 +83,7 @@ const getCards = asyncHandler(async (cardsArray) => {
 
 // @ desc takes in a cardname, returns true if card exists in scryfall invent
 // @access Internal Only
-const isValidCardName = asyncHandler(async (cardName) => {
-
+const isValidCardName = async (cardName) => {
     if (!cardName) {
         throw new Error('CardName required to check if cardname is valid.');
     }
@@ -97,7 +96,7 @@ const isValidCardName = asyncHandler(async (cardName) => {
     } else {
         return false;
     }
-});
+};
 
 module.exports = {
     getCards,
