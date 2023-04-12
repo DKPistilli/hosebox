@@ -141,8 +141,7 @@ const addCard = asyncHandler(async (req, res) => {
 // @access Private
 const addCards = asyncHandler(async (req, res) => {
     
-    // add array of card objects to inventory
-    for (const card in req.validCards) {
+    for (const card of req.validCards) {
         const added = await addCardToCollection(card.name, card.quantity, req.user.id, "inventory");
 
         // add to invalid cards if addition unsuccessful
@@ -156,13 +155,13 @@ const addCards = asyncHandler(async (req, res) => {
         res.status(401);
         let errorString = 'Server error. Unable to add the following cards:\n';
         
-        for (const card in invalidCards) {
+        for (const card of req.invalidCards) {
             errorString += `${card.name}\n`;
         }
 
         throw new Error(errorString);
     } else {
-        res.status(201);
+        res.status(201).send();
     }
 });
 

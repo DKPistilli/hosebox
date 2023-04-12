@@ -34,7 +34,7 @@ const cardlineToObject = (cardText) => {
   
     // If there's no match, return an empty object
     return {};
-  }
+}
 
 const cardlistParser = asyncHandler(async (req, res, next) => {
     // handle empty list
@@ -44,18 +44,12 @@ const cardlistParser = asyncHandler(async (req, res, next) => {
     }
 
     // create array of lines, split by newline
-    const cardLines = req.body.cardlist.split('\n');
+    const cardLines = req.body.split('\n');
 
     let cards = [];
 
     // create new array of card objects by parsing name/quant by space.
-    cards = cardLines.map(line => {
-        const [name, quantity] = line.split(' ');
-        return {
-            name: name.trim(),
-            quantity: parseInt(quantity, 10),
-        };
-    })
+    cards = cardLines.map(line => cardlineToObject(line));
 
     const validCards   = [];
     const invalidCards = [];
@@ -75,6 +69,7 @@ const cardlistParser = asyncHandler(async (req, res, next) => {
     // attach to req and move on!
     req.validCards = validCards;
     req.invalidCards = invalidCards;
+
     next();
 });
 

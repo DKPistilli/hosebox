@@ -9,9 +9,12 @@ connectDB();
 
 const app = express();
 
-// Parse JSON/URL encoded request body information
-app.use(express.json());
+// Middleware for parsing JSON request body
+app.use(express.json({ type: 'application/json' }));
 app.use(express.urlencoded({ extended: false }));
+
+// Middleware for parsing raw text request body
+app.use(express.text({ type: 'text/plain' }));
 
 // Enable cross origin
 app.use(cors());

@@ -21,11 +21,10 @@ const addCardToCollection = asyncHandler(async (cardName, quantity, userId, coll
     } else if (collectionType==="wishlist") {
         collectionCard = await WishlistCard.findOne({userId: userId, name: cardName});
     } else {
-        console.log(`returning null 02`);
         return null;
     }
 
-    let collectionToScryfallCard = null;
+    let returnCard = null;
 
     // if card doesn't exist in collection, add it!
     // else, increment it by one.
@@ -37,26 +36,22 @@ const addCardToCollection = asyncHandler(async (cardName, quantity, userId, coll
         };
 
         if (collectionType === "inventory") {
-            collectionToScryfallCard = await InventoryCard.create(newCard);
+            returnCard = await InventoryCard.create(newCard);
         } else {
-            collectionToScryfallCard = await WishlistCard.create(newCard);
+            returnCard = await WishlistCard.create(newCard);
         }
 
     } else {
         collectionCard.quantity += quantity;
         await collectionCard.save();
-        collectionToScryfallCard = collectionCard;
+        returnCard = collectionCard;
     }
     
-    if (!collectionToScryfallCard) {
+    if (!returnCard) {
         return null;
     }
 
-    // get full scryfall card info for this updated card -- needs to be array
-    // note: destructure array that's returned, to just return one card
-    const scryfallCard = await scryfallCardsAPI.getCards([collectionToScryfallCard]);
-
-    return scryfallCard[0];
+    return returnCard;
 });
 
 module.exports = {
