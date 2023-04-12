@@ -8,20 +8,24 @@ const router  = express.Router();
 
 // import auth middleware
 const { protect } = require('../middleware/authMiddleware');
+const { cardlistParser } = require('../middleware/cardlistMiddleware');
 
 // import wishlist controller functions
 const {
     getCards,          // GET    /api/wishlists/:userId
     getWishlistSize,   // GET    /api/wishlists/:userId/size
-    addCard,           // POST   /api/wishlists/:userId
-    updateCard,        // PUT    /api/wishlists/:userId
-    deleteCards,       // DELETE /api/wishlists/:userId  
+    addCard,           // POST   /api/wishlists/
+    addCards,          // POST   /api/wishlists/list
+    updateCard,        // PUT    /api/wishlists/
+    deleteCards,       // DELETE /api/wishlists/  
 } = require('../controllers/wishlistCardController');
 
 // wishlist router functions
 router.route('/').post(protect, addCard)
                  .put(protect, updateCard)
                  .delete(protect, deleteCards);
+
+router.route('/list').post(protect, cardlistParser, addCards);
                  
 router.route('/:userId').get(getCards)
 router.route('/:userId/size').get(getWishlistSize)

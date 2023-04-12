@@ -114,8 +114,8 @@ const getWishlistSize = asyncHandler(async (req, res) => {
 // @access Private
 const addCard = asyncHandler(async (req, res) => {
 
-    const cardName = req.query.cardName;
-    const quantity = 1;
+    const cardName    = req.query.cardName;
+    const quantity    = 1;
 
     const addedCard = await addCardToCollection(cardName, quantity, req.user.id, "wishlist");
 
@@ -127,6 +127,40 @@ const addCard = asyncHandler(async (req, res) => {
         // note: destructure array that's returned, to just return one card
         const scryfallCard = await scryfallCardsAPI.getCards([addedCard]);
         res.status(201).json(scryfallCard[0]);
+    }
+});
+
+// @ desc  Add cards with name/quantity to wishlist 
+// @route  POST /api/wishlistCards/list
+// @body   if card is new to wishlist, create. If card is already found, card.quantity++
+//         3 Cryptic Command\n
+//         7 Murder\n
+//         1 All Is Dust\n
+// @note   relies on cardlistMiddleware to set req.validCards and req.invalidCards
+// @access Private
+const addCards = asyncHandler(async (req, res) => {
+    
+    for (const card of req.validCards) {
+        const added = await addCardToCollection(card.name, card.quantity, req.user.id, "wishlist");
+
+        // add to invalid cards if addition unsuccessful
+        if (!added) {
+            req.invalidCards.push(card);
+        }
+    }
+
+    // return error of any invalidCards
+    if (req.invalidCards.length > 0) {
+        res.status(401);
+        let errorString = 'Server error. Unable to add the following cards:\n';
+        
+        for (const card of req.invalidCards) {
+            errorString += `${card.name}\n`;
+        }
+
+        throw new Error(errorString);
+    } else {
+        res.status(201).send();
     }
 });
 
@@ -218,6 +252,7 @@ module.exports = {
     getCards,
     getWishlistSize,
     addCard,
+    addCards,
     updateCard,
     deleteCards,
 };
