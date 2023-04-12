@@ -13,6 +13,8 @@ const mongoose     = require('mongoose');
 const WishlistCard     = require('../models/wishlistCardModel');
 const scryfallCardsAPI = require('./scryfallCardController');
 
+const { addCardToCollection } = require('./collectionCardControllerHelper');
+
 // Set limit of cards to be returned per page
 const CARD_RES_LIMIT = 100;
 
@@ -106,53 +108,26 @@ const getWishlistSize = asyncHandler(async (req, res) => {
 });
 
 
-// @ desc  Add card with id/quantity to wishlist 
+// @ desc  Add card with name/quantity to wishlist 
 // @route  POST /api/wishlistCards
-// @query  name=(name) -- if card is new to wishlist, create. If card is already found, card.quantity++
+// @query  cardName=(cardName) -- if card is new to wishlist, create. If card is already found, card.quantity++
 // @access Private
 const addCard = asyncHandler(async (req, res) => {
 
-    const cardName        = req.query.cardName;
-    const isValidName = await scryfallCardsAPI.isValidCardName(cardName);
-    const quantity    = 1;
+    const cardName = req.query.cardName;
+    const quantity = 1;
 
-    if (!cardName || !isValidName) {
+    const addedCard = await addCardToCollection(cardName, quantity, req.user.id, "wishlist");
+
+    if (!addedCard) {
         res.status(400);
-        throw new Error('Valid card name required for card addition operation.');
-    }
-
-    // find card by userId and name
-    const wishlistCard = await WishlistCard.findOne({userId: req.user.id, name: cardName});
-    let wishlistToScryfallCard = null;
-
-    // if card doesn't exist in wishlist, add it!
-    // else, increment it by one.
-    if (!wishlistCard) {
-
-        newCard = {
-            userId: req.user.id,
-            name: cardName,
-            quantity: quantity,
-        };
-
-        wishlistToScryfallCard = await WishlistCard.create(newCard);
-
+        throw new Error('Server error adding card with name: ' + cardName + '.');
     } else {
-        wishlistCard.quantity += quantity;
-        await wishlistCard.save();
-        wishlistToScryfallCard = wishlistCard;
+        // get full scryfall card info for this updated card -- needs to be array
+        // note: destructure array that's returned, to just return one card
+        const scryfallCard = await scryfallCardsAPI.getCards([addedCard]);
+        res.status(201).json(scryfallCard[0]);
     }
-    
-    if (!wishlistToScryfallCard) {
-        res.status(500);
-        throw new Error('Server error adding card with name: ' + cardName);
-    }
-
-    // get full scryfall card info for this updated card -- needs to be array
-    // note: destructure array that's returned, to just return one card
-    const scryfallCard = await scryfallCardsAPI.getCards([wishlistToScryfallCard]);
-
-    res.status(201).json(scryfallCard[0]);
 });
 
 

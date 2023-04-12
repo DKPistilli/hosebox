@@ -12,6 +12,7 @@ const mongoose     = require('mongoose');
 //import InventoryCard db + scryfall card helper function
 const InventoryCard    = require('../models/inventoryCardModel');
 const scryfallCardsAPI = require('./scryfallCardController');
+const { addCardToCollection } = require('./collectionCardControllerHelper');
 
 // Set limit of cards to be returned per page
 const CARD_RES_LIMIT = 100;
@@ -108,53 +109,61 @@ const getInventorySize = asyncHandler(async (req, res) => {
     }
 });
 
-// @ desc  Add card with id/quantity to inventory 
+// @ desc  Add card with name/quantity to inventory 
 // @route  POST /api/inventoryCards
 // @query  cardName=(cardName) -- if card is new to inventory, create. If card is already found, card.quantity++
 // @access Private
 const addCard = asyncHandler(async (req, res) => {
 
-    const cardName        = req.query.cardName;
-    const isValidName = await scryfallCardsAPI.isValidCardName(cardName);
+    const cardName    = req.query.cardName;
     const quantity    = 1;
 
-    if (!cardName || !isValidName) {
+    const addedCard = await addCardToCollection(cardName, quantity, req.user.id, "inventory");
+
+    if (!addedCard) {
         res.status(400);
-        throw new Error('Valid card name required for card addition operation.');
-    }
-
-    // find card by userId and name
-    const inventoryCard = await InventoryCard.findOne({userId: req.user.id, name: cardName});
-    let inventToScryfallCard = null;
-
-    // if card doesn't exist in inventory, add it!
-    // else, increment it by one.
-    if (!inventoryCard) {
-
-        newCard = {
-            userId: req.user.id,
-            name: cardName,
-            quantity: quantity,
-        };
-
-        inventToScryfallCard = await InventoryCard.create(newCard);
-
-    } else {
-        inventoryCard.quantity += quantity;
-        await inventoryCard.save();
-        inventToScryfallCard = inventoryCard;
-    }
-    
-    if (!inventToScryfallCard) {
-        res.status(500);
         throw new Error('Server error adding card with name: ' + cardName + '.');
+    } else {
+        // get full scryfall card info for this updated card -- needs to be array
+        // note: destructure array that's returned, to just return one card
+        const scryfallCard = await scryfallCardsAPI.getCards([addedCard]);
+        res.status(201).json(scryfallCard[0]);
+    }
+});
+
+// @ desc  Add cards with name/quantity to inventory 
+// @route  POST /api/inventoryCards/list
+// @body   if card is new to inventory, create. If card is already found, card.quantity++
+//         3 Cryptic Command\n
+//         7 Murder\n
+//         1 All Is Dust\n
+// @note   relies on cardlistMiddleware to set req.validCards and req.invalidCards
+// @access Private
+const addCards = asyncHandler(async (req, res) => {
+    
+    // add array of card objects to inventory
+    for (const card in req.validCards) {
+        const added = await addCardToCollection(card.name, card.quantity, req.user.id, "inventory");
+
+        // add to invalid cards if addition unsuccessful
+        if (!added) {
+            req.invalidCards.push(card);
+        }
     }
 
-    // get full scryfall card info for this updated card -- needs to be array
-    // note: destructure array that's returned, to just return one card
-    const scryfallCard = await scryfallCardsAPI.getCards([inventToScryfallCard]);
+    // return error of any invalidCards
+    if (req.invalidCards.length > 0) {
+        res.status(401);
+        let errorString = 'Server error. Unable to add the following cards:\n';
+        
+        for (const card in invalidCards) {
+            errorString += `${card.name}\n`;
+        }
 
-    res.status(201).json(scryfallCard[0]);
+        throw new Error(errorString);
+    } else {
+        res.status(201);
+    }
 });
 
 // @ desc  update card by name with quantity, deleting if needed
@@ -244,6 +253,7 @@ module.exports = {
     getCards,
     getInventorySize,
     addCard,
+    addCards,
     updateCard,
     deleteCards,
 };

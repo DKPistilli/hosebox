@@ -15,6 +15,27 @@
 const scryfallCardsAPI = require('../controllers/scryfallCardController');
 const asyncHandler = require('express-async-handler');
 
+// takes in line of magic card "3 All Is Dust" and returns {name: "All Is Dust", quantity: 3}
+const cardlineToObject = (cardText) => {
+
+    // Regular expression to match the quantity and name
+    const regex = /^(\d+)\s+(.+)$/;
+  
+    // Test the regex against the input cardText, [0] whole string, [1]quant, [2]cardname
+    const match = regex.exec(cardText);
+  
+    // If there is a match, create an object with the matched properties
+    if (match) {
+      const quantity = parseInt(match[1], 10);
+      const name = match[2].trim();
+  
+      return { name, quantity };
+    }
+  
+    // If there's no match, return an empty object
+    return {};
+  }
+
 const cardlistParser = asyncHandler(async (req, res, next) => {
     // handle empty list
     if (!req.body) {

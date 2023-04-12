@@ -2,8 +2,13 @@
     border: none;
     outline: none;
     text-align: center;
-    width: 20px;
+    width: 100%;
 }
+
+.quantity {
+    width: 32px;
+}
+
 
 .quantity:hover {
     background-color: #f0f0f0;
