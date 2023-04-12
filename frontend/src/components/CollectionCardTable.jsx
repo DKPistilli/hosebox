@@ -30,9 +30,9 @@ function CollectionCardTable({ cards, tableName, collectionSize, getCollection }
         if (!user || !ownerId || (user._id !== ownerId)) {
             return;
         }
-
+    
         const collectionRoute = tableName.toLowerCase();
-
+    
         const config = {
             headers: { Authorization: `Bearer ${user.token}`},
             params : {
@@ -42,12 +42,17 @@ function CollectionCardTable({ cards, tableName, collectionSize, getCollection }
         };
         
         // update card quantity
-        const res = await axios.put(`${COLLECTION_API_URL}${collectionRoute}Cards`, null, config);
-
-        if (!res.data) {
+        try {
+            const res = await axios.put(`${COLLECTION_API_URL}${collectionRoute}Cards`, null, config);
+            console.log(res.status);
+            if (res.status === 200 || res.status === 204 || res.status === 201) {
+                getCollection();
+            } else {
+                toast.error(`Error updating quantity of ${cardName}`);
+            }
+        } catch (error) {
+            console.log(`Error: ${JSON.stringify(error)}`);
             toast.error(`Error updating quantity of ${cardName}`);
-        } else {
-            getCollection();
         }
     }
     

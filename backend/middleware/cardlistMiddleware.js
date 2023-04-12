@@ -10,6 +10,8 @@
 /// req.validCards   = [{name: Abc, quantity: 3}, {name: Mno, quantity: 7}, {name: Xyz, quantity: 15}]
 /// req.invalidCards = [{}]
 
+/// TO DO: Do we want this to parse sideboard? Also this needs to work with multi-word card names lol
+
 const scryfallCardsAPI = require('../controllers/scryfallCardController');
 const asyncHandler = require('express-async-handler');
 
