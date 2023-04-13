@@ -232,6 +232,8 @@ const updateCard = asyncHandler(async (req, res) => {
 // @access Private
 const deleteCards = asyncHandler(async (req, res) => {
 
+    console.log('Deleting Inventory');
+
     const filter = {
         userId: req.user.id,
     };

@@ -102,7 +102,6 @@ const getWishlistSize = asyncHandler(async (req, res) => {
         throw new Error(`Error finding wishlist size of user with ID: ${ownerId}`);
     } else {
         const totalQuantity = result.length > 0 ? result[0].totalQuantity : 0;
-        console.log('total Quantity: ' + totalQuantity);
         res.status(200).json(totalQuantity);
     }
 });
@@ -151,7 +150,7 @@ const addCards = asyncHandler(async (req, res) => {
 
     // return error of any invalidCards
     if (req.invalidCards.length > 0) {
-        res.status(401);
+        res.status(404);
         let errorString = 'Server error. Unable to add the following cards:\n';
         
         for (const card of req.invalidCards) {

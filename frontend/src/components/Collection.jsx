@@ -7,15 +7,16 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux';
-import CardTable from '../components/CardTable';
-import CardAdder from '../components/CardAdder';
-import CollectionPagination from './CollectionPagination';
 import { toast } from 'react-toastify'
 
 // import http request service
 import axios from 'axios';
 
 import '../styles/Collection.css';
+import CardAdderContainer from './CardAdderContainer';
+import DeleteCollectionButton from './DeleteCollectionButton';
+import CardTable from './CardTable';
+import CollectionPagination from './CollectionPagination';
 
 // cards per page in Collection
 const CARDS_PER_PAGE = 16;
@@ -100,11 +101,51 @@ function Collection({ apiUrl, owner, collectionName }) {
             });
     };
 
+    // define how CardAdderContainer should add Cardlists
+    const addCardlist = async (cardlist) => {
+        const config = {
+            headers: {
+                "Authorization": `Bearer ${user.token}`,
+                "Content-Type" : "text/plain",
+            },
+        };
+
+        await axios.post(apiUrl + '/list', cardlist, config)
+            .then ( res => getCollection() )
+            .catch( err => {
+                toast.error(err.response.data.message);
+                getCollection();
+            });
+    };
+
+    const deleteCollection = async () => {
+
+        console.log('inside delete Collection');
+        
+        if (!collection || !user || !user._id) {
+            console.log('inside empty return');
+            return;
+        } else {
+            console.log('inside actionable return');
+            const config = {
+                headers: { Authorization: `Bearer ${user.token}`},
+            };
+            console.log(`apiUrl: ${apiUrl}`)
+            await axios.delete(apiUrl, config)
+                .then ( res => getCollection() )
+                .catch( err => {
+                    toast.error(err.message);
+                });
+        }
+    }
+
     return (
         <div>
             { (user) && (user._id === owner._id) ?
-            <CardAdder
+            <CardAdderContainer
                 addCard={addCard}
+                addCardlist={addCardlist}
+                isDeck={false}
             />
             : <></> }
             <div className='collection-pagination'>
@@ -121,6 +162,13 @@ function Collection({ apiUrl, owner, collectionName }) {
                        collectionSize={collectionSize}
                        getCollection={getCollection}
             />
+            <div>
+                {
+                    (user) && (user._id === owner._id) ?
+                    <DeleteCollectionButton deleteCollection={deleteCollection} /> :
+                    <></>
+                }
+            </div>
         </div>
     )
 }

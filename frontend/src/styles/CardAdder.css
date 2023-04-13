@@ -54,3 +54,20 @@
     flex-direction: column;
     align-items: center;
 }
+
+.card-add-container {
+    display: inline-block;
+    align-items: center;
+    margin: 5px;
+}
+
+.card-add-selectors {
+    display: flex;
+    margin: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-selector-button {
+    margin: 1px;
+}

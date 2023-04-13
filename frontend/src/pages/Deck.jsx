@@ -7,7 +7,7 @@ import Spinner    from '../components/Spinner';
 import CardTable  from '../components/CardTable';
 import CardAdder  from '../components/CardAdder';
 import DeckTitle  from '../components/DeckTitle';
-import DeleteDeck from '../components/DeleteDeck';
+import DeleteDeckButton from '../components/DeleteDeckButton';
 
 // import http request service
 import axios from 'axios';
@@ -203,7 +203,7 @@ function Deck() {
             )}
           </div>
           <div>
-            <DeleteDeck deleteDeck={deleteDeck}/>
+            <DeleteDeckButton deleteDeck={deleteDeck}/>
           </div>
         </div>
       }

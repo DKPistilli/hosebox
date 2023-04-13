@@ -9,5 +9,8 @@
 }
 
 .footer {
-    padding: 25px;
+    padding: 10px;
+    bottom: 0;
+    display: block;
+    justify-content: center;
 }

@@ -43,8 +43,8 @@ const cardlistParser = asyncHandler(async (req, res, next) => {
         throw new Error('No cardlist given to server for cardlist-required operation.')
     }
 
-    // create array of lines, split by newline
-    const cardLines = req.body.split('\n');
+    // create array of lines, split by newline, filtering extra newlines
+    const cardLines = req.body.split('\n').filter(line => line.trim() !== '');
 
     let cards = [];
 
