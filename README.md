@@ -38,19 +38,21 @@ That's right, folks -- hosebox and hosebot are teaming up, allowing MLMTG Wizard
     - [X] implement decks model, router, and controller
 
 ### Front End
-- [ ] Inventory / Wishlist
-    - [X] implement <Inventory /> component which queries our server for cardIds
-    - [X] implement addCard
-    - [ ] implement addCardList
+
 - [ ] Deckview
     - [X] design and implement <Deckview /> page/component, which is GUI for user to view/edit their decklists
     - [X] mainboard/sideboard/scratchpad
+    - [ ] add "deckname" pop-up window for creating a new deck.
     - [ ] FUTURE VERSIONS: Add inventory qty to deckview, which will require a GET to api.hosebox.net/api/users/inventoryCards/:userId/:deckId (most likely)
 - [ ] \(potential) add "League" to front-end
     - [ ] create "/league" page and add League button to <Header/>
     - [ ] create some sort of league schedule-view and/or standings-view.
     - [ ] write and display some sort of flavor about the history of the league?
 - [X] KNOWN BUG: MDFC (Modal Dual Face Cards). Currently, they do not display correctly, due to JSON structure.
+- [X] Inventory / Wishlist
+    - [X] implement <Inventory /> component which queries our server for cardIds
+    - [X] implement addCard
+    - [X] implement addCardList
 - [X] Sidebar
     - [X] implement <Sidebar /> component which has a button to view <Inventory />, <Wishlist />, <Decks />
     - [X] Create file structure for Sidebar so that decks can display down the sidebar (and scroll)
