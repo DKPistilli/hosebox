@@ -6,8 +6,9 @@ const { lowerAllButFirstChar,
         isValidUsername,
         isValidEmail } = require('./userControllerHelper');
 
-//import collections
+//import models
 const User = require('../models/userModel');
+const Collection = require('../models/collectionModel');
 
 // Generate JWT based off of userId
 const generateToken = (id) => {
@@ -65,7 +66,39 @@ const registerUser = asyncHandler(async (req, res) => {
         password: hashedPassword,
     });
 
+    // if user, gen their empty inventory/wishlist, then send res to client
     if (user) {
+        const userInventory = await Collection.create({
+            name      : "Inventory",
+            ownerId   : user.id,
+            isDeck    : false,
+            isPublic  : true,
+            mainboard : [],
+            sideboard : [],
+            scratchpad: [],
+        });
+
+        const userWishlist = await Collection.create({
+            name      : "Wishlist",
+            ownerId   : user.id,
+            isDeck    : false,
+            isPublic  : true,
+            mainboard : [],
+            sideboard : [],
+            scratchpad: [],
+        });
+
+        // if error generating inventory/wishlist, delete user and return server error
+        if (!userInventory || !userWishlist) {
+            await User.deleteOne({ _id: user.id })
+            res.status(500);
+            throw new Error("Server error generating new user's inventory/wishlist");
+        } else {
+            user.inventoryId = userInventory.id;
+            user.wishlistId  = userWishlist.id;
+            await user.save();
+
+        }
         res.status(201).json({
             _id  : user.id,
             name : user.name,
@@ -78,7 +111,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 });
 
-// @ desc  Authentite a user
+// @ desc  Authenticate a user
 // @route  POST /api/users/login
 // @body   email="email", password="password"
 // @access Public
@@ -122,7 +155,7 @@ const getUser = asyncHandler(async(req, res) => {
         throw new Error(`User ID required for Get User operation.`)
     }
 
-    const returns = 'name decks_public'
+    const returns = 'name inventoryId wishlistId decks_public'
     const user    = await User.findOne({'_id': req.params.userId}, returns);
 
     if (!user) {
