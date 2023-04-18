@@ -13,7 +13,7 @@ const { cardlistParser } = require('../middleware/cardlistMiddleware');
 const {
     getCollection,           // GET    /api/collections/:collectionId
     getCollectionSize,       // GET    /api/collections/:collectionId/size
-    createCollection,        // POST   /api/collections
+    createDeckCollection,    // POST   /api/collections
     addCards,                // POST   /api/collections/:collectionId
     updateCardQuantity,      // PUT    /api/collections/:collectionId
     updateCollectionName,    // PUT    /api/collections/:collectionId/name
@@ -27,7 +27,7 @@ router.get('/:collectionId/size', getCollectionSize);
 
 // PRIVATE ROUTES
 router
-    .post('/',                     protect,                 createCollection)
+    .post('/',                     protect,                 createDeckCollection)
     .post('/:collectionId',        protect, cardlistParser, addCards)
     .put( '/:collectionId',        protect,                 updateCardQuantity)
     .put('/:collectionId/name',    protect,                 updateCollectionName)

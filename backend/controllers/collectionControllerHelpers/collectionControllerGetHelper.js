@@ -1,6 +1,6 @@
 const asyncHandler     = require('express-async-handler');
-const scryfallCardsAPI = require('./scryfallCardController');
-const Collection       = require('../models/collectionModel');
+const scryfallCardsAPI = require('../scryfallCardController');
+const Collection       = require('../../models/collectionModel');
 
 // Set max limit of cards to be returned per page of non-deck-collection
 const CARD_RES_LIMIT = 999;
@@ -13,6 +13,11 @@ const handleGetDeckCollection = asyncHandler(async (req, res) => {
 
     // get deck from DB
     const deck = await Collection.findOne({ _id: collectionId });
+
+    if (!deck || !collectionId) {
+        res.status(404);
+        throw new Error("Unable to find deck with ID: " + collectionId);
+    }
 
     // use deck's card reference arrays to grab full scryfall cards from DB
     const scryfallMainboard  = await scryfallCardsAPI.getCards(deck.mainboard);
@@ -45,6 +50,11 @@ const handleGetNonDeckCollection = asyncHandler(async (req, res) => {
     // grab collection from DB
     const collectionId = req.params.collectionId;
     const collection = await Collection.findOne({ _id: collectionId });
+
+    if (!collection || !collectionId) {
+        res.status(404);
+        throw new Error("Unable to find collection with ID: " + collectionId);
+    }
 
     // get current page of cards from collection
     const paginatedCards = collection.mainboard.slice(startIndex, endIndex);
@@ -82,7 +92,7 @@ const handleGetCollectionSize = asyncHandler(async (req, res) => {
     const collectionId = req.params.collectionId;
     const collection = await Collection.findOne({ _id: collectionId });
 
-    if (!collection) {
+    if (!collection || !collectionId) {
         res.status(404);
         throw new Error(`No collection found with ID: ${collectionId}`);
     }

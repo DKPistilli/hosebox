@@ -12,8 +12,16 @@ const Collection   = require ('../models/collectionModel');
 const {
     handleGetDeckCollection,
     handleGetNonDeckCollection,
-    handleGetCollectionSize,
-} = require('./collectionControllerGetHelper');
+    handleGetCollectionSize } = require('./collectionControllerHelpers/collectionControllerGetHelper');
+
+const {
+    handleAddCards,
+    handleCreateDeckCollection } = require('./collectionControllerHelpers/collectionControllerPostHelper');
+
+const {
+    handleUpdateCardQuantity,
+    handleUpdateCollectionName,
+    handleUpdateCollectionPrivacy } = require('./collectionControllerHelpers/collectionControllerPutHelper');
 
 /////////////////////
 /// PUBLIC ROUTES ///
@@ -33,7 +41,7 @@ const getCollection = asyncHandler(async (req, res) => {
         throw new Error('Get Collection request sent with invalid collectionID format.');
     }
 
-    const collection = await Collection.findOne({_id: collectionId});
+    const collection = await Collection.findOne({ _id: collectionId });
 
     if (!collection) {
         res.status(404);
@@ -59,11 +67,13 @@ const getCollectionSize = asyncHandler(async (req, res) => {
 
 // @ desc  Create new collection
 // @route  POST /api/collections/
-// @query  collectionName=(collectionName)&isDeck=(true/false)
+// @query  deckName=(deckName)
 // @access Private
-const createCollection = asyncHandler(async (req, res) => {});
+const createDeckCollection = asyncHandler(async (req, res) => {
+    handleCreateDeckCollection(req, res);
+});
 
-// @ desc  Add cards with name/quantity to inventory 
+// @ desc  Add cards with quantity/name to inventory 
 // @route  POST /api/collections/:collectionId/
 // @query  listType=(listtype)
 // @body   if card is new to inventory, create. If card is already found, card.quantity+=quantity
@@ -72,35 +82,45 @@ const createCollection = asyncHandler(async (req, res) => {});
 //         1 All Is Dust\n
 // @note   relies on cardlistMiddleware to set req.validCards and req.invalidCards
 // @access Private
-const addCards = asyncHandler(async (req, res) => {});
+const addCards = asyncHandler(async (req, res) => {
+    handleAddCards(req, res);
+});
 
 // @desc   update quantity of card in collection by name/listType, deleting if needed
 // @route  PUT /api/collections/:collectionId/
 // @query  cardName=(cardName)&quantity=(quantity to set)&listType=(listtype)
 // @access Private
-const updateCardQuantity = asyncHandler(async (req, res) => {});
+const updateCardQuantity = asyncHandler(async (req, res) => {
+    handleUpdateCardQuantity(req, res);
+});
 
 // @desc   update collection name
 // @route  PUT /api/collections/:collectionId/name
 // @query  collectionName=(collectionName)
 // @access Private
-const updateCollectionName = asyncHandler(async (req, res) => {});
+const updateCollectionName = asyncHandler(async (req, res) => {
+    handleUpdateCollectionName(req, res);
+});
 
 // @desc   update card by name with quantity, deleting if needed
 // @route  PUT /api/collections/:collectionId/privacy
 // @query  cardName=(cardName)&quantity=(quantity to set)
 // @access Private
-const updateCollectionPrivacy = asyncHandler(async (req, res) => {});
+const updateCollectionPrivacy = asyncHandler(async (req, res) => {
+    handleUpdateCollectionPrivacy(req, res);
+});
 
 // @desc   Delete entire inventory -- SHOULD BE RARE AND PROTECTED, CANNOT BE UNDONE!
 // @route  DELETE /api/collections/:collectionId/
 // @access Private
-const deleteCollection = asyncHandler(async (req, res) => {});
+const deleteCollection = asyncHandler(async (req, res) => {
+    handleDeleteCollection(req, res);
+});
 
 module.exports = {
     getCollection,
     getCollectionSize,
-    createCollection,
+    createDeckCollection,
     addCards,
     updateCardQuantity,
     updateCollectionName,
