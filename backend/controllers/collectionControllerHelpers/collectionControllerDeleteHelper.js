@@ -1,5 +1,4 @@
 const asyncHandler     = require('express-async-handler');
-const scryfallCardsAPI = require('../scryfallCardController');
 const Collection       = require('../../models/collectionModel');
 const User             = require('../../models/collectionModel');
 
@@ -7,7 +6,7 @@ const handleDeleteCollection = asyncHandler(async (req, res) => {
     
     // First, delete from decksDB    
     const collectionId = req.params.collectionId;
-    const collection = Collection.findById({ _id: collectionId });
+    const collection = await Collection.findById({ _id: collectionId });
 
     const result = await Collection.deleteOne({ _id: collectionId });
 

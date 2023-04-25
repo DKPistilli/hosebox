@@ -5,8 +5,8 @@
 /// Note:
 ///      Cards in collections are just proxies (just name + quantity), so we also use scryfallCards db
 ///      scryfallCards db calls to convert these names into fully populated cards for res to client
-const mongoose     = require('mongoose');
 const asyncHandler = require('express-async-handler');
+const mongoose     = require('mongoose');
 const Collection   = require ('../models/collectionModel');
 
 const {
@@ -22,6 +22,9 @@ const {
     handleUpdateCardQuantity,
     handleUpdateCollectionName,
     handleUpdateCollectionPrivacy } = require('./collectionControllerHelpers/collectionControllerPutHelper');
+
+const {
+    handleDeleteCollection } = require('./collectionControllerHelpers/collectionControllerDeleteHelper');
 
 /////////////////////
 /// PUBLIC ROUTES ///

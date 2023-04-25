@@ -19,18 +19,12 @@ const handleGetDeckCollection = asyncHandler(async (req, res) => {
         throw new Error("Unable to find deck with ID: " + collectionId);
     }
 
-    // use deck's card reference arrays to grab full scryfall cards from DB
-    const scryfallMainboard  = await scryfallCardsAPI.getCards(deck.mainboard);
-    const scryfallSideboard  = await scryfallCardsAPI.getCards(deck.sideboard);
-    const scryfallScratchpad = await scryfallCardsAPI.getCards(deck.scratchpad);
+    var responseDeck = deck;
 
-    // create response collection with the populated scryfall card arrays
-    const responseDeck = {
-        ...deck,
-        mainboard:  scryfallMainboard,
-        sideboard:  scryfallSideboard,
-        scratchpad: scryfallScratchpad,
-    }
+    // use deck's card reference arrays to grab full scryfall cards from DB
+    responseDeck.mainboard  = await scryfallCardsAPI.getCards(deck.mainboard);
+    responseDeck.sideboard  = await scryfallCardsAPI.getCards(deck.sideboard);
+    responseDeck.scratchpad = await scryfallCardsAPI.getCards(deck.scratchpad);
 
     res.status(200).json(responseDeck);
 });
@@ -101,10 +95,10 @@ const handleGetCollectionSize = asyncHandler(async (req, res) => {
     const mainboardSize = collection.mainboard.reduce((accumulator, currCard) => {
         return accumulator + currCard.quantity;
     }, 0);
-    const sideboardSize = collection.mainboard.reduce((accumulator, currCard) => {
+    const sideboardSize = collection.sideboard.reduce((accumulator, currCard) => {
         return accumulator + currCard.quantity;
     }, 0);
-    const scratchpadSize = collection.mainboard.reduce((accumulator, currCard) => {
+    const scratchpadSize = collection.scratchpad.reduce((accumulator, currCard) => {
         return accumulator + currCard.quantity;
     }, 0);
 

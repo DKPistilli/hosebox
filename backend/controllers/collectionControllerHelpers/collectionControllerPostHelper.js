@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const scryfallCardsAPI = require('../scryfallCardController');
 const Collection       = require('../../models/collectionModel');
+const User             = require('../../models/userModel');
 
 // @ desc  Create new collection
 // @route  POST /api/collections/
@@ -9,6 +10,11 @@ const Collection       = require('../../models/collectionModel');
 const handleCreateDeckCollection = asyncHandler(async (req, res) => {
     const deckName = req.query.deckName || "";
     const userId = req.user.id; // assigned by authMiddleware
+
+    if (!deckName || !userId) {
+        res.status(400);
+        throw new Error('Valid Deck Name and UserID required to create Deck.');
+    }
 
     // add new deck to decks database
     const deck = await Collection.create({
@@ -46,23 +52,23 @@ const handleCreateDeckCollection = asyncHandler(async (req, res) => {
     res.status(201).json(deck);
 });
 
-// @ desc  Add cards with quantity/name to inventory 
+// @ desc  Add cards with quantity/name to collection 
 // @query  listType=(listtype)
 // @note   relies on cardlistMiddleware to set req.validCards and req.invalidCards
 const handleAddCards = asyncHandler(async (req, res) => {
 
     const collectionId = req.params.collectionId;
-    const listType     = req.params.listType || "mainboard";
+    const listType     = req.query.listType || "mainboard"; // default to mainboard if no list type given
 
     // grab and verify deck from Collection DB
     const deck = await Collection.findById(collectionId);
     if (!deck) {
         res.status(404);
-        throw new Error('Unable to add to Collection. Invalid ID given.');
+        throw new Error('Unable to add to Collection. No collection found with given ID.');
     }
 
     // verify active user matches deck owner
-    if (req.user.id !== deck.ownerId) {
+    if (String(req.user.id) !== String(deck.ownerId)) {
         res.status(403);
         throw new Error('Not authorized. UserID does not match collection ownerID');
     }
@@ -92,9 +98,27 @@ const handleAddCards = asyncHandler(async (req, res) => {
         if (indexToUpdate === -1) {
             cardlist.push(validCard);
         } else {
-            cardlist[indexToUpdate].quantity = validCard.quantity;
+            cardlist[indexToUpdate].quantity += validCard.quantity;
         }
     }
+
+    // update deck's main/side/scratch with cardlist containing newly added cards.
+    switch(listType) {
+        case "mainboard":
+            deck.mainboard = cardlist; 
+            break;
+        case "sideboard":
+            deck.sideboard = cardlist;
+            break;
+        case "scratchpad":
+            deck.scratchpad = cardlist;
+            break;
+        default:
+            res.status(400);
+            throw new Error(`Invalid request listType: ${listType}`);
+    }
+
+    await deck.save();
 
     // return error of any invalidCards, else success
     if (req.invalidCards.length > 0) {
