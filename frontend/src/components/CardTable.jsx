@@ -6,19 +6,20 @@
 import CollectionCardTable from "./CollectionCardTable";
 import DeckCardTable       from "./DeckCardTable";
 
-function CardTable({ cards, tableName, tableStyle, collectionSize, getCollection }) {
+function CardTable({ cards, tableName, tableStyle, collectionSize, collectionId, getCollection }) {
     return (
         <div>
             {
                 tableStyle==="deck" ?
                     <DeckCardTable 
                         cards={cards} 
-                        tableName={ tableName }
+                        tableName={tableName}
                     /> :
                     <CollectionCardTable
-                        cards={ cards }
-                        tableName={ tableName }
+                        cards={cards}
+                        tableName={tableName}
                         collectionSize={collectionSize}
+                        collectionId={collectionId}
                         getCollection={getCollection}
                     />
             }

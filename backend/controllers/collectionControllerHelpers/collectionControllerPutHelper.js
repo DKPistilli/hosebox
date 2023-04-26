@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const scryfallCardsAPI = require('../scryfallCardController');
 const Collection       = require('../../models/collectionModel');
+const User             = require('../../models/userModel');
+
 
 // @desc   update quantity of card in collection by name/listType, deleting if needed
 // @route  PUT /api/collections/:collectionId/
@@ -14,7 +16,7 @@ const handleUpdateCardQuantity = asyncHandler(async (req, res) => {
     const quantity = parseInt(req.query.quantity);
 
     // validate request
-    if (!collectionId || !listType || !cardName || quantity <= 0 || !Number.isInteger(quantity) || !isValidName) {
+    if (!collectionId || !listType || !cardName || quantity < 0 || !Number.isInteger(quantity) || !isValidName) {
         res.status(400);
         throw new Error('Request to update card quantity is invalid.');
     }
@@ -26,41 +28,23 @@ const handleUpdateCardQuantity = asyncHandler(async (req, res) => {
         throw new Error(`No collection found with given ID: ${collectionId}`);
     }
 
-    // update correct card's quantity at correct index in given listtype
-    var cardIndex;
-
-    switch (listType) {
-        case "mainboard":
-            cardIndex = collection.mainboard.findIndex(card => card.name === cardName);
-            if (cardIndex) {
-                collection.mainboard[cardIndex].quantity = quantity;
-            }
-            break;
-        case "sideboard":
-            cardIndex = collection.sideboard.findIndex(card => card.name === cardName);
-            if (cardIndex) {
-                collection.sideboard[cardIndex].quantity = quantity;
-            }
-            break;
-        case "scratchpad":
-            cardIndex = collection.scratchpad.findIndex(card => card.name === cardName);
-            if (cardIndex) {
-                collection.scratchpad[cardIndex].quantity = quantity;
-            }
-            break;
-        default:
-            res.status(404);
-            throw new Error(`Error updating card in invalid collection list type: ${listType}`);
-    }
-
-    // if card wasn't found, throw error, else save changes and return success
-    if (cardIndex === -1) {
+    // validate listType given
+    if (!["mainboard", "sideboard", "scratchpad"].includes(listType)) {
         res.status(404);
-        throw new Error(`No card found in given collection/listType with name: ${cardName}`);
-    } else {
-        await collection.save();
-        res.status(200).send();
+        throw new Error(`Error updating card in invalid collection list type: ${listType}`);
     }
+
+    // if quantity is zero, delete card from array
+    if (quantity === 0) {
+        collection[listType] = collection[listType].filter(card => card.name !== cardName);
+    } else {
+        const cardIndex = collection[listType].findIndex(card => card.name === cardName);
+        if (cardIndex !== -1) {
+            collection[listType][cardIndex].quantity = quantity;
+        }
+    }
+    await collection.save();
+    res.status(200).send();
 });
 
 // @desc   update collection name
@@ -83,7 +67,7 @@ const handleUpdateCollectionName = asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error(`No collection found with given ID: ${collectionId}`);
     } else {
-        collection.name = collectionname;
+        collection.name = collectionName;
         await collection.save();
     }
 
@@ -113,9 +97,6 @@ const handleUpdateCollectionName = asyncHandler(async (req, res) => {
             res.status(404);
             throw new Error(`Error updating collection name. No deck found in users public/private list with id: ${collectionId}.`);
         }
-
-        await user.save();
-        res.status(204).send();
     }
 });
 
@@ -134,7 +115,7 @@ const handleUpdateCollectionPrivacy = asyncHandler(async (req, res) => {
     }
 
     // find, validate, and update collection in collection DB
-    collection = Collection.findById(collectionId);
+    const collection = await Collection.findById(collectionId);
     if (!collection) {
         res.status(404);
         throw new Error(`No collection found with given ID: ${collectionId}`);
@@ -144,7 +125,7 @@ const handleUpdateCollectionPrivacy = asyncHandler(async (req, res) => {
     }
 
     // grab User from DB and validate
-    const user = User.findById(collection.ownerId);
+    const user = await User.findById(collection.ownerId);
     if (!user) {
         res.status(404);
         throw new Error('This collection is not associated with any user.');

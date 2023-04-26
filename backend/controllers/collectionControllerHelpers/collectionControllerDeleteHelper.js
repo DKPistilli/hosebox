@@ -1,19 +1,20 @@
 const asyncHandler     = require('express-async-handler');
 const Collection       = require('../../models/collectionModel');
-const User             = require('../../models/collectionModel');
+const User             = require('../../models/userModel');
 
 const handleDeleteCollection = asyncHandler(async (req, res) => {
     
     // First, delete from decksDB    
     const collectionId = req.params.collectionId;
-    const collection = await Collection.findById({ _id: collectionId });
 
-    const result = await Collection.deleteOne({ _id: collectionId });
+    const collection = await Collection.findByIdAndDelete(collectionId);
 
-    if (result.deletedCount < 1) {
+    if (!collection) {
         res.status(404);
-        throw new Error(`Unable to delete deck with id: ${collectionId}`);
+        throw new Error(`Error deleting Collection. No collection found with given ID: ${collectionId}`);
     }
+
+    console.log(JSON.stringify(collection));
 
     // if collection is not deck, you're done! Else, delete from owner's public or private decks array.
     if (!collection.isDeck) {
@@ -22,6 +23,12 @@ const handleDeleteCollection = asyncHandler(async (req, res) => {
 
         // then, find and update user deckslist (public or private)
         const user = await User.findById(req.user.id);
+
+        if (!user) {
+            res.status(404);
+            throw new Error(`Error. No user found with given ID.`);
+        }
+
         const publicIndex = user.decks_public.findIndex((deck) => deck.deckId.toString() === collectionId);
         const privateIndex = user.decks_private.findIndex((deck) => deck.deckId.toString() === collectionId);
 

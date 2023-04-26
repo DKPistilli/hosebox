@@ -11,7 +11,7 @@ import CardTableRow from './CardTableRow';
 
 import Spinner       from './Spinner';
 
-const DECK_API_URL = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/decks' : 'https://api.hosebox.net/api/decks';
+const DECK_API_URL = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/collections' : 'https://api.hosebox.net/api/collections';
 
 function DeckCardTable({ cards, tableName }) {
 

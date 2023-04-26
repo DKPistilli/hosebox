@@ -21,7 +21,7 @@ import CollectionPagination from './CollectionPagination';
 // cards per page in Collection
 const CARDS_PER_PAGE = 16;
 
-function Collection({ apiUrl, owner, collectionName }) {
+function Collection({ apiUrl, owner, collectionName, collectionId }) {
     
     // init navigation && find user
     const { user } = useSelector((state) => state.auth);
@@ -35,24 +35,24 @@ function Collection({ apiUrl, owner, collectionName }) {
     // eslint-disable-next-line
     const [cardName, setCardName] = useState("");
 
-    const getCollectionSize = useCallback( async () => {
+    useCallback( async () => {
 
         setCollectionSize(0);
 
         // if there's no owner, then there's no collection to get yet!
-        if (!owner || !owner._id) {
+        if (!owner || !owner._id || !collection || !collectionId) {
             return;
         }
         
-        // query server for 
-        const response = await axios.get(apiUrl + "/" + owner._id + '/size');
+        // query server for collection size
+        const response = await axios.get(`${apiUrl}${collectionId}/size`);
 
         // set card collection and pagination
         if (response.data) {
-            setCollectionSize(parseInt(response.data));
+            setCollectionSize(parseInt(response.data.mainboard));
         }
 
-    }, [apiUrl, owner ]);
+    }, [apiUrl, owner, collection, collectionId]);
 
     const getCollection = useCallback( async () => {
 
@@ -62,9 +62,9 @@ function Collection({ apiUrl, owner, collectionName }) {
         if (!owner || !owner._id) {
             return;
         }
-        
-        // query server for 
-        const response = await axios.get(apiUrl + "/" + owner._id, {
+
+        console.log(`apiUrl: ${apiUrl}/${collectionId}`)
+        const response = await axios.get(`${apiUrl}/${collectionId}`, {
             params: {
                 page : currentPage,
                 cardName : cardName,
@@ -72,28 +72,38 @@ function Collection({ apiUrl, owner, collectionName }) {
             }
         });
 
+        if (!response) {
+            toast.error('Error getting collection from server.');
+        }
+
         // set card collection and pagination
         if (response.data) {
             setCollection(response.data.cards);
             setTotalUniqueCards(response.data.totalUniqueCards)
-            getCollectionSize();
         }
 
-    }, [getCollectionSize, apiUrl, owner, currentPage, cardName]);
+    }, [apiUrl, owner, currentPage, cardName, collectionId]);
 
     // request user's collection from server
     useEffect(() => {
         getCollection();
-    }, [getCollection, getCollectionSize, currentPage, cardName]);
+    }, [getCollection, currentPage, cardName]);
 
     // define how CardAdder should addCards
     const addCard = async (cardName) => {
+        if (!collectionId) {
+            toast.error('Collection ID missing. Unable to add cards.');
+            return;
+        }
+
         const config = {
-            headers: { Authorization: `Bearer ${user.token}` },
-            params : { cardName: cardName },
+            headers: {
+                "Authorization": `Bearer ${user.token}`,
+                "Content-Type" : "text/plain",
+            },
         };
 
-        await axios.post(apiUrl, null, config)
+        await axios.post(`${apiUrl}/${collectionId}`, `1 ${cardName}`, config)
             .then( res => getCollection() )
             .catch( err => {
                 console.log(err);
@@ -103,6 +113,12 @@ function Collection({ apiUrl, owner, collectionName }) {
 
     // define how CardAdderContainer should add Cardlists
     const addCardlist = async (cardlist) => {
+       
+        if (!collectionId) {
+            toast.error('Collection ID missing. Unable to add cards.');
+            return;
+        }
+       
         const config = {
             headers: {
                 "Authorization": `Bearer ${user.token}`,
@@ -110,7 +126,7 @@ function Collection({ apiUrl, owner, collectionName }) {
             },
         };
 
-        await axios.post(apiUrl + '/list', cardlist, config)
+        await axios.post(`${apiUrl}/${collectionId}`, cardlist, config)
             .then ( res => getCollection() )
             .catch( err => {
                 toast.error(err.response.data.message);
@@ -118,26 +134,21 @@ function Collection({ apiUrl, owner, collectionName }) {
             });
     };
 
-    const deleteCollection = async () => {
-
-        console.log('inside delete Collection');
-        
+    const deleteCollection = async () => {        
         if (!collection || !user || !user._id) {
-            console.log('inside empty return');
             return;
         } else {
-            console.log('inside actionable return');
             const config = {
                 headers: { Authorization: `Bearer ${user.token}`},
             };
-            console.log(`apiUrl: ${apiUrl}`)
-            await axios.delete(apiUrl, config)
+            await axios.delete(`${apiUrl}${collectionId}`, config)
                 .then ( res => getCollection() )
                 .catch( err => {
                     toast.error(err.message);
                 });
         }
     }
+
 
     return (
         <div>
@@ -159,6 +170,7 @@ function Collection({ apiUrl, owner, collectionName }) {
             <CardTable cards={collection}
                        tableName={collectionName}
                        tableStyle="collection"
+                       collectionId={collectionId}
                        collectionSize={collectionSize}
                        getCollection={getCollection}
             />

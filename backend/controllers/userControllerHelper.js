@@ -1,3 +1,8 @@
+///
+/// COLLECTION CONTROLLER HELPER
+/// Functions:
+///      lowerAllButFirstChar, isValidUsername, isValidEmail
+///
 
 // helper fx, lowercase all chars but [0] index.
 const lowerAllButFirstChar = (name) => {

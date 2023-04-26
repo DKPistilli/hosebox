@@ -100,10 +100,15 @@ const registerUser = asyncHandler(async (req, res) => {
 
         }
         res.status(201).json({
-            _id  : user.id,
-            name : user.name,
-            email: user.email,
+            _id: user._id,
+            name: user.name,
             token: generateToken(user._id),
+            email: user.email,
+            follows: user.follows,
+            decks_public: user.decks_public,
+            decks_private: user.decks_private,
+            inventoryId: user.inventoryId,
+            wishlistId: user.wishlistId
         });
     } else {
         res.status(400);
@@ -133,11 +138,17 @@ const loginUser = asyncHandler(async (req, res) => {
 
     // if user exists and password matches, send back user info res, else error
     if (user && matchingPasswords) {
-        res.json({
-            _id: user.id,
+        res.status(201).json({
+            _id: user._id,
+            token: generateToken(user._id),
             name: user.name,
             email: user.email,
-            token: generateToken(user._id),
+            follows: user.follows,
+            decks_public: user.decks_public,
+            decks_private: user.decks_private,
+            inventoryId: user.inventoryId,
+            wishlistId: user.wishlistId,
+            
         });
     } else {
         res.status(400);
@@ -149,7 +160,6 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route  GET /api/users/:userId
 // @access Public
 const getUser = asyncHandler(async(req, res) => {
-
     if (!req.params.userId) {
         res.status(400)
         throw new Error(`User ID required for Get User operation.`)
@@ -170,7 +180,6 @@ const getUser = asyncHandler(async(req, res) => {
 // @route  GET /api/users/me
 // @access Private
 const getMe = asyncHandler(async (req, res) => {
-    // errors handled in authMiddleware.js
     res.status(200).json(req.user);
 });
 
