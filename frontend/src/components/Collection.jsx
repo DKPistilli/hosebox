@@ -35,28 +35,10 @@ function Collection({ apiUrl, owner, collectionName, collectionId }) {
     // eslint-disable-next-line
     const [cardName, setCardName] = useState("");
 
-    useCallback( async () => {
-
-        setCollectionSize(0);
-
-        // if there's no owner, then there's no collection to get yet!
-        if (!owner || !owner._id || !collection || !collectionId) {
-            return;
-        }
-        
-        // query server for collection size
-        const response = await axios.get(`${apiUrl}${collectionId}/size`);
-
-        // set card collection and pagination
-        if (response.data) {
-            setCollectionSize(parseInt(response.data.mainboard));
-        }
-
-    }, [apiUrl, owner, collection, collectionId]);
-
     const getCollection = useCallback( async () => {
 
         setCollection(null)
+        setCollectionSize(0);
 
         // if there's no owner, then there's no collection to get yet!
         if (!owner || !owner._id) {
@@ -72,8 +54,15 @@ function Collection({ apiUrl, owner, collectionName, collectionId }) {
             }
         });
 
+        // if no response, error, else get Collection Size
         if (!response) {
             toast.error('Error getting collection from server.');
+        } else {
+            const sizeResponse = await axios.get(`${apiUrl}/${collectionId}/size`);
+            // set card collection and pagination
+            if (sizeResponse.data) {
+                setCollectionSize(parseInt(sizeResponse.data.mainboardSize));
+            }
         }
 
         // set card collection and pagination
@@ -87,7 +76,7 @@ function Collection({ apiUrl, owner, collectionName, collectionId }) {
     // request user's collection from server
     useEffect(() => {
         getCollection();
-    }, [getCollection, currentPage, cardName]);
+    }, [getCollection]);
 
     // define how CardAdder should addCards
     const addCard = async (cardName) => {
