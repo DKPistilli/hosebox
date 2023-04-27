@@ -41,8 +41,7 @@ const DeckTitle = ({ deckTitle, deckId, isPublic, updateTitle }) => {
             }
         }
 
-        const res = await axios.put(`${DECK_API_URL}/${deckId}/privacy`, null, config);
-        console.log(JSON.stringify(res));
+        await axios.put(`${DECK_API_URL}/${deckId}/privacy`, null, config);
         navigate(0);
 
     }

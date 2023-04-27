@@ -51,54 +51,58 @@ const handleUpdateCardQuantity = asyncHandler(async (req, res) => {
 // @route  PUT /api/collections/:collectionId/name
 // @query  collectionName=(collectionName)
 // @access Private
-const handleUpdateCollectionName = asyncHandler(async (req, res) => {
-    const collectionId = req.params.collectionId;
-    const collectionName = String(req.query.collectionName);
+const handleUpdateCollectionName = async (req, res, next) => {
+    try {
+        const collectionId = req.params.collectionId;
+        const collectionName = req.query.collectionName;
 
-    // validate request
-    if (!collectionId || !collectionName) {
-        res.status(400);
-        throw new Error('Invalid request parameters given while attempting to change collection name.');
-    }
-
-    // grab collection from DB, validate, and update name
-    const collection = await Collection.findById(collectionId);
-    if (!collection) {
-        res.status(404);
-        throw new Error(`No collection found with given ID: ${collectionId}`);
-    } else {
-        collection.name = collectionName;
-        await collection.save();
-    }
-
-    // if collection is not a deck, you're done! Return success
-    if (!collection.isDeck) {
-        res.status(204).send();
-    }
-    
-    // grab User from DB, validate, and update in their public/private decks array
-    const user = await User.findById(collection.ownerId);
-    if (!user) {
-        res.status(404);
-        throw new Error('This collection is not associated with any user.');
-    } else {
-        const publicIndex  = user.decks_public.findIndex(deck => deck.deckId.toString() === collectionId.toString());
-        const privateIndex = user.decks_private.findIndex(deck => deck.deckId.toString() === collectionId.toString());
-
-        if (publicIndex !== -1) {
-            user.decks_public[publicIndex].name = collectionName;
-            await user.save();
-            res.status(204).send();
-        } else if (privateIndex !== -1) {
-            user.decks_private[privateIndex].name = collectionName;
-            await user.save();
-            res.status(204).send();
-        } else {
-            res.status(404);
-            throw new Error(`Error updating collection name. No deck found in users public/private list with id: ${collectionId}.`);
+        // validate request
+        if (!collectionId || !collectionName) {
+            res.status(400);
+            throw new Error('Invalid request parameters given while attempting to change collection name.');
         }
+
+        // grab collection from DB, validate, and update name
+        const collection = await Collection.findById(collectionId);
+        if (!collection) {
+            res.status(404);
+            throw new Error(`No collection found with given ID: ${collectionId}`);
+        } else {
+            collection.name = collectionName;
+            await collection.save();
+        }
+
+        // if collection is not a deck, you're done! Return success
+        if (!collection.isDeck) {
+            res.status(204).send();
+        }
+        
+        // grab User from DB, validate, and update in their public/private decks array
+        const user = await User.findById(collection.ownerId);
+        if (!user) {
+            res.status(404);
+            throw new Error('This collection is not associated with any user.');
+        } else {
+            const publicIndex  = user.decks_public.findIndex(deck => deck.deckId.toString() === collectionId.toString());
+            const privateIndex = user.decks_private.findIndex(deck => deck.deckId.toString() === collectionId.toString());
+
+            if (publicIndex !== -1) {
+                user.decks_public[publicIndex].name = collectionName;
+                await user.save();
+                res.status(204).send();
+            } else if (privateIndex !== -1) {
+                user.decks_private[privateIndex].name = collectionName;
+                await user.save();
+                res.status(204).send();
+            } else {
+                res.status(404);
+                throw new Error(`Error updating collection name. No deck found in users public/private list with id: ${collectionId}.`);
+            }
+        }
+    } catch (err) {
+        next(err);
     }
-});
+};
 
 // @desc   update card by name with quantity, deleting if needed
 // @route  PUT /api/collections/:collectionId/privacy

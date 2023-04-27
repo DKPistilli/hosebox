@@ -45,7 +45,6 @@ function Collection({ apiUrl, owner, collectionName, collectionId }) {
             return;
         }
 
-        console.log(`apiUrl: ${apiUrl}/${collectionId}`)
         const response = await axios.get(`${apiUrl}/${collectionId}`, {
             params: {
                 page : currentPage,
@@ -95,7 +94,6 @@ function Collection({ apiUrl, owner, collectionName, collectionId }) {
         await axios.post(`${apiUrl}/${collectionId}`, `1 ${cardName}`, config)
             .then( res => getCollection() )
             .catch( err => {
-                console.log(err);
                 toast.error(`${cardName} is not in hosebox yet (this is likely a spoiler/unreleased card.)`);
             });
     };
@@ -115,9 +113,16 @@ function Collection({ apiUrl, owner, collectionName, collectionId }) {
             },
         };
 
+        // add cards then get new collection -- if server sends back message of cards not added, toast error.
         await axios.post(`${apiUrl}/${collectionId}`, cardlist, config)
-            .then ( res => getCollection() )
-            .catch( err => {
+            .then ( res => {
+                if (!res.data) {
+                    toast.success("Cards added correctly!");
+                } else {
+                    toast.error(res.data);
+                }
+                getCollection()
+            }).catch( err => {
                 toast.error(err.response.data.message);
                 getCollection();
             });

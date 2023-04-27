@@ -1,5 +1,4 @@
 const asyncHandler = require('express-async-handler');
-const scryfallCardsAPI = require('../scryfallCardController');
 const Collection       = require('../../models/collectionModel');
 const User             = require('../../models/userModel');
 
@@ -56,7 +55,6 @@ const handleCreateDeckCollection = asyncHandler(async (req, res) => {
 // @query  listType=(listtype)
 // @note   relies on cardlistMiddleware to set req.validCards and req.invalidCards
 const handleAddCards = asyncHandler(async (req, res) => {
-
     const collectionId = req.params.collectionId;
     const listType     = req.query.listType || "mainboard"; // default to mainboard if no list type given
 
@@ -105,31 +103,32 @@ const handleAddCards = asyncHandler(async (req, res) => {
     // update deck's main/side/scratch with cardlist containing newly added cards.
     switch(listType) {
         case "mainboard":
-            deck.mainboard = cardlist; 
+            deck.mainboard = cardlist;
+            await deck.save();
             break;
         case "sideboard":
             deck.sideboard = cardlist;
+            await deck.save();
             break;
         case "scratchpad":
             deck.scratchpad = cardlist;
+            await deck.save();
             break;
         default:
             res.status(400);
             throw new Error(`Invalid request listType: ${listType}`);
     }
 
-    await deck.save();
-
     // return error of any invalidCards, else success
     if (req.invalidCards.length > 0) {
-        res.status(401);
-        let errorString = 'Server error. Unable to add the following cards:\n';
+        let invalidCardString = 'Unable to add the following cards:\n';
         
         for (const card of req.invalidCards) {
-            errorString += `${card.name}\n`;
+            invalidCardString += `${card.name}\n`;
         }
 
-        throw new Error(errorString);
+        res.status(200);
+        res.send(invalidCardString);
     } else {
         res.status(201).send();
     }

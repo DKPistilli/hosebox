@@ -101,8 +101,8 @@ const updateCardQuantity = asyncHandler(async (req, res) => {
 // @route  PUT /api/collections/:collectionId/name
 // @query  collectionName=(collectionName)
 // @access Private
-const updateCollectionName = asyncHandler(async (req, res) => {
-    handleUpdateCollectionName(req, res);
+const updateCollectionName = asyncHandler(async (req, res, next) => {
+    handleUpdateCollectionName(req, res, next);
 });
 
 // @desc   update card by name with quantity, deleting if needed
