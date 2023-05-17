@@ -63,6 +63,7 @@ const CollectionPage = ({ collectionType, collectionApiUrl, userApiUrl }) => {
               apiUrl={collectionApiUrl}
               owner={owner}
               collectionName={collectionType}
+              collectionId={ collectionType === "Inventory" ? owner.inventoryId : owner.wishlistId}
             />
           </div>
         </div>

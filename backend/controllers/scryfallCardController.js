@@ -28,7 +28,6 @@ const getCards = asyncHandler(async (cardsArray) => {
     // add all names from input array to name, for upcoming db query
     const nameArray = cardsArray.map((card) => card.name);
 
-
     // get all scryfallCards with corresponding names
     const scryfallCardsArray = await ScryfallCard.find({ name: { $in: nameArray } }).sort({ "name": 1 });
 
@@ -85,7 +84,7 @@ const getCards = asyncHandler(async (cardsArray) => {
 // @access Internal Only
 const isValidCardName = async (cardName) => {
     if (!cardName) {
-        throw new Error('CardName required to check if cardname is valid.');
+        return false;
     }
 
     // get all scryfallCards with corresponding names

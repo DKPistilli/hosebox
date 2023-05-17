@@ -13,7 +13,7 @@ import '../styles/CardTable.css';
 
 const COLLECTION_API_URL = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/' : 'https://api.hosebox.net/api/';
 
-function CollectionCardTable({ cards, tableName, collectionSize, getCollection }) {
+function CollectionCardTable({ cards, tableName, collectionId, collectionSize, getCollection }) {
 
     const { ownerId } = useParams();
     const { user }    = useSelector((state) => state.auth);
@@ -30,28 +30,25 @@ function CollectionCardTable({ cards, tableName, collectionSize, getCollection }
         if (!user || !ownerId || (user._id !== ownerId)) {
             return;
         }
-    
-        const collectionRoute = tableName.toLowerCase();
-    
+        
         const config = {
             headers: { Authorization: `Bearer ${user.token}`},
             params : {
                 cardName: cardName,
                 quantity: quantity,
+                listType: "mainboard",
             }
         };
         
         // update card quantity
         try {
-            const res = await axios.put(`${COLLECTION_API_URL}${collectionRoute}Cards`, null, config);
-            console.log(res.status);
+            const res = await axios.put(`${COLLECTION_API_URL}collections/${collectionId}`, null, config);
             if (res.status === 200 || res.status === 204 || res.status === 201) {
                 getCollection();
             } else {
                 toast.error(`Error updating quantity of ${cardName}`);
             }
         } catch (error) {
-            console.log(`Error: ${JSON.stringify(error)}`);
             toast.error(`Error updating quantity of ${cardName}`);
         }
     }

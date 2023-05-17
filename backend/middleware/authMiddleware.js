@@ -25,6 +25,10 @@ const protect = asyncHandler(async (req, res, next) => {
 
             // get user from token, minus password
             req.user = await User.findById(decoded.id).select('-password');
+
+            if (!req.user) {
+                throw new Error('No user found with given bearer token');
+            }
             
             next();
 

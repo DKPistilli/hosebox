@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 
 import '../styles/DeckTitle.css';
 
-const DECK_API_URL     = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/decks' : 'https://api.hosebox.net/api/decks';
+const DECK_API_URL     = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/collections' : 'https://api.hosebox.net/api/collections';
 const MAX_TITLE_LENGTH = 22;
 
 const DeckTitle = ({ deckTitle, deckId, isPublic, updateTitle }) => {
@@ -41,8 +41,7 @@ const DeckTitle = ({ deckTitle, deckId, isPublic, updateTitle }) => {
             }
         }
 
-        const res = await axios.put(`${DECK_API_URL}/${deckId}/privacy`, null, config);
-        console.log(JSON.stringify(res));
+        await axios.put(`${DECK_API_URL}/${deckId}/privacy`, null, config);
         navigate(0);
 
     }

@@ -1,16 +1,16 @@
 ///
 /// USER SCHEMA
 ///
-
 const mongoose = require('mongoose');
 
-// define the deckschema that is attached to users, which is just an array
+// define the decksubschema that is attached to users, which is just an array
 // of names/deckIds for frontend to use to populate "Decks" sidebar links
 const deckSubSchema = {
+    
     deckId: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true, "Deck ID required when adding deck to User's public and/or private decks."],
-        ref: 'Deck'
+        ref: 'Collection'
     },
 
     name: {
@@ -19,7 +19,12 @@ const deckSubSchema = {
     },
 }
 
+// Defines the User Schema
 const userSchema = mongoose.Schema({
+
+    //
+    // Basic User Info
+    //
 
     name: {
         type: String,
@@ -33,15 +38,29 @@ const userSchema = mongoose.Schema({
         unique: true,
     },
 
+    password: {
+        type: String,
+        required: [true, "Password required for creating User."],
+    },
+
     // array of userIDs that represent whom User follows
     follows: {
         type: [mongoose.Schema.Types.ObjectId],
         default: [],
     },
 
-    password: {
-        type: String,
-        required: [true, "Password required for creating User."],
+    //
+    // Card/Collection Info
+    //
+
+    inventoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Collection',
+    },
+    
+    wishlistId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Collection',
     },
 
     decks_public: {

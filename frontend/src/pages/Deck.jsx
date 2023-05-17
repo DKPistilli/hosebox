@@ -14,7 +14,7 @@ import axios from 'axios';
 
 // backend api url for authenticating user
 const USER_API_URL = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/users' : 'https://api.hosebox.net/api/users';
-const DECK_API_URL = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/decks' : 'https://api.hosebox.net/api/decks';
+const DECK_API_URL = process.env.REACT_APP_ENV === 'development' ? 'http://localhost:8000/api/collections' : 'https://api.hosebox.net/api/collections';
 
 function Deck() {
 
@@ -62,14 +62,15 @@ function Deck() {
     const getOwner = async () => {
 
       // can't get owner if there's no deckOwnerId!
-      if (!deck.userId) {
+      if (!deck.ownerId) {
         return;
       }
 
-      if (user && deck && (user._id === deck.userId)) {
+      if (user && deck && (user._id === deck.ownerId)) {
         setOwner(user);
       } else {
-        let pageOwner = await axios.get(`${USER_API_URL}/${deck.userId}`);
+        console.log(`requesting owner with following request: ${USER_API_URL}/${deck.ownerId}`);
+        let pageOwner = await axios.get(`${USER_API_URL}/${deck.ownerId}`);
         setOwner(pageOwner);
       }
     }
@@ -80,7 +81,6 @@ function Deck() {
 
   // onSubmit fx for adding card of cardName to deck
   const addCardToDeck = async ( cardName, listType ) => {
-    console.log('adding card to deck');
     if (!cardName || !deckId || !user) {
       return;
     } else {
@@ -101,9 +101,7 @@ function Deck() {
       };
 
       try {
-        console.log('entering try statement');
         const res = await axios.put(`${DECK_API_URL}/${deckId}`, null, config);
-        console.log(`res: ${JSON.stringify(res)}`);
         if (listType === 'mainboard') {
           setMainboard(res.data);
         } else if (listType === 'sideboard') {
@@ -114,7 +112,6 @@ function Deck() {
           throw new Error(`Incorrect listtype given: ${listType}`);
         }
       } catch (err) {
-        console.log(err);
         toast.error(`${cardName} is not in hosebox yet (this is likely a spoiler/unreleased card.)`);
       }
     }
@@ -128,11 +125,15 @@ function Deck() {
 
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
-        params : { deckName: newName },
+        params : { collectionName: newName },
       };
-
-      await axios.put(`${DECK_API_URL}/${deckId}/name`, null, config);
-      navigate(0);
+      console.log(`${DECK_API_URL}/${deckId}/name`);
+      await axios.put(`${DECK_API_URL}/${deckId}/name`, null, config)
+        .then(res => {
+          toast.success("Deck Title updated successfully.");
+          navigate(0);
+        })
+        .catch(err => toast.error("Unable to update Deck title."));
     }
   };
 

@@ -18,7 +18,7 @@ router.post('/login', loginUser);
 
 // set get routes for getting users public/private data
 router.get('/me',      protect, getMe);
-router.get('/:userId', getUser )
+router.get('/:userId',          getUser);
 
 // set routes for following/unfollowing users
 router.put('/:userId/follow',   protect, followUser);

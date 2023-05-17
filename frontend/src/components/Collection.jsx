@@ -21,7 +21,7 @@ import CollectionPagination from './CollectionPagination';
 // cards per page in Collection
 const CARDS_PER_PAGE = 16;
 
-function Collection({ apiUrl, owner, collectionName }) {
+function Collection({ apiUrl, owner, collectionName, collectionId }) {
     
     // init navigation && find user
     const { user } = useSelector((state) => state.auth);
@@ -35,36 +35,17 @@ function Collection({ apiUrl, owner, collectionName }) {
     // eslint-disable-next-line
     const [cardName, setCardName] = useState("");
 
-    const getCollectionSize = useCallback( async () => {
+    const getCollection = useCallback( async () => {
 
+        setCollection(null)
         setCollectionSize(0);
 
         // if there's no owner, then there's no collection to get yet!
         if (!owner || !owner._id) {
             return;
         }
-        
-        // query server for 
-        const response = await axios.get(apiUrl + "/" + owner._id + '/size');
 
-        // set card collection and pagination
-        if (response.data) {
-            setCollectionSize(parseInt(response.data));
-        }
-
-    }, [apiUrl, owner ]);
-
-    const getCollection = useCallback( async () => {
-
-        setCollection(null)
-
-        // if there's no owner, then there's no collection to get yet!
-        if (!owner || !owner._id) {
-            return;
-        }
-        
-        // query server for 
-        const response = await axios.get(apiUrl + "/" + owner._id, {
+        const response = await axios.get(`${apiUrl}/${collectionId}`, {
             params: {
                 page : currentPage,
                 cardName : cardName,
@@ -72,37 +53,37 @@ function Collection({ apiUrl, owner, collectionName }) {
             }
         });
 
+        // if no response, error, else get Collection Size
+        if (!response) {
+            toast.error('Error getting collection from server.');
+        } else {
+            const sizeResponse = await axios.get(`${apiUrl}/${collectionId}/size`);
+            // set card collection and pagination
+            if (sizeResponse.data) {
+                setCollectionSize(parseInt(sizeResponse.data.mainboardSize));
+            }
+        }
+
         // set card collection and pagination
         if (response.data) {
             setCollection(response.data.cards);
             setTotalUniqueCards(response.data.totalUniqueCards)
-            getCollectionSize();
         }
 
-    }, [getCollectionSize, apiUrl, owner, currentPage, cardName]);
+    }, [apiUrl, owner, currentPage, cardName, collectionId]);
 
     // request user's collection from server
     useEffect(() => {
         getCollection();
-    }, [getCollection, getCollectionSize, currentPage, cardName]);
+    }, [getCollection]);
 
     // define how CardAdder should addCards
     const addCard = async (cardName) => {
-        const config = {
-            headers: { Authorization: `Bearer ${user.token}` },
-            params : { cardName: cardName },
-        };
+        if (!collectionId) {
+            toast.error('Collection ID missing. Unable to add cards.');
+            return;
+        }
 
-        await axios.post(apiUrl, null, config)
-            .then( res => getCollection() )
-            .catch( err => {
-                console.log(err);
-                toast.error(`${cardName} is not in hosebox yet (this is likely a spoiler/unreleased card.)`);
-            });
-    };
-
-    // define how CardAdderContainer should add Cardlists
-    const addCardlist = async (cardlist) => {
         const config = {
             headers: {
                 "Authorization": `Bearer ${user.token}`,
@@ -110,34 +91,58 @@ function Collection({ apiUrl, owner, collectionName }) {
             },
         };
 
-        await axios.post(apiUrl + '/list', cardlist, config)
-            .then ( res => getCollection() )
+        await axios.post(`${apiUrl}/${collectionId}`, `1 ${cardName}`, config)
+            .then( res => getCollection() )
             .catch( err => {
+                toast.error(`${cardName} is not in hosebox yet (this is likely a spoiler/unreleased card.)`);
+            });
+    };
+
+    // define how CardAdderContainer should add Cardlists
+    const addCardlist = async (cardlist) => {
+       
+        if (!collectionId) {
+            toast.error('Collection ID missing. Unable to add cards.');
+            return;
+        }
+       
+        const config = {
+            headers: {
+                "Authorization": `Bearer ${user.token}`,
+                "Content-Type" : "text/plain",
+            },
+        };
+
+        // add cards then get new collection -- if server sends back message of cards not added, toast error.
+        await axios.post(`${apiUrl}/${collectionId}`, cardlist, config)
+            .then ( res => {
+                if (!res.data) {
+                    toast.success("Cards added correctly!");
+                } else {
+                    toast.error(res.data);
+                }
+                getCollection()
+            }).catch( err => {
                 toast.error(err.response.data.message);
                 getCollection();
             });
     };
 
-    const deleteCollection = async () => {
-
-        console.log('inside delete Collection');
-        
+    const deleteCollection = async () => {        
         if (!collection || !user || !user._id) {
-            console.log('inside empty return');
             return;
         } else {
-            console.log('inside actionable return');
             const config = {
                 headers: { Authorization: `Bearer ${user.token}`},
             };
-            console.log(`apiUrl: ${apiUrl}`)
-            await axios.delete(apiUrl, config)
+            await axios.delete(`${apiUrl}${collectionId}`, config)
                 .then ( res => getCollection() )
                 .catch( err => {
                     toast.error(err.message);
                 });
         }
     }
+
 
     return (
         <div>
@@ -159,6 +164,7 @@ function Collection({ apiUrl, owner, collectionName }) {
             <CardTable cards={collection}
                        tableName={collectionName}
                        tableStyle="collection"
+                       collectionId={collectionId}
                        collectionSize={collectionSize}
                        getCollection={getCollection}
             />
